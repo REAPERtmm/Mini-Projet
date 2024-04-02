@@ -9,6 +9,7 @@ class Game:
         self.ground = [
             StaticObject(self, -200, 400, 900, 50)
         ]
+
         self.leftPressed = False
         self.rightPressed = False
 
