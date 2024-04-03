@@ -7,7 +7,9 @@ class Game:
         self.running = True
 
         self.ground = [
-            StaticObject(self, -200, 400, 900, 50)
+            StaticObject(self, -200, 400, 900, 50),
+            StaticObject(self, 500, 0, 100, 500),
+            StaticObject(self, 300, 200, 200, 50),
         ]
 
         self.leftPressed = False

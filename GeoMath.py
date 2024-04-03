@@ -11,7 +11,7 @@ class Vector2:
         """
         self._x: float = x
         self._y: float = y
-        self.magnitude: float = sqrt(self._x**2 + self._y**2)
+        self.magnitude: float = sqrt(self._x ** 2 + self._y ** 2)
 
     def _UpdateData(self):
         self.magnitude = sqrt(self._x ** 2 + self._y ** 2)
@@ -48,9 +48,18 @@ class Vector2:
 
     def normalize(self):
         if self.magnitude == 0:
-            print("vector zero normalize")
+            #print("vector zero normalize")
             return Vector2(0, 0)
         return Vector2(self._x, self._y) / self.magnitude
+
+    def tuple(self):
+        return (self._x, self._y)
+
+    def __iter__(self):
+        return (self._x, self._y)
+
+    def __len__(self):
+        return 2
 
     def __add__(self, other):
         return Vector2(self._x + other.x(), self._y + other.y())
@@ -71,19 +80,18 @@ class Vector2:
     __radd__ = __add__
     __imul__ = __mul__
 
-
 class Line:
     def __init__(self, start: Vector2, end: Vector2):
         self._Start: Vector2 = start
         self._End: Vector2 = end
         self.Direction = (self._End - self._Start).normalize()
-    
+
     def end(self):
         return self._End
-    
+
     def start(self):
         return self._Start
-    
+
     def SetStart(self, start: Vector2):
         self._Start = start
         self.Direction = (self._End - self._Start).normalize()
@@ -92,56 +100,28 @@ class Line:
         self._End = end
         self.Direction = (self._End - self._Start).normalize()
 
-    def RayCastOnRect(self, rect) -> float:
-        side = [
-            Line(rect.position, rect.size + Vector2(0, rect.size.y())).CollideLine(self),
-            Line(rect.position, rect.size + Vector2(rect.size.x(), 0)).CollideLine(self),
-            Line(rect.position + rect.size, rect.size - Vector2(0, rect.size.y())).CollideLine(self),
-            Line(rect.position + rect.size, rect.size - Vector2(rect.size.x(), 0)).CollideLine(self)
-        ]
-
-        minimum = None
-        magnitude = 0
-        for elt in side:
-            if minimum is None:
-                minimum = elt
-                magnitude = (elt - self._Start).magnitude
-            else:
-                if (elt - self._Start).magnitude < magnitude:
-                    minimum = elt
-                    magnitude = (elt - self._Start).magnitude
-        return magnitude
-
     def CollideLine(self, line) -> Vector2:
         """
         check la collision entre deux segement
         :param line: ligne par rapport à laquelle on check
         :return: le point de collision sinon None
         """
+        # Check parrallèle$
 
-        uA = ((
-                     (line.end().x() - line.start().x()) * (self.start().y() - line.start().y()) -
-                     (line.end().y() - line.start().y()) * (self.start().x() - line.start().x())
-             ) /
-              (
-                      (line.end().y() - line.start().y()) * (self.end().x() - self.start().x()) -
-                      (line.end().x() - line.start().x()) * (self.end().y() - self.start().y())
-              ));
+        a = (line.end().x() - line.start().x()) * (self.start().y() - line.start().y()) - (line.end().y() - line.start().y()) * (self.start().x() - line.start().x())
+        b = (line.end().y() - line.start().y()) * (self.end().x() - self.start().x()) - (line.end().x() - line.start().x()) * (self.end().y() - self.start().y())
+        c = (self.end().x() - self.start().x()) * (self.start().y() - line.start().y()) - (self.end().y() - self.start().y()) * (self.start().x() - line.start().x())
+        d = (line.end().y() - line.start().y()) * (self.end().x() - self.start().x()) - (line.end().x() - line.start().x()) * (self.end().y() - self.start().y())
 
-        
-        uB = ((
-                      (self.end().x() - self.start().x()) * (self.start().y() - line.start().y()) -
-                      (self.end().y() - self.start().y()) * (self.start().x() - line.start().x())
-              ) /
-              (
-                      (line.end().y() - line.start().y()) * (self.end().x() - self.start().x()) -
-                      (line.end().x() - line.start().x()) * (self.end().y() - self.start().y())
-              ));
+        if b == 0 or d == 0:
+            return None
+
+        uA = a / b
+        uB = c / d
 
         if 0 <= uA <= 1 and 0 <= uB <= 1:
-            return uA * self.Direction + self._Start
+            return self._Start * (1 - uA) + self._End * uA
         return None
-
 
 class Box:
     def __init__(self, position: Vector2, size: Vector2):
@@ -156,21 +136,38 @@ class Box:
                 )
 
     def CollideLine(self, line) -> Vector2:
-        left = Line(self.position, self.size + Vector2(0, self.size.y())).CollideLine(line)
-        top = Line(self.position, self.size + Vector2(self.size.x(), 0)).CollideLine(line)
-        right = Line(self.position + self.size, self.size - Vector2(0, self.size.y())).CollideLine(line)
-        down = Line(self.position + self.size, self.size - Vector2(self.size.x(), 0)).CollideLine(line)
+        side = [
+            Line(self.position, self.position + Vector2(0, self.size.y())).CollideLine(line),
+            Line(self.position, self.position + Vector2(self.size.x(), 0)).CollideLine(line),
+            Line(self.size - Vector2(0, self.size.y()), self.position + self.size).CollideLine(line),
+            Line(self.size - Vector2(self.size.x(), 0), self.position + self.size).CollideLine(line)
+        ]
 
-        return left is not None or top is not None or right is not None or down is not None
+        closest_to_start = None
+        dist = 0
+
+        for elt in side:
+            if elt is not None:
+                if closest_to_start is None:
+                    closest_to_start = elt
+                    dist = (line.start() - elt).magnitude
+                elif (line.start() - elt).magnitude < dist:
+                    dist = (line.start() - elt).magnitude
+                    closest_to_start = elt
+
+        if closest_to_start is None:
+            return None
+        return closest_to_start
+
 
     def CollidePoint(self, point: Vector2) -> bool:
         p = point - self.position
         return p.x() >= 0 or p.x() <= self.size.x() or p.y() >= 0 or p.y() <= self.size.y()
 
-    def blit(self, screen, camera) -> None:
+    def blit(self, screen, camera, col = (255, 255, 255)) -> None:
         py.draw.rect(
             screen,
-            (255, 255, 255),
+            col,
             (
                 self.position.x() - camera.position.x(),
                 self.position.y() - camera.position.y(),
@@ -200,8 +197,3 @@ def Rotation(vec: Vector2, angle: float) -> Vector2:
 def Lerp(v1: Vector2, v2: Vector2, t: float) -> Vector2:
     return v1 * (1 - t) + v2 * t
 
-
-if __name__ == '__main__':
-    r1 = Box(Vector2(0, 0), Vector2(100, 100))
-    r2 = Box(Vector2(-200, 400), Vector2(900, 50))
-    print(r1.CollideRect(r2))

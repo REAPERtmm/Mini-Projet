@@ -46,13 +46,40 @@ class PhysicalObject(GameObject):
 
     def update(self):
         super().update()
-        self.transform.position += self.velocity
 
+        #print(f"id : {id(self)}, x: {self.transform.position.x()}, y: {self.transform.position.x()}, velocity: {self.velocity}")
+
+        self.transform.position += self.velocity
         self.isGrounded = False
+
+        box_over = Box(self.transform.position + Vector2(1, -1), Vector2(self.transform.size.x() - 2, 1))
+        box_under = Box(self.transform.position + Vector2(1, self.transform.size.y()), Vector2(self.transform.size.x() - 2, 1))
+
+        box_left = Box(self.transform.position + Vector2(-1, 1), Vector2(1, self.transform.size.x() - 2))
+        box_right = Box(self.transform.position + Vector2(self.transform.size.x(), 1), Vector2(1, self.transform.size.x() - 2))
+
         for elt in self.game.ground:
-            if self.transform.CollideRect(elt.transform):
-                self.isGrounded = True
-                break
+            if id(self) != id(elt) and self.transform.CollideRect(elt.transform):
+
+                check_over = box_over.CollideRect(elt.transform)
+                check_under = box_under.CollideRect(elt.transform)
+                check_left = box_left.CollideRect(elt.transform)
+                check_right = box_right.CollideRect(elt.transform)
+
+                if check_under:
+                    self.transform.position.y(elt.transform.position.y() - self.transform.size.y())
+                    self.isGrounded = True
+                    print("Somthing under")
+                if check_over and not check_left and not check_right:
+                    self.transform.position.y(elt.transform.position.y() + elt.transform.size.y())
+                    print("Somthing over")
+
+                if check_left and not check_under and not check_right:
+                    self.transform.position.x(elt.transform.position.x() - self.transform.size.x())
+                    print("Somthing left")
+                if check_right and not check_under and not check_right:
+                    self.transform.position.x(elt.transform.position.x() + elt.transform.size.x())
+                    print("Somthing right")
 
         if not self.isGrounded:
             self.velocity -= Vector2(0, -GRAVITY) * self.game.deltatime
@@ -89,3 +116,18 @@ class Player(Entity):
 
     def jump(self):
         self.velocity -= Vector2(0, 10)
+
+
+if __name__ == '__main__':
+    r1 = Box(Vector2(0, 0), Vector2(10, 10))
+    r2 = Box(Vector2(11, 0), Vector2(10, 10))
+    movement = Vector2(40, 40)
+
+    print(r1.position)
+    print(r2.position)
+
+    mire = Line(r1.position + r1.size / 2, r2.position + r2.size / 2)
+    print(mire.start(), " to ", mire.end())
+
+    print("hit on r2 :", r2.CollideLine(mire))
+    print("hit on r1 :", r1.CollideLine(mire))
