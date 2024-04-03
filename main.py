@@ -7,15 +7,15 @@ class Game:
         self.running = True
 
         self.ground = [
-            StaticObject(self, -200, 400, 900, 50),
-            StaticObject(self, 500, 0, 100, 500),
-            StaticObject(self, 300, 200, 200, 50),
+            StaticObject(self, -200, 200, 400, 100, "Ground"),
+            StaticObject(self, 200, 100, 100, 200, "Wall"),
+            StaticObject(self, 150, 0, 100, 50, "Platform"),
         ]
 
         self.leftPressed = False
         self.rightPressed = False
 
-        self.player = Player(self, 0, 0, 100, 100)
+        self.player = Player(self, -50, -50, 50, 75)
         self.camera = Camera(self, Vector2(0, 0), 2.5, self.player)
         self.clock = py.time.Clock()
         self.deltatime = 0
@@ -27,7 +27,6 @@ class Game:
         self.player.update()
 
     def draw(self):
-        SCREEN.fill(0)
         for elt in self.ground:
             elt.blit(SCREEN)
         self.player.blit(SCREEN)
@@ -35,6 +34,7 @@ class Game:
 
     def run(self):
         while self.running:
+            SCREEN.fill(SKY)
             self.deltatime = self.clock.get_time() / 1000
             self.clock.tick(60)
             self.update()

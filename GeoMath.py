@@ -53,10 +53,10 @@ class Vector2:
         return Vector2(self._x, self._y) / self.magnitude
 
     def tuple(self):
-        return (self._x, self._y)
+        return self._x, self._y
 
     def __iter__(self):
-        return (self._x, self._y)
+        return self._x, self._y
 
     def __len__(self):
         return 2
@@ -80,10 +80,12 @@ class Vector2:
     __radd__ = __add__
     __imul__ = __mul__
 
+
 class Line:
-    def __init__(self, start: Vector2, end: Vector2):
+    def __init__(self, start: Vector2, end: Vector2, col=(0, 255, 255)):
         self._Start: Vector2 = start
         self._End: Vector2 = end
+        self.color = col
         self.Direction = (self._End - self._Start).normalize()
 
     def end(self):
@@ -99,6 +101,9 @@ class Line:
     def SetEnd(self, end: Vector2):
         self._End = end
         self.Direction = (self._End - self._Start).normalize()
+
+    def blit(self, screen: py.Surface, camera):
+        py.draw.line(screen, self.color, (self._Start - camera.position).tuple(), (self._End - camera.position).tuple(), 2)
 
     def CollideLine(self, line) -> Vector2:
         """
@@ -123,6 +128,7 @@ class Line:
             return self._Start * (1 - uA) + self._End * uA
         return None
 
+
 class Box:
     def __init__(self, position: Vector2, size: Vector2):
         self.position = position
@@ -139,8 +145,8 @@ class Box:
         side = [
             Line(self.position, self.position + Vector2(0, self.size.y())).CollideLine(line),
             Line(self.position, self.position + Vector2(self.size.x(), 0)).CollideLine(line),
-            Line(self.size - Vector2(0, self.size.y()), self.position + self.size).CollideLine(line),
-            Line(self.size - Vector2(self.size.x(), 0), self.position + self.size).CollideLine(line)
+            Line(self.position + self.size - Vector2(0, self.size.y()), self.position + self.size).CollideLine(line),
+            Line(self.position + self.size - Vector2(self.size.x(), 0), self.position + self.size).CollideLine(line)
         ]
 
         closest_to_start = None
@@ -159,12 +165,11 @@ class Box:
             return None
         return closest_to_start
 
-
     def CollidePoint(self, point: Vector2) -> bool:
         p = point - self.position
         return p.x() >= 0 or p.x() <= self.size.x() or p.y() >= 0 or p.y() <= self.size.y()
 
-    def blit(self, screen, camera, col = (255, 255, 255)) -> None:
+    def blit(self, screen, camera, col=(255, 255, 255)) -> None:
         py.draw.rect(
             screen,
             col,
