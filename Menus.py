@@ -2,10 +2,10 @@ from GeoMath import *
 
 
 class Menu:
-    def __init__(self, game, size, key):
+    def __init__(self, game, width, height):
         self.game = game
-        self.size = size
-        self.key = key
+        self.width = width
+        self.height = height
 
     def update(self):
         pass
@@ -15,9 +15,9 @@ class Menu:
             screen,
             WHITE,
             (
-                0,
-                0,
-                WIDTH,
-                HEIGHT
+                WIDTH//2,
+                HEIGHT//2,
+                self.width,
+                self.height
             )
         )
