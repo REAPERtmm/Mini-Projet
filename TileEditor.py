@@ -1,6 +1,9 @@
 from Settings import *
 from GeoMath import *
 
+file = "Tile/tile"  # From This File ("" pour créer un vie)
+SavePath = "Tile/tile"  # To This File (Required)
+
 running = True
 
 TILESIZE = int(600 / TILERESOLUTION)
@@ -8,8 +11,6 @@ TILESIZE = int(600 / TILERESOLUTION)
 for i in range(1, len(Textures)):
 	Textures[i] = py.transform.smoothscale(Textures[i], (TILESIZE, TILESIZE))
 
-file = "Tile/tile"
-SavePath = "Tile/tile"
 Matrix = [
 	[0 for _ in range(TILERESOLUTION)] for __ in range(TILERESOLUTION)
 ]
