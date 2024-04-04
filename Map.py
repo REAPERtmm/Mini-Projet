@@ -6,7 +6,6 @@ from GeoMath import *
 
 header = """
 0 : Box
-
 """
 
 
@@ -97,13 +96,13 @@ class Map:
 		valid_tile = []
 		for x in range(self.width):
 			for y in range(self.height):
-				if camera_box.CollideRect(Box(Vector2(x * self.res * 16, y * self.res * 16), Vector2(self.res * 32, self.res * 32))):
+				if camera_box.CollideRect(Box(Vector2(x * self.res * TILERESOLUTION, y * self.res * TILERESOLUTION), Vector2(self.res * 32, self.res * 32))):
 					valid_tile.append((x, y))
 		return valid_tile
 
 	def blit(self, screen, camera):
 		for x, y in self.get_on_Screen(camera):
-			self.allowed_tiles[self.map[x][y]].blit(screen, camera.position * -1 + Vector2(self.res * 16 * x, self.res * 16 * y), self.res)
+			self.allowed_tiles[self.map[x][y]].blit(screen, camera.position * -1 + Vector2(self.res * TILERESOLUTION * x, self.res * TILERESOLUTION * y), self.res)
 
 
 class Tile:  # a 16x16 grid
@@ -117,18 +116,18 @@ class Tile:  # a 16x16 grid
 		self.t_right = [elt for elt in columns[-1]]
 
 	def blit(self, screen: py.Surface, position: Vector2, res=25):
-		for x in range(16):
-			for y in range(16):
+		for x in range(TILERESOLUTION):
+			for y in range(TILERESOLUTION):
 				if self.grid[x][y] != 0:
 					screen.blit(Textures[self.grid[x][y]], (position.x() + res * x, position.y() + res * y))
-		py.draw.line(screen, RED, position.tuple(), (position + Vector2(16*res, 0)).tuple(), 2)
-		py.draw.line(screen, RED, position.tuple(), (position + Vector2(0, 16*res)).tuple(), 2)
-		py.draw.line(screen, RED, (position + Vector2(16*res, 0)).tuple(), (position + Vector2(16*res, 16*res)).tuple(), 2)
-		py.draw.line(screen, RED, (position + Vector2(0, 16*res)).tuple(), (position + Vector2(16*res, 16*res)).tuple(), 2)
+		py.draw.line(screen, RED, position.tuple(), (position + Vector2(TILERESOLUTION*res, 0)).tuple(), 2)
+		py.draw.line(screen, RED, position.tuple(), (position + Vector2(0, TILERESOLUTION*res)).tuple(), 2)
+		py.draw.line(screen, RED, (position + Vector2(TILERESOLUTION*res, 0)).tuple(), (position + Vector2(TILERESOLUTION*res, TILERESOLUTION*res)).tuple(), 2)
+		py.draw.line(screen, RED, (position + Vector2(0, TILERESOLUTION*res)).tuple(), (position + Vector2(TILERESOLUTION*res, TILERESOLUTION*res)).tuple(), 2)
 
 	def topCompatible(self, tile):
 		"""est ce que je peux mettre cette tuile au dessus ? """
-		for i in range(1, 15):
+		for i in range(1, TILERESOLUTION-1):
 			if tile.t_bottom[i] == 0 and self.t_top[i] == 0:
 				if tile.t_bottom[i-1] == 0 or tile.t_bottom[i + 1] == 0:
 					return True
@@ -136,7 +135,7 @@ class Tile:  # a 16x16 grid
 
 	def bottomCompatible(self, tile):
 		"""est ce que je peux mettre cette tuile en dessous ? """
-		for i in range(1, 15):
+		for i in range(1, TILERESOLUTION-1):
 			if tile.t_top[i] == 0 and self.t_bottom[i] == 0:
 				if self.t_bottom[i-1] == 0 or self.t_bottom[i+1] == 0:
 					return True
@@ -144,14 +143,14 @@ class Tile:  # a 16x16 grid
 
 	def leftCompatible(self, tile):
 		"""est ce que je peux mettre cette tuile à gauche ? """
-		for i in range(1, 16):
+		for i in range(1, TILERESOLUTION):
 			if tile.t_right[i] == 0 and tile.t_right[i-1] == 0 and self.t_left[i] == 0 and self.t_left[i-1] == 0:
 				return True
 		return False
 
 	def rightCompatible(self, tile):
 		"""est ce que je peux mettre cette tuile à droite ? """
-		for i in range(1, 16):
+		for i in range(1, TILERESOLUTION):
 			if tile.t_left[i] == 0 and tile.t_left[i-1] == 0 and self.t_right[i] == 0 and self.t_right[i-1] == 0:
 				return True
 		return False
@@ -161,9 +160,9 @@ class Tile:  # a 16x16 grid
 
 	def __str__(self):
 		chaine = ""
-		for y in range(16):
+		for y in range(TILERESOLUTION):
 			chaine += "|"
-			for x in range(16):
+			for x in range(TILERESOLUTION):
 				chaine += f" {self.grid[x][y]} |"
 			chaine += "\n"
 		return chaine
@@ -173,6 +172,6 @@ if __name__ == '__main__':
 
 	map = Map(5, 5, *[
 		*[Tile(
-			*[[randint(0, 1) for _ in range(16)] for __ in range(16)]
-		) for _ in range(10)], Tile([1 for i in range(16)] for j in range(16))
+			*[[randint(0, 1) for _ in range(TILERESOLUTION)] for __ in range(TILERESOLUTION)]
+		) for _ in range(10)], Tile([1 for i in range(TILERESOLUTION)] for j in range(TILERESOLUTION))
 	])

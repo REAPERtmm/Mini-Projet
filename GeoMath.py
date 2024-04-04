@@ -167,7 +167,7 @@ class Box:
 
     def CollidePoint(self, point: Vector2) -> bool:
         p = point - self.position
-        return p.x() >= 0 or p.x() <= self.size.x() or p.y() >= 0 or p.y() <= self.size.y()
+        return 0 <= p.x() <= self.size.x() and 0 <= p.y() <= self.size.y()
 
     def blit(self, screen, camera, col=(255, 255, 255)) -> None:
         py.draw.rect(

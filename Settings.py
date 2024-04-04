@@ -9,6 +9,7 @@ WIDTH, HEIGHT = 800, 600
 TITLE = "JEU VACHEMENT COOL"
 GRAVITY = 9.8
 RESOLUTION = 50
+TILERESOLUTION = 16
 
 # SET THE VALUES
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
@@ -22,7 +23,8 @@ Fonts = {
 
 Textures = [
 	None,
-	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/box.png"), (RESOLUTION, RESOLUTION))
+	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/box.png"), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/castle.png"), (RESOLUTION, RESOLUTION)),
 ]
 
 # Color Palette
