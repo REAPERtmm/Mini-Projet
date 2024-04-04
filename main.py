@@ -3,7 +3,7 @@ import pygame
 from Settings import *
 from GameObject import *
 from Map import *
-
+from Menus import *
 
 class Game:
     def __init__(self):
@@ -15,11 +15,10 @@ class Game:
             StaticObject(self, 150, 0, 100, 50, "Platform"),
         ]
 
-        self.map = Map(10, 10, 50, *[
-            Tile(
-              *[[randint(0, 1) for _ in range(16)] for __ in range(16)]
-            ) for _ in range(10)
-          ])
+        self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
+
+        self.main_menu = Menu(self, 50, 50)
+
         self.leftPressed = False
         self.rightPressed = False
         self.up = False
@@ -35,6 +34,9 @@ class Game:
 
     def draw(self):
         self.map.blit(SCREEN, self.camera)
+
+        self.main_menu.blit(SCREEN)
+
         py.display.flip()
 
     def run(self):

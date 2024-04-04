@@ -27,6 +27,13 @@ Textures = [
 	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/castle.png"), (RESOLUTION, RESOLUTION)),
 ]
 
+TILES = [
+	"Tile/tile.tile",
+	"Tile/tile2.tile",
+	"Tile/tile3.tile",
+	"Tile/tile4.tile"
+]
+
 # Color Palette
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
