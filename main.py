@@ -15,13 +15,10 @@ class Game:
             StaticObject(self, 150, 0, 100, 50, "Platform"),
         ]
 
+        self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
+
         self.main_menu = Menu(self, 50, 50)
 
-        self.map = Map(10, 10, 50, *[
-            Tile(
-              *[[randint(0, 1) for _ in range(16)] for __ in range(16)]
-            ) for _ in range(10)
-          ])
         self.leftPressed = False
         self.rightPressed = False
         self.up = False
