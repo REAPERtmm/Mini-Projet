@@ -8,8 +8,7 @@ py.mixer.init()
 WIDTH, HEIGHT = 800, 600
 TITLE = "JEU VACHEMENT COOL"
 GRAVITY = 9.8
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
+RESOLUTION = 50
 
 # SET THE VALUES
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
@@ -21,9 +20,10 @@ Fonts = {
 	"Grand arial": py.font.Font("./Resources/arial.ttf", 25),
 }
 
-Textures = {
-	"Box": py.image.load("Resources/Base pack/Tiles/box.png")
-}
+Textures = [
+	None,
+	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/box.png"), (RESOLUTION, RESOLUTION))
+]
 
 # Color Palette
 WHITE = (255, 255, 255)

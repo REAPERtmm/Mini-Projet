@@ -1,5 +1,8 @@
+import pygame
+
 from Settings import *
 from GameObject import *
+from Map import *
 
 
 class Game:
@@ -12,24 +15,26 @@ class Game:
             StaticObject(self, 150, 0, 100, 50, "Platform"),
         ]
 
+        self.map = Map(10, 10, 50, *[
+            Tile(
+              *[[randint(0, 1) for _ in range(16)] for __ in range(16)]
+            ) for _ in range(10)
+          ])
         self.leftPressed = False
         self.rightPressed = False
+        self.up = False
+        self.down = False
 
-        self.player = Player(self, -50, -50, 50, 75)
-        self.camera = Camera(self, Vector2(0, 0), 2.5, self.player)
+        self.player = Player(self, 0, 0, 50, 75)
+        self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
         self.deltatime = 0
 
     def update(self):
         self.camera.update()
-        for elt in self.ground:
-            elt.update()
-        self.player.update()
 
     def draw(self):
-        for elt in self.ground:
-            elt.blit(SCREEN)
-        self.player.blit(SCREEN)
+        self.map.blit(SCREEN, self.camera)
         py.display.flip()
 
     def run(self):
@@ -44,6 +49,10 @@ class Game:
                 self.player.transform.position.moveX(-10)
             if self.rightPressed:
                 self.player.transform.position.moveX(10)
+            if self.up:
+                self.player.transform.position.moveY(-10)
+            if self.down:
+                self.player.transform.position.moveY(10)
             for event in py.event.get():
                 if event.type == py.QUIT:
                     self.running = False
@@ -52,11 +61,19 @@ class Game:
                         self.leftPressed = False
                     if event.key == py.K_d:
                         self.rightPressed = False
+                    if event.key == py.K_z:
+                        self.up = False
+                    if event.key == py.K_s:
+                        self.down = False
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
                         self.leftPressed = True
                     if event.key == py.K_d:
                         self.rightPressed = True
+                    if event.key == py.K_z:
+                        self.up = True
+                    if event.key == py.K_s:
+                        self.down = True
                     if event.key == py.K_SPACE:
                         self.player.jump()
 
