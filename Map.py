@@ -25,6 +25,7 @@ class Map:
 		currentTile = 0
 		for tile in self.allowed_tiles:
 			self.mapping.append([set(), set(), set(), set()])  # [top, right, bottom, left]
+
 			for i_tile_compared in range(len(self.allowed_tiles)):
 				if tile.topCompatible(self.allowed_tiles[i_tile_compared]):
 					self.mapping[currentTile][0].add(i_tile_compared)
@@ -39,14 +40,15 @@ class Map:
 					self.mapping[currentTile][3].add(i_tile_compared)
 			currentTile += 1
 
+		"""
 		for elt in self.allowed_tiles:
 			print()
 			print(elt)
 
 		for i in range(len(self.allowed_tiles)):
 			print(f"Tile N°{i}")
-			for j in range(4):
-				print(self.mapping[i][j])
+			print(f"Top : {self.mapping[i][0]}\nRight : {self.mapping[i][1]}\nBottom : {self.mapping[i][2]}\nLeft : {self.mapping[i][3]}")
+		"""
 
 		self.map = [[-1 for _ in range(height)] for __ in range(width)]
 		# définir la première
@@ -79,18 +81,19 @@ class Map:
 							has_a_neighbor = True
 						if has_a_neighbor:
 							if len(temp) == 1:
+								print("No Solution !")
 								self.map[x][y] = temp.pop()
 							elif len(temp) == 0:
 								self.map[x][y] = len(self.allowed_tiles) - 1
 							else:
-								print(temp)
 								self.map[x][y] = get_a_element_of_set(temp)
 							remaining -= 1
 
+		"""
 		print("MAP :")
 		for elt in self.map:
 			print(elt)
-
+		"""
 	def get_on_Screen(self, camera):
 		camera_box = Box(camera.position, camera.Dimention())
 		valid_tile = []
@@ -143,15 +146,22 @@ class Tile:  # a 16x16 grid
 
 	def leftCompatible(self, tile):
 		"""est ce que je peux mettre cette tuile à gauche ? """
-		for i in range(1, TILERESOLUTION):
-			if tile.t_right[i] == 0 and tile.t_right[i-1] == 0 and self.t_left[i] == 0 and self.t_left[i-1] == 0:
+		for i in range(1, TILERESOLUTION-1):
+			if (
+					tile.t_right[i] == 0 and tile.t_right[i-1] == 0 and
+					self.t_left[i] == 0 and self.t_left[i-1] == 0 and
+					self.t_left[i+1] != 0 and tile.t_right[i+1] != 0
+			):
 				return True
 		return False
 
 	def rightCompatible(self, tile):
 		"""est ce que je peux mettre cette tuile à droite ? """
-		for i in range(1, TILERESOLUTION):
-			if tile.t_left[i] == 0 and tile.t_left[i-1] == 0 and self.t_right[i] == 0 and self.t_right[i-1] == 0:
+		for i in range(1, TILERESOLUTION-1):
+			if (
+					tile.t_left[i-1] == 0 and tile.t_left[i] == 0 and tile.t_left[i+1] != 0 and
+					self.t_right[i-1] == 0 and self.t_right[i] == 0 and self.t_right[i+1] != 0
+			):
 				return True
 		return False
 
@@ -168,10 +178,22 @@ class Tile:  # a 16x16 grid
 		return chaine
 
 
-if __name__ == '__main__':
+def loadTile(path):
+	Matrix = [
+		[0 for _ in range(TILERESOLUTION)] for __ in range(TILERESOLUTION)
+	]
+	with open(path, "r") as f:
+		y = 0
+		for line in f:
+			l = line.split(",")
+			l[-1] = l[-1].split("\n")[0]
+			for x in range(16):
+				Matrix[x][y] = int(l[x])
+			y += 1
+		f.close()
+	return Tile(*Matrix)
 
-	map = Map(5, 5, *[
-		*[Tile(
-			*[[randint(0, 1) for _ in range(TILERESOLUTION)] for __ in range(TILERESOLUTION)]
-		) for _ in range(10)], Tile([1 for i in range(TILERESOLUTION)] for j in range(TILERESOLUTION))
-	])
+
+if __name__ == '__main__':
+	t = [loadTile(path) for path in TILES]
+	map = Map(5, 5, 50, *t)
