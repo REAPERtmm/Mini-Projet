@@ -39,15 +39,34 @@ class Game:
         if self.tabPressed:
             self.main_menu.blit(SCREEN)
 
+        for i in range(len(self.InvContents)):
+            if self.InvContents[i] == 'Dash':
+                SCREEN.blit(py.image.load("Resources/Godspeed_Soul_Card.webp"), (WIDTH-(200+(100*i)), HEIGHT-250))
+            if self.InvContents[i] == 'Jump+':
+                SCREEN.blit(py.image.load("Resources/Elevate_Soul_Card.webp"), (WIDTH-(200+(100*i)), HEIGHT-250))
+            if self.InvContents[i] == 'Bomb':
+                SCREEN.blit(py.image.load("Resources/Purify_Soul_Card.webp"), (WIDTH-(200+(100*i)), HEIGHT-250))
+
         py.display.flip()
 
+    def inv(self):
+        self.BlueFlow = 0
+        self.WhiteFlow = 0
+        self.RedFlow = 0
+        self.InvContents = []
+        self.CardScale = [0, 0, 0]
+
     def run(self):
+        self.inv()
         while self.running:
             SCREEN.fill(SKY)
             self.deltatime = self.clock.get_time() / 1000
             self.clock.tick(60)
             self.update()
             self.draw()
+           
+                
+            
 
             if self.leftPressed:
                 self.player.transform.position.moveX(-10)
@@ -69,6 +88,37 @@ class Game:
                         self.up = False
                     if event.key == py.K_s:
                         self.down = False
+                    if event.key == py.K_b:
+                        self.BlueFlow += 1
+                        print(self.BlueFlow, self.RedFlow, self.WhiteFlow, self.InvContents, self.CardScale)
+                    if event.key == py.K_r:
+                        self.RedFlow += 1
+                        print(self.BlueFlow, self.RedFlow, self.WhiteFlow, self.InvContents, self.CardScale)
+                    if event.key == py.K_w:
+                        self.WhiteFlow += 1
+                        print(self.BlueFlow, self.RedFlow, self.WhiteFlow, self.InvContents, self.CardScale)
+                    if event.key == py.K_i:
+                        if len(self.InvContents) >= 3:
+                            self.InvContents.pop(0)
+                        self.InvContents.append("Dash")
+                        print(self.BlueFlow, self.RedFlow, self.WhiteFlow, self.InvContents, self.CardScale)
+                    if event.key == py.K_o:
+                        if len(self.InvContents) >= 3:
+                            self.InvContents.pop(0)
+                        self.InvContents.append("Jump+")
+                        print(self.BlueFlow, self.RedFlow, self.WhiteFlow, self.InvContents, self.CardScale)
+                    if event.key == py.K_p:
+                        if len(self.InvContents) >= 3:
+                            self.InvContents.pop(0)
+                        self.InvContents.append("Bomb")
+                        print(self.BlueFlow, self.RedFlow, self.WhiteFlow, self.InvContents, self.CardScale)
+                    if event.key == py.K_1:
+                        pass
+                    if event.key == py.K_2:
+                        pass
+                    if event.key == py.K_3:
+                        pass
+
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
                         self.leftPressed = True
