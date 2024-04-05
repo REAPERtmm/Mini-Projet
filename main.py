@@ -15,7 +15,7 @@ class Game:
             StaticObject(self, 150, 0, 100, 50, "Platform"),
         ]
 
-        self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
+        #self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
 
         self.main_menu = Menu(self, 500, 500)
 
@@ -31,10 +31,16 @@ class Game:
         self.deltatime = 0
 
     def update(self):
+        self.player.update()
+        for elt in self.ground:
+            elt.update()
         self.camera.update()
 
     def draw(self):
-        self.map.blit(SCREEN, self.camera)
+        # self.map.blit(SCREEN, self.camera)
+        self.player.blit(SCREEN)
+        for elt in self.ground:
+            elt.blit(SCREEN)
 
         if self.tabPressed:
             self.main_menu.blit(SCREEN)
