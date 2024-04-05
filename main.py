@@ -17,12 +17,13 @@ class Game:
 
         self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
 
-        self.main_menu = Menu(self, 50, 50)
+        self.main_menu = Menu(self, 500, 500)
 
         self.leftPressed = False
         self.rightPressed = False
         self.up = False
         self.down = False
+        self.tabPressed = False
 
         self.player = Player(self, 0, 0, 50, 75)
         self.camera = Camera(self, Vector2(0, 0), 5, self.player)
@@ -35,7 +36,8 @@ class Game:
     def draw(self):
         self.map.blit(SCREEN, self.camera)
 
-        self.main_menu.blit(SCREEN)
+        if self.tabPressed:
+            self.main_menu.blit(SCREEN)
 
         py.display.flip()
 
@@ -78,6 +80,11 @@ class Game:
                         self.down = True
                     if event.key == py.K_SPACE:
                         self.player.jump()
+                    if event.key == py.K_TAB:
+                        if self.tabPressed:
+                            self.tabPressed = False
+                        else:
+                            self.tabPressed = True
 
 
 g = Game()

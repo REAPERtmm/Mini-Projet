@@ -15,8 +15,8 @@ class Menu:
             screen,
             WHITE,
             (
-                WIDTH//2,
-                HEIGHT//2,
+                WIDTH//2 - self.width//2,
+                HEIGHT//2 - self.height//2,
                 self.width,
                 self.height
             )
