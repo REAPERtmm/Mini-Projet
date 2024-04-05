@@ -46,8 +46,4 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 MAGENTA = (255, 0, 255)
 
-# FONT
-def fontsize(size):
-    font = py.font.SysFont("Arial", size)
-    return font
 
