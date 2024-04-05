@@ -1,8 +1,7 @@
 from Settings import *
 from random import randint
-from typing import List
 from copy import copy
-from GeoMath import *
+from GameObject import *
 
 header = """
 0 : Box
@@ -16,10 +15,10 @@ def get_a_element_of_set(s: set):
 
 
 class Map:
-	def __init__(self, width, height, res, *allowed_tiles):
+	def __init__(self, game, width, height, res, *allowed_tiles):
 		self.res = res
 		self.width, self.height = width, height
-		self.allowed_tiles = list(allowed_tiles)
+		self.allowed_tiles = [Tile(game, allowed_tiles[i]) for i in range(len(allowed_tiles))]
 
 		self.mapping = []
 		currentTile = 0
@@ -103,20 +102,64 @@ class Map:
 					valid_tile.append((x, y))
 		return valid_tile
 
+	def get_physique_on_screen(self, camera):
+		camera_box = Box(camera.position, camera.Dimention())
+		valid_tile = []
+		for x in range(self.width):
+			for y in range(self.height):
+				if camera_box.CollideRect(Box(Vector2(x * self.res * TILERESOLUTION, y * self.res * TILERESOLUTION), Vector2(self.res * 32, self.res * 32))):
+					for tile in self.allowed_tiles[self.map[x][y]].collision:
+						valid_tile.append(tile.get_decal(Vector2(x * TILERESOLUTION * self.res, y * TILERESOLUTION * self.res)))
+		return valid_tile
+
 	def blit(self, screen, camera):
 		for x, y in self.get_on_Screen(camera):
 			self.allowed_tiles[self.map[x][y]].blit(screen, camera.position * -1 + Vector2(self.res * TILERESOLUTION * x, self.res * TILERESOLUTION * y), self.res)
 
 
 class Tile:  # a 16x16 grid
-	def __init__(self, *columns):
-		self.grid = list(columns)
+	def __init__(self, game, path):
+		self.collision = []
+
+		self.grid = [
+			[0 for _ in range(TILERESOLUTION)] for __ in range(TILERESOLUTION)
+		]
+		i = 0
+		with open(path, "r") as f:
+			y = 0
+			index = -1
+			for line in f:
+				index += 1
+				if index < TILERESOLUTION:
+					l = line.split(",")
+					l[-1] = l[-1].split("\n")[0]
+					for x in range(TILERESOLUTION):
+						self.grid[x][y] = int(l[x])
+					y += 1
+				else:
+					if line != "S\n":
+						rect = [int(elt) for elt in line.split(",")]
+						self.collision.append(
+							StaticObject(
+								game,
+								rect[0] * RESOLUTION,
+								rect[1] * RESOLUTION,
+								rect[2] * RESOLUTION,
+								rect[3] * RESOLUTION,
+								f"Object : {id(self)}({i})"
+							)
+						)
+						i += 1
+			f.close()
+
+		print("Tile : ", id(self))
+		print(elt for elt in self.collision)
 
 		# List des tuiles sur chacune des bordures
 		self.t_top = [elt[0] for elt in self.grid]
 		self.t_bottom = [elt[-1] for elt in self.grid]
-		self.t_left = [elt for elt in columns[0]]
-		self.t_right = [elt for elt in columns[-1]]
+		self.t_left = [elt for elt in self.grid[0]]
+		self.t_right = [elt for elt in self.grid[-1]]
 
 	def blit(self, screen: py.Surface, position: Vector2, res=25):
 		for x in range(TILERESOLUTION):
@@ -178,22 +221,7 @@ class Tile:  # a 16x16 grid
 		return chaine
 
 
-def loadTile(path):
-	Matrix = [
-		[0 for _ in range(TILERESOLUTION)] for __ in range(TILERESOLUTION)
-	]
-	with open(path, "r") as f:
-		y = 0
-		for line in f:
-			l = line.split(",")
-			l[-1] = l[-1].split("\n")[0]
-			for x in range(16):
-				Matrix[x][y] = int(l[x])
-			y += 1
-		f.close()
-	return Tile(*Matrix)
-
-
 if __name__ == '__main__':
-	t = [loadTile(path) for path in TILES]
-	map = Map(5, 5, 50, *t)
+	t = Tile("test", Vector2(10, 10), "Tile/tile2343248778288.tile")
+	for elt in t.collision:
+		print(elt.transform.position, elt.transform.size)

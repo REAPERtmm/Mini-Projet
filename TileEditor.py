@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
-file = "" # From This File ("" pour créer un vie)
-SavePath = "" # To This File (Required)
+file = ""  # From This File ("" pour créer un vie)
+SavePath = ""  # To This File (Required)
 
 
 def Save():
@@ -141,22 +141,20 @@ while running:
 	py.display.flip()
 	if py.mouse.get_pressed(3)[0]:
 		x, y = py.mouse.get_pos()
-		if y > HEIGHT - 10:
+		if y > TILESIZE * TILERESOLUTION - 1:
 			pass
-		elif x > 590:
+		elif x > TILESIZE * TILERESOLUTION - 1:
 			for i in range(1, len(Textures)):
 				if Box(Vector2(610 + ((i - 1) % LARGE) * (TILESIZE + 10), 10 + (int((i - 1) / LARGE)) * (TILESIZE + 10)), Vector2(TILESIZE, TILESIZE)).CollidePoint(Vector2(x, y)):
 					selected = i
 					break
 		else:
-			print(x, y)
 			x = int(x / TILESIZE)
 			y = int(y / TILESIZE)
-			print(x, y)
 			Matrix[x][y] = selected
 	if py.mouse.get_pressed(3)[2]:
 		x, y = py.mouse.get_pos()
-		if x > 590 or y > HEIGHT - 10:
+		if x > TILESIZE * TILERESOLUTION - 1 or y > TILESIZE * TILERESOLUTION - 1:
 			pass
 		else:
 			x = int(x / TILESIZE)
@@ -166,16 +164,63 @@ while running:
 		if event.type == py.QUIT:
 			running = False
 
+if SavePath == "":
+	while SavePath == "" or path.exists(SavePath):
+		SavePath = f"Tile/tile{id(Vector2(0, 0))}.tile"
 
-while SavePath == "" or path.exists(SavePath):
-	SavePath = f"Tile/tile{id(Vector2(0, 0))}.tile"
+
+rectangles = []
+
+startAt = 0
+precIsVide = True
+height = 0
+for x in range(TILERESOLUTION):
+	for y in range(TILERESOLUTION):
+		if Matrix[x][y] != 0:
+			if precIsVide:
+				startAt = y
+			height += 1
+			precIsVide = False
+		if Matrix[x][y] == 0 and not precIsVide:
+			rectangles.append((x, startAt, 1, height))
+			height = 0
+			precIsVide = True
+	if height > 0:
+		rectangles.append((x, startAt, 1, y - startAt))
+	precIsVide = True
+
+rectangles2 = []
+current_rect = []
+Found = False
+width = 1
+used = []
+for i in range(len(rectangles)):
+	if i not in used:
+		current_rect = list(rectangles[i])
+		width = 1
+		while True:
+			Found = False
+			for j in range(len(rectangles)):
+				if i != j:
+					if rectangles[j][0] == rectangles[i][0] + width and rectangles[i][1] == rectangles[j][1] and rectangles[j][3] == rectangles[i][3]:
+						used.append(j)
+						Found = True
+						width += 1
+						current_rect[2] += 1
+			if not Found:
+				break
+		rectangles2.append(current_rect)
+
 
 with open(SavePath, "w+") as f:
-	for y in range(16):
-		for x in range(16):
+	for y in range(TILERESOLUTION):
+		for x in range(TILERESOLUTION):
 			f.write(str(Matrix[x][y]))
-			if x == 15:
+			if x == TILERESOLUTION-1:
 				f.write("\n")
 			else:
 				f.write(",")
+	for elt in rectangles2:
+		f.write(f"{elt[0]}, {elt[1]}, {elt[2]}, {elt[3]}\n")
+	f.write("S\n")
 	f.close()
