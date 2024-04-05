@@ -1,9 +1,9 @@
-import pygame
-
 from Settings import *
 from GameObject import *
 from Map import *
 from Menus import *
+from parallax import *
+
 
 class Game:
     def __init__(self):
@@ -29,12 +29,20 @@ class Game:
         self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
         self.deltatime = 0
+        # self.ParaX = parallax(self, width, height)
 
     def update(self):
+        self.player.update()
+        for elt in self.ground:
+            elt.update()
         self.camera.update()
 
+
     def draw(self):
-        self.map.blit(SCREEN, self.camera)
+        # self.map.blit(SCREEN, self.camera)
+        self.player.blit(SCREEN)
+        for elt in self.ground:
+            elt.blit(SCREEN)
 
         if self.tabPressed:
             self.main_menu.blit(SCREEN)
@@ -89,3 +97,4 @@ class Game:
 
 g = Game()
 g.run()
+
