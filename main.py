@@ -80,6 +80,8 @@ class Game:
                         self.down = True
                     if event.key == py.K_SPACE:
                         self.player.jump()
+                    if event.key == py.K_RSHIFT:
+                        self.player.dash()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
                             self.tabPressed = False
