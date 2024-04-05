@@ -17,7 +17,8 @@ class Game:
 
         self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
 
-        self.main_menu = Menu(self, 500, 500)
+        self.MainMenu = Menu(500, 500, WIDTH//2 - 500//2, HEIGHT//2 - 500//2)
+        # self.labelTest = Label(100, 100, 100, WIDTH//2 - 500//2, HEIGHT//2 - 500//2, "YOOO", BLACK)
 
         self.leftPressed = False
         self.rightPressed = False
@@ -37,7 +38,9 @@ class Game:
         self.map.blit(SCREEN, self.camera)
 
         if self.tabPressed:
-            self.main_menu.blit(SCREEN)
+            self.MainMenu.blit(SCREEN)
+
+        # self.labelTest.blit(SCREEN)
 
         py.display.flip()
 
@@ -70,16 +73,17 @@ class Game:
                     if event.key == py.K_s:
                         self.down = False
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_q:
-                        self.leftPressed = True
-                    if event.key == py.K_d:
-                        self.rightPressed = True
-                    if event.key == py.K_z:
-                        self.up = True
-                    if event.key == py.K_s:
-                        self.down = True
-                    if event.key == py.K_SPACE:
-                        self.player.jump()
+                    if not self.tabPressed:
+                        if event.key == py.K_q:
+                            self.leftPressed = True
+                        if event.key == py.K_d:
+                            self.rightPressed = True
+                        if event.key == py.K_z:
+                            self.up = True
+                        if event.key == py.K_s:
+                            self.down = True
+                        if event.key == py.K_SPACE:
+                            self.player.jump()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
                             self.tabPressed = False
