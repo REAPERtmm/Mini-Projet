@@ -76,14 +76,15 @@ class Game:
             self.update()
             self.draw()
 
-            if self.leftPressed:
-                self.player.transform.position.moveX(-10)
-            if self.rightPressed:
-                self.player.transform.position.moveX(10)
-            if self.up:
-                self.player.transform.position.moveY(-10)
-            if self.down:
-                self.player.transform.position.moveY(10)
+            if not self.tabPressed:
+              if self.leftPressed:
+                  self.player.transform.position.moveX(-10)
+              if self.rightPressed:
+                  self.player.transform.position.moveX(10)
+              if self.up:
+                  self.player.transform.position.moveY(-10)
+              if self.down:
+                  self.player.transform.position.moveY(10)
             for event in py.event.get():
                 if event.type == py.QUIT:
                     self.running = False
@@ -97,24 +98,23 @@ class Game:
                     if event.key == py.K_s:
                         self.down = False
                 if event.type == py.KEYDOWN:
-                    if not self.tabPressed:
-                        if event.key == py.K_q:
-                            self.leftPressed = True
-                        if event.key == py.K_d:
-                            self.rightPressed = True
-                        if event.key == py.K_z:
-                            self.up = True
-                        if event.key == py.K_s:
-                            self.down = True
-                        if event.key == py.K_SPACE:
-                            self.player.jump()
+                    if event.key == py.K_q:
+                        self.leftPressed = True
+                    if event.key == py.K_d:
+                        self.rightPressed = True
+                    if event.key == py.K_z:
+                        self.up = True
+                    if event.key == py.K_s:
+                        self.down = True
+                    if event.key == py.K_SPACE:
+                        self.player.jump()
+                    if event.key == py.K_RSHIFT:
+                        self.player.dash()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
                             self.tabPressed = False
                         else:
                             self.tabPressed = True
-
-            # draw world
 
             # get keypresses
             key = py.key.get_pressed()

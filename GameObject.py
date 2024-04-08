@@ -1,3 +1,5 @@
+import pygame
+
 import Events
 from GeoMath import *
 
@@ -164,16 +166,35 @@ class Player(Entity):
     def __init__(self, game, x: float, y: float, w: float, h: float):
         super().__init__(game, x, y, w, h)
         self.CanJump = True
+        self.CanDash = True
 
     def update(self):
         super().update()
         if self.isGrounded:
             self.CanJump = True
+            self.CanDash = True
 
     def jump(self):
         if self.CanJump:
             self.velocity -= Vector2(0, 10)
             self.CanJump = False
+
+    def dash(self):
+        self.CountDash = 0
+        if self.isGrounded:
+            self.CountDash += 1
+        if self.CanDash and self.CountDash > 0:
+            if self.velocity < 0:
+                self.velocity += Vector2(-10, 0)
+                pygame.time.wait(500)
+            if self.velocity.x > 0:
+                self.velocity += Vector2(10, 0)
+                pygame.time.wait(500)
+    
+    def WallJump(self):
+        if self.is
+
+
 
 
 if __name__ == '__main__':
