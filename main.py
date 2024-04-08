@@ -6,15 +6,14 @@ from Menus import *
 from parallax import *
 
 
-
 class Game:
     def __init__(self):
         self.running = True
-        self.ground = [
+        self.spawnpoint: Vector2 = None
+        self.map: Map = None
 
-        ]
-
-        self.map = Map(10, 10, 1, RESOLUTION, *TILES)
+        self.ground = []
+        self.interactible = [StaticObject(self, -1000, 0, 1000, 1000)]
 
         self.inv = Inventory(self)
         self.MainMenu = Menu(self,
@@ -33,28 +32,48 @@ class Game:
                                  "YOOOO", WHITE, BLACK,
                                  self.openmenu)"""
 
+        self.player = Player(self, 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
+        self.loadMap()
+
         self.leftPressed = False
         self.rightPressed = False
         self.up = False
         self.down = False
         self.tabPressed = False
 
-        self.player = Player(self, 0, 0, 50, 75)
         self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
         self.deltatime = 0
         self.ParaX = Parallax(self)
 
+    def loadMap(self):
+        self.map = createMapStartingWith(self, 10, 0)
+
+        firstground = 0
+        for tile in self.map.map[0].t_left:
+            if tile != 0:
+                break
+            firstground += RESOLUTION
+        self.spawnpoint = Vector2(0, firstground - PLAYER_HEIGHT)
+
+        self.player.transform.position = self.spawnpoint.copy()
+
     def update(self):
-        self.player.update()
         self.ground = self.map.get_physique_on_screen(self.camera)
+        for elt in self.interactible:
+            elt.update()
         for elt in self.ground:
             elt.update()
+        self.player.update()
+        if self.player.transform.position.y() > TILETOTALSIZE + 50:
+            self.player.transform.position = self.spawnpoint.copy()
         self.camera.update()
         """self.buttonTest.update()"""
 
     def draw(self):
         self.ParaX.draw_bg(SCREEN)
+        for elt in self.interactible:
+            elt.blit(SCREEN)
         self.map.blit(SCREEN, self.camera)
         self.player.blit(SCREEN)
         py.draw.rect(SCREEN, (50, 25, 5), (0, -self.camera.position.y() + TILERESOLUTION * RESOLUTION, WIDTH, HEIGHT))

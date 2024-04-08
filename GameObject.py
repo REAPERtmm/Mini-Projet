@@ -87,7 +87,7 @@ class PhysicalObject(GameObject):
         self.box_left = Box(self.transform.position + Vector2(-5, height / 2), Vector2(5, height * 2))
         self.box_right = Box(self.transform.position + Vector2(self.transform.size.x(), height / 2), Vector2(5, height * 2))
 
-        for elt in self.game.ground:
+        for elt in self.game.ground + self.game.interactible:
             if id(self) != id(elt) and self.transform.CollideRect(elt.transform):
                 if type(elt) is ReactiveObject and elt.triggerOnColision:
                     elt.Trigger()

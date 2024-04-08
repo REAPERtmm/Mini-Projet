@@ -11,6 +11,11 @@ TITLE = "JEU VACHEMENT COOL"
 GRAVITY = 9.8
 RESOLUTION = 25
 TILERESOLUTION = 32
+TILETOTALSIZE = RESOLUTION * TILERESOLUTION
+
+# Player Values :
+PLAYER_WIDTH = 50
+PLAYER_HEIGHT = 75
 
 # SET THE VALUES
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
@@ -31,7 +36,7 @@ CardImg = [
 Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png"), (64, 64))
 #Ground = py.transform.scale(py.image.load("Resources/ground.png"), (WIDTH, HEIGHT / 10))
 Bg = [
-	py.transform.scale(py.image.load(f"Resources/plx-{i}.png"), (WIDTH * 1.5, HEIGHT * 1.5)) for i in range(1, 6)
+	py.transform.scale(py.image.load(f"Resources/plx-{i}.png"), (int(WIDTH * 1.5), int(HEIGHT * 1.5))) for i in range(1, 6)
 ]
 
 
@@ -42,6 +47,7 @@ Textures = [
 ]
 
 TILES = ["Tile/" + path for path in listdir("./Tile")]
+print(TILES)
 
 # Color Palette
 WHITE = (255, 255, 255)
