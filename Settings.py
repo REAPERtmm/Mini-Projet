@@ -1,4 +1,5 @@
 import pygame as py
+from os import listdir
 
 py.init()
 py.font.init()
@@ -8,8 +9,8 @@ py.mixer.init()
 WIDTH, HEIGHT = 800, 600
 TITLE = "JEU VACHEMENT COOL"
 GRAVITY = 9.8
-RESOLUTION = 50
-TILERESOLUTION = 16
+RESOLUTION = 25
+TILERESOLUTION = 32
 
 # SET THE VALUES
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
@@ -21,18 +22,26 @@ Fonts = {
 	"Grand arial": py.font.Font("./Resources/arial.ttf", 25),
 }
 
+CardImg = [
+	py.transform.scale(py.image.load("Resources/Godspeed_Soul_Card.webp"), (100, 200)),
+	py.transform.scale(py.image.load("Resources/Elevate_Soul_Card.webp"), (100, 200)),
+	py.transform.scale(py.image.load("Resources/Purify_Soul_Card.webp"), (100, 200)),
+]
+
+Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png"), (64, 64))
+#Ground = py.transform.scale(py.image.load("Resources/ground.png"), (WIDTH, HEIGHT / 10))
+Bg = [
+	py.transform.scale(py.image.load(f"Resources/plx-{i}.png"), (WIDTH * 1.5, HEIGHT * 1.5)) for i in range(1, 6)
+]
+
+
 Textures = [
 	None,
 	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/box.png"), (RESOLUTION, RESOLUTION)),
 	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/castle.png"), (RESOLUTION, RESOLUTION)),
 ]
 
-TILES = [
-	"Tile/tile.tile",
-	"Tile/tile2.tile",
-	"Tile/tile3.tile",
-	"Tile/tile4.tile"
-]
+TILES = ["Tile/" + path for path in listdir("./Tile")]
 
 # Color Palette
 WHITE = (255, 255, 255)
@@ -45,4 +54,5 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 MAGENTA = (255, 0, 255)
+
 

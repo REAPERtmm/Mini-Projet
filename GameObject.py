@@ -1,3 +1,5 @@
+import copy
+
 import Events
 from GeoMath import *
 
@@ -11,7 +13,7 @@ class Camera:
         self.speed = speed
 
     def update(self):
-        self.position = Lerp(self.position, self.target.transform.position - self.Dimention()/2 + self.target.transform.size/2, self.game.deltatime * self.speed)
+        self.position = Lerp(self.position, self.target.transform.position - self.Dimention()/2 + self.target.transform.size/2 - Vector2(0, 50), self.game.deltatime * self.speed)
 
     def Dimention(self) -> Vector2:
         return Vector2(self.size * SCREEN.get_width() / SCREEN.get_height(), self.size)
@@ -36,6 +38,10 @@ class StaticObject(GameObject):
         self.name = name
         self.color = (100, 100, 100)
         self.isStatic = True
+
+    def get_decal(self, position: Vector2):
+        c = StaticObject(self.game, self.transform.position.x() + position.x(), self.transform.position.y() + position.y(), self.transform.size.x(), self.transform.size.y())
+        return c
 
     def __str__(self):
         chaine = ""
@@ -99,6 +105,9 @@ class PhysicalObject(GameObject):
                 if check_over and not check_left and not check_right:
                     self.transform.position.y(elt.transform.position.y() + elt.transform.size.y())
                     self.isGrabbingFloor = True
+                    if self.velocity.y() < 0:
+                        self.velocity.y(0)
+
                 if check_right:
                     self.transform.position.x(elt.transform.position.x() - self.transform.size.x())
                     self.isGrabbingRight = True
@@ -164,16 +173,35 @@ class Player(Entity):
     def __init__(self, game, x: float, y: float, w: float, h: float):
         super().__init__(game, x, y, w, h)
         self.CanJump = True
+        self.CanDash = True
 
     def update(self):
         super().update()
         if self.isGrounded:
             self.CanJump = True
+            self.CanDash = True
 
     def jump(self):
         if self.CanJump:
             self.velocity -= Vector2(0, 10)
             self.CanJump = False
+
+    def dash(self):
+        self.CountDash = 0
+        if self.isGrounded:
+            self.CountDash += 1
+        if self.CanDash and self.CountDash > 0:
+            if self.velocity < 0:
+                self.velocity += Vector2(-10, 0)
+                py.time.wait(500)
+            if self.velocity.x > 0:
+                self.velocity += Vector2(10, 0)
+                py.time.wait(500)
+    
+    def WallJump(self):
+        pass
+
+
 
 
 if __name__ == '__main__':
