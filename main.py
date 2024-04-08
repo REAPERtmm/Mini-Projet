@@ -1,9 +1,8 @@
-import pygame
-
 from Settings import *
 from GameObject import *
 from Map import *
 from Menus import *
+
 
 class Game:
     def __init__(self):
