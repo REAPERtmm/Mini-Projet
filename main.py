@@ -1,9 +1,6 @@
 from Inventory import Inventory
-from Settings import *
-from GameObject import *
 from Map import *
 from Menus import *
-from Cards.Card import *
 from parallax import *
 
 
@@ -14,8 +11,7 @@ class Game:
 
         ]
 
-
-        #self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
+        self.map = Map(10, 10, 1, RESOLUTION, *TILES)
 
         self.inv = Inventory(self)
         self.MainMenu = Menu(self,
@@ -44,7 +40,7 @@ class Game:
         self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
         self.deltatime = 0
-        # self.ParaX = parallax(self, width, height)
+        self.ParaX = Parallax(self)
 
     def update(self):
         self.player.update()
@@ -54,15 +50,16 @@ class Game:
         self.camera.update()
         """self.buttonTest.update()"""
 
-
     def draw(self):
+        self.ParaX.draw_bg(SCREEN)
         self.map.blit(SCREEN, self.camera)
         self.player.blit(SCREEN)
+        py.draw.rect(SCREEN, (50, 25, 5), (0, -self.camera.position.y() + TILERESOLUTION * RESOLUTION, WIDTH, HEIGHT))
+        # self.ParaX.draw_ground(SCREEN)
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
         self.inv.draw()
         py.display.flip()
-
 
     def run(self):
         while self.running:
@@ -72,14 +69,10 @@ class Game:
             self.update()
             self.draw()
             if not self.tabPressed:
-              if self.leftPressed:
-                  self.player.transform.position.moveX(-10)
-              if self.rightPressed:
-                  self.player.transform.position.moveX(10)
-              if self.up:
-                  self.player.transform.position.moveY(-10)
-              if self.down:
-                  self.player.transform.position.moveY(10)
+                if self.leftPressed:
+                    self.player.transform.position.moveX(-10)
+                if self.rightPressed:
+                    self.player.transform.position.moveX(10)
             for event in py.event.get():
                 if event.type == py.QUIT:
                     self.running = False
@@ -129,24 +122,6 @@ class Game:
                             self.tabPressed = False
                         else:
                             self.tabPressed = True
-
-
-            # get keypresses
-            key = py.key.get_pressed()
-            if key[py.K_LEFT] and scroll > 0:
-                scroll -= 5
-            if key[py.K_RIGHT] and scroll < 3000:
-                scroll += 5
-
-            # event handlers
-            for event in py.event.get():
-                if event.type == py.QUIT:
-                    run = False
-
-            py.display.update()
-
-            py.quit()
-
 
 g = Game()
 g.run()

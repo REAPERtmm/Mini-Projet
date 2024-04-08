@@ -13,7 +13,7 @@ class Camera:
         self.speed = speed
 
     def update(self):
-        self.position = Lerp(self.position, self.target.transform.position - self.Dimention()/2 + self.target.transform.size/2, self.game.deltatime * self.speed)
+        self.position = Lerp(self.position, self.target.transform.position - self.Dimention()/2 + self.target.transform.size/2 - Vector2(0, 50), self.game.deltatime * self.speed)
 
     def Dimention(self) -> Vector2:
         return Vector2(self.size * SCREEN.get_width() / SCREEN.get_height(), self.size)

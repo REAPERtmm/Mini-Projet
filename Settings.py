@@ -29,6 +29,11 @@ CardImg = [
 ]
 
 Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png"), (64, 64))
+#Ground = py.transform.scale(py.image.load("Resources/ground.png"), (WIDTH, HEIGHT / 10))
+Bg = [
+	py.transform.scale(py.image.load(f"Resources/plx-{i}.png"), (WIDTH * 1.5, HEIGHT * 1.5)) for i in range(1, 6)
+]
+
 
 Textures = [
 	None,

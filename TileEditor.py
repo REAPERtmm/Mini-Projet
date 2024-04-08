@@ -85,10 +85,11 @@ if file != "":
 	with open(file, "r") as f:
 		y = 0
 		for line in f:
-			l = line.split(",")
-			l[-1] = l[-1].split("\n")[0]
-			for x in range(16):
-				Matrix[x][y] = int(l[x])
+			if y < TILERESOLUTION:
+				l = line.split(",")
+				l[-1] = l[-1].split("\n")[0]
+				for x in range(TILERESOLUTION):
+					Matrix[x][y] = int(l[x])
 			y += 1
 		f.close()
 
