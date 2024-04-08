@@ -42,41 +42,41 @@ class Game:
             self.main_menu.blit(SCREEN)
 
         # Calculate card positions
-        card_positions = []
+        CardPosition = []
         for i in range(len(self.InvContents)):
-            card_scale = self.CardScale[i]
-            card_image = None
+            CardScale = self.CardScale[i]
+            CardImage = None
             if self.InvContents[i] == 'Dash':
-                card_image = py.image.load("Resources/Godspeed_Soul_Card.webp")
+                CardImage = py.image.load("Resources/Godspeed_Soul_Card.webp")
             elif self.InvContents[i] == 'Jump+':
-                card_image = py.image.load("Resources/Elevate_Soul_Card.webp")
+                CardImage = py.image.load("Resources/Elevate_Soul_Card.webp")
             elif self.InvContents[i] == 'Bomb':
-                card_image = py.image.load("Resources/Purify_Soul_Card.webp")
+                CardImage = py.image.load("Resources/Purify_Soul_Card.webp")
             
-            if card_image is not None:
-                card_width = int(card_image.get_width() * card_scale)
-                card_height = int(card_image.get_height() * card_scale)
-                card_positions.append((
-                    ((WIDTH - (card_image.get_width() * 3)) - ((card_image.get_width() * -i) - 169) - card_image.get_width()),
-                    (HEIGHT - 10) - card_height
+            if CardImage is not None:
+                CardWidth = int(CardImage.get_width() * CardScale)
+                CardHeight = int(CardImage.get_height() * CardScale)
+                CardPosition.append((
+                    ((WIDTH - (CardImage.get_width() * 3)) - ((CardImage.get_width() * -i) - 169) - CardImage.get_width()),
+                    (HEIGHT - 10) - CardHeight
                 ))
 
         # Draw cards
         for i, (content, scale) in enumerate(zip(self.InvContents, self.CardScale)):
-            card_image = None
+            CardImage = None
             if content == 'Dash':
-                card_image = py.image.load("Resources/Godspeed_Soul_Card.webp")
+                CardImage = py.image.load("Resources/Godspeed_Soul_Card.webp")
             elif content == 'Jump+':
-                card_image = py.image.load("Resources/Elevate_Soul_Card.webp")
+                CardImage = py.image.load("Resources/Elevate_Soul_Card.webp")
             elif content == 'Bomb':
-                card_image = py.image.load("Resources/Purify_Soul_Card.webp")
+                CardImage = py.image.load("Resources/Purify_Soul_Card.webp")
 
-            if card_image is not None:
-                card_width = int(card_image.get_width() * scale)
-                card_height = int(card_image.get_height() * scale)
-                card_image = py.transform.scale(card_image, (card_width, card_height))
-                card_rect = card_image.get_rect(topleft=card_positions[i])
-                SCREEN.blit(card_image, card_rect)
+            if CardImage is not None:
+                CardWidth = int(CardImage.get_width() * scale)
+                CardHeight = int(CardImage.get_height() * scale)
+                CardImage = py.transform.scale(CardImage, (CardWidth, CardHeight))
+                CardRect = CardImage.get_rect(topleft=CardPosition[i])
+                SCREEN.blit(CardImage, CardRect)
 
         ImageB = py.transform.scale(py.image.load("Resources/collectible_fleur.png"), (64, 64))
         tracks = [self.BlueFlow, self.RedFlow, self.WhiteFlow]
