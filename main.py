@@ -94,6 +94,24 @@ class Game:
                         else:
                             self.tabPressed = True
 
+            # draw world
+
+            # get keypresses
+            key = pygame.key.get_pressed()
+            if key[pygame.K_LEFT] and scroll > 0:
+                scroll -= 5
+            if key[pygame.K_RIGHT] and scroll < 3000:
+                scroll += 5
+
+            # event handlers
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+
+            pygame.display.update()
+
+            pygame.quit()
+
 
 g = Game()
 g.run()
