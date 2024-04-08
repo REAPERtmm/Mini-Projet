@@ -41,33 +41,50 @@ class Game:
         if self.tabPressed:
             self.main_menu.blit(SCREEN)
 
+        # Calculate card positions
+        card_positions = []
         for i in range(len(self.InvContents)):
             card_scale = self.CardScale[i]
             card_image = None
             if self.InvContents[i] == 'Dash':
                 card_image = py.image.load("Resources/Godspeed_Soul_Card.webp")
-            if self.InvContents[i] == 'Jump+':
+            elif self.InvContents[i] == 'Jump+':
                 card_image = py.image.load("Resources/Elevate_Soul_Card.webp")
-            if self.InvContents[i] == 'Bomb':
+            elif self.InvContents[i] == 'Bomb':
                 card_image = py.image.load("Resources/Purify_Soul_Card.webp")
+            
             if card_image is not None:
-                card_x = ((WIDTH) - (card_image.get_width() * i)) - card_image.get_width()
-                card_y = (HEIGHT + 20) - card_image.get_height()
                 card_width = int(card_image.get_width() * card_scale)
                 card_height = int(card_image.get_height() * card_scale)
+                card_positions.append((
+                    ((WIDTH - (card_image.get_width() * 3)) - ((card_image.get_width() * -i) - 169) - card_image.get_width()),
+                    (HEIGHT - 10) - card_height
+                ))
+
+        # Draw cards
+        for i, (content, scale) in enumerate(zip(self.InvContents, self.CardScale)):
+            card_image = None
+            if content == 'Dash':
+                card_image = py.image.load("Resources/Godspeed_Soul_Card.webp")
+            elif content == 'Jump+':
+                card_image = py.image.load("Resources/Elevate_Soul_Card.webp")
+            elif content == 'Bomb':
+                card_image = py.image.load("Resources/Purify_Soul_Card.webp")
+
+            if card_image is not None:
+                card_width = int(card_image.get_width() * scale)
+                card_height = int(card_image.get_height() * scale)
                 card_image = py.transform.scale(card_image, (card_width, card_height))
-                card_rect = card_image.get_rect(topleft=(card_x, card_y))
+                card_rect = card_image.get_rect(topleft=card_positions[i])
                 SCREEN.blit(card_image, card_rect)
 
         ImageB = py.transform.scale(py.image.load("Resources/collectible_fleur.png"), (64, 64))
-
         tracks = [self.BlueFlow, self.RedFlow, self.WhiteFlow]
         colors = [(51, 96, 163), (173, 56, 45), (242, 246, 252)]
         for i, (track, color) in enumerate(zip(tracks, colors)):
             track_text = my_font.render(str(track), True, color)
             SCREEN.blit(ImageB, (64, 12 + i * 64))
             SCREEN.blit(track_text, (24, 24 + i * 64))
-                
 
         py.display.flip()
 
@@ -130,11 +147,11 @@ class Game:
                             self.InvContents.pop(0)
                         self.InvContents.append("Bomb")
                     if event.key == py.K_1:
-                        selected_card = 2
+                        selected_card = 0
                     if event.key == py.K_2:
                         selected_card = 1
                     if event.key == py.K_3:
-                        selected_card = 0
+                        selected_card = 2
 
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
