@@ -190,6 +190,9 @@ class Player(Entity):
             if self.velocity.x > 0:
                 self.velocity += Vector2(10, 0)
                 pygame.time.wait(500)
+    
+    def WallJump(self):
+        if self.is
 
 
 
