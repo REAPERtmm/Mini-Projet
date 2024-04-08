@@ -40,12 +40,22 @@ class Game:
             self.main_menu.blit(SCREEN)
 
         for i in range(len(self.InvContents)):
+            card_scale = self.CardScale[i]
+            card_image = None
             if self.InvContents[i] == 'Dash':
-                SCREEN.blit(py.image.load("Resources/Godspeed_Soul_Card.webp"), (WIDTH-(200+(100*i)), HEIGHT-250))
+                card_image = py.image.load("Resources/Godspeed_Soul_Card.webp")
             if self.InvContents[i] == 'Jump+':
-                SCREEN.blit(py.image.load("Resources/Elevate_Soul_Card.webp"), (WIDTH-(200+(100*i)), HEIGHT-250))
+                card_image = py.image.load("Resources/Elevate_Soul_Card.webp")
             if self.InvContents[i] == 'Bomb':
-                SCREEN.blit(py.image.load("Resources/Purify_Soul_Card.webp"), (WIDTH-(200+(100*i)), HEIGHT-250))
+                card_image = py.image.load("Resources/Purify_Soul_Card.webp")
+            if card_image is not None:
+                card_width = int(card_image.get_width() * card_scale)
+                card_height = int(card_image.get_height() * card_scale)
+                card_x = ((WIDTH - 30) - (168 * i)) - 168
+                card_y = (HEIGHT - 30) - 229
+                card_image = py.transform.scale(card_image, (card_width, card_height))
+                card_rect = card_image.get_rect(topleft=(card_x, card_y))
+                SCREEN.blit(card_image, card_rect)
 
         py.display.flip()
 
@@ -57,6 +67,7 @@ class Game:
         self.CardScale = [0, 0, 0]
 
     def run(self):
+        selected_card = 0 
         self.inv()
         while self.running:
             SCREEN.fill(SKY)
@@ -113,11 +124,11 @@ class Game:
                         self.InvContents.append("Bomb")
                         print(self.BlueFlow, self.RedFlow, self.WhiteFlow, self.InvContents, self.CardScale)
                     if event.key == py.K_1:
-                        pass
+                        selected_card = 2
                     if event.key == py.K_2:
-                        pass
+                        selected_card = 1
                     if event.key == py.K_3:
-                        pass
+                        selected_card = 0
 
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
@@ -135,6 +146,11 @@ class Game:
                             self.tabPressed = False
                         else:
                             self.tabPressed = True
+
+            self.CardScale = [1.0, 1.0, 1.0]
+            self.CardScale[selected_card] = 1.1
+
+            
 
 
 g = Game()
