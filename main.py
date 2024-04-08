@@ -1,9 +1,9 @@
-import pygame
-
 from Settings import *
 from GameObject import *
 from Map import *
 from Menus import *
+from parallax import *
+
 
 class Game:
     def __init__(self):
@@ -43,13 +43,21 @@ class Game:
         self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
         self.deltatime = 0
+        # self.ParaX = parallax(self, width, height)
 
     def update(self):
+        self.player.update()
+        for elt in self.ground:
+            elt.update()
         self.camera.update()
         """self.buttonTest.update()"""
 
+
     def draw(self):
-        self.map.blit(SCREEN, self.camera)
+        # self.map.blit(SCREEN, self.camera)
+        self.player.blit(SCREEN)
+        for elt in self.ground:
+            elt.blit(SCREEN)
 
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
@@ -106,6 +114,25 @@ class Game:
                         else:
                             self.tabPressed = True
 
+            # draw world
+
+            # get keypresses
+            key = py.key.get_pressed()
+            if key[py.K_LEFT] and scroll > 0:
+                scroll -= 5
+            if key[py.K_RIGHT] and scroll < 3000:
+                scroll += 5
+
+            # event handlers
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    run = False
+
+            py.display.update()
+
+            py.quit()
+
 
 g = Game()
 g.run()
+
