@@ -21,6 +21,14 @@ Fonts = {
 	"Grand arial": py.font.Font("./Resources/arial.ttf", 25),
 }
 
+CardImg = [
+	py.transform.scale(py.image.load("Resources/Godspeed_Soul_Card.webp"), (100, 200)),
+	py.transform.scale(py.image.load("Resources/Elevate_Soul_Card.webp"), (100, 200)),
+	py.transform.scale(py.image.load("Resources/Purify_Soul_Card.webp"), (100, 200)),
+]
+
+Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png"), (64, 64))
+
 Textures = [
 	None,
 	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/box.png"), (RESOLUTION, RESOLUTION)),
@@ -45,4 +53,5 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 MAGENTA = (255, 0, 255)
+
 
