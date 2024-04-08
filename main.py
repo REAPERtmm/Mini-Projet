@@ -17,7 +17,21 @@ class Game:
 
         self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
 
-        self.main_menu = Menu(self, 500, 500)
+        self.MainMenu = Menu(self,
+                             Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                             Vector2(500, 500),
+                             WHITE)
+
+        """self.labelTest = Label(self,
+                               Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                               Vector2(100, 100),
+                               "YOOOO", BLACK, WHITE)"""
+
+        """self.buttonTest = Button(self,
+                                 Vector2(WIDTH // 2 - 100 // 2, HEIGHT // 2 - 100 // 2),
+                                 Vector2(100, 100),
+                                 "YOOOO", WHITE, BLACK,
+                                 self.openmenu)"""
 
         self.leftPressed = False
         self.rightPressed = False
@@ -32,14 +46,19 @@ class Game:
 
     def update(self):
         self.camera.update()
+        """self.buttonTest.update()"""
 
     def draw(self):
         self.map.blit(SCREEN, self.camera)
 
         if self.tabPressed:
-            self.main_menu.blit(SCREEN)
+            self.MainMenu.blit(SCREEN)
+
+        """self.buttonTest.blit(SCREEN)"""
+        """self.labelTest.blit(SCREEN)"""
 
         py.display.flip()
+
 
     def run(self):
         while self.running:
@@ -70,16 +89,17 @@ class Game:
                     if event.key == py.K_s:
                         self.down = False
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_q:
-                        self.leftPressed = True
-                    if event.key == py.K_d:
-                        self.rightPressed = True
-                    if event.key == py.K_z:
-                        self.up = True
-                    if event.key == py.K_s:
-                        self.down = True
-                    if event.key == py.K_SPACE:
-                        self.player.jump()
+                    if not self.tabPressed:
+                        if event.key == py.K_q:
+                            self.leftPressed = True
+                        if event.key == py.K_d:
+                            self.rightPressed = True
+                        if event.key == py.K_z:
+                            self.up = True
+                        if event.key == py.K_s:
+                            self.down = True
+                        if event.key == py.K_SPACE:
+                            self.player.jump()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
                             self.tabPressed = False
