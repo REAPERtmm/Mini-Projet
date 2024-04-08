@@ -1,4 +1,5 @@
 import pygame
+import time
 
 from Settings import *
 from GameObject import *
@@ -8,6 +9,10 @@ from Menus import *
 class Game:
     def __init__(self):
         self.running = True
+        self.ui_hide_timer = 0
+        self.prev_BlueFlow = 0
+        self.prev_RedFlow = 0
+        self.prev_WhiteFlow = 0
 
         self.ground = [
             StaticObject(self, -200, 200, 400, 100, "Ground"),
@@ -41,8 +46,19 @@ class Game:
         if self.tabPressed:
             self.main_menu.blit(SCREEN)
 
-        # Calculate card positions
         CardPosition = []
+        
+        if (self.BlueFlow != self.prev_BlueFlow or 
+            self.RedFlow != self.prev_RedFlow or 
+            self.WhiteFlow != self.prev_WhiteFlow):
+            self.ui_hide_timer = time.time() 
+            self.hide_ui = False
+        else:
+            if time.time() - self.ui_hide_timer >= 3:
+                self.hide_ui = True
+        self.prev_BlueFlow = self.BlueFlow
+        self.prev_RedFlow = self.RedFlow
+        self.prev_WhiteFlow = self.WhiteFlow
         for i in range(len(self.InvContents)):
             CardScale = self.CardScale[i]
             CardImage = None
@@ -54,14 +70,13 @@ class Game:
                 CardImage = py.image.load("Resources/Purify_Soul_Card.webp")
             
             if CardImage is not None:
-                CardWidth = int(CardImage.get_width() * CardScale)
+                CardWidth = int(CardImage.get_width())
                 CardHeight = int(CardImage.get_height() * CardScale)
                 CardPosition.append((
                     ((WIDTH - (CardImage.get_width() * 3)) - ((CardImage.get_width() * -i) - 169) - CardImage.get_width()),
-                    (HEIGHT - 10) - CardHeight
+                    (HEIGHT + 100) - CardHeight
                 ))
 
-        # Draw cards
         for i, (content, scale) in enumerate(zip(self.InvContents, self.CardScale)):
             CardImage = None
             if content == 'Dash':
@@ -72,19 +87,22 @@ class Game:
                 CardImage = py.image.load("Resources/Purify_Soul_Card.webp")
 
             if CardImage is not None:
-                CardWidth = int(CardImage.get_width() * scale)
+                CardWidth = int(CardImage.get_width())
                 CardHeight = int(CardImage.get_height() * scale)
                 CardImage = py.transform.scale(CardImage, (CardWidth, CardHeight))
                 CardRect = CardImage.get_rect(topleft=CardPosition[i])
                 SCREEN.blit(CardImage, CardRect)
 
+                
+
         ImageB = py.transform.scale(py.image.load("Resources/collectible_fleur.png"), (64, 64))
         tracks = [self.BlueFlow, self.RedFlow, self.WhiteFlow]
         colors = [(51, 96, 163), (173, 56, 45), (242, 246, 252)]
-        for i, (track, color) in enumerate(zip(tracks, colors)):
-            track_text = my_font.render(str(track), True, color)
-            SCREEN.blit(ImageB, (64, 12 + i * 64))
-            SCREEN.blit(track_text, (24, 24 + i * 64))
+        if self.hide_ui == False:
+            for i, (track, color) in enumerate(zip(tracks, colors)):
+                track_text = my_font.render(str(track), True, color)
+                SCREEN.blit(ImageB, (64, 12 + i * 64))
+                SCREEN.blit(track_text, (24, 24 + i * 64))
 
         py.display.flip()
 
@@ -105,9 +123,6 @@ class Game:
             self.update()
             self.draw()
            
-                
-            
-
             if self.leftPressed:
                 self.player.transform.position.moveX(-10)
             if self.rightPressed:
@@ -170,8 +185,8 @@ class Game:
                         else:
                             self.tabPressed = True
 
-            self.CardScale = [0.7, 0.7, 0.7]
-            self.CardScale[selected_card] = 0.9
+            self.CardScale = [0.5, 0.5, 0.5]
+            self.CardScale[selected_card] = 1
 
             
 
