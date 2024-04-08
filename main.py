@@ -3,9 +3,8 @@ from Settings import *
 from GameObject import *
 from Map import *
 from Menus import *
+from Cards.Card import *
 from parallax import *
-
-
 
 class Game:
     def __init__(self):
@@ -16,7 +15,7 @@ class Game:
             StaticObject(self, 150, 0, 100, 50, "Platform"),
         ]
 
-        self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
+        #self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
 
         self.inv = Inventory(self)
         self.MainMenu = Menu(self,
