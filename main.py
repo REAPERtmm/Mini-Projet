@@ -97,20 +97,20 @@ class Game:
             # draw world
 
             # get keypresses
-            key = pygame.key.get_pressed()
-            if key[pygame.K_LEFT] and scroll > 0:
+            key = py.key.get_pressed()
+            if key[py.K_LEFT] and scroll > 0:
                 scroll -= 5
-            if key[pygame.K_RIGHT] and scroll < 3000:
+            if key[py.K_RIGHT] and scroll < 3000:
                 scroll += 5
 
             # event handlers
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+            for event in py.event.get():
+                if event.type == py.QUIT:
                     run = False
 
-            pygame.display.update()
+            py.display.update()
 
-            pygame.quit()
+            py.quit()
 
 
 g = Game()
