@@ -39,6 +39,8 @@ Bg = [
 	py.transform.scale(py.image.load(f"Resources/plx-{i}.png"), (int(WIDTH * 1.5), int(HEIGHT * 1.5))) for i in range(1, 6)
 ]
 
+Trevor = py.transform.scale(py.image.load("Resources/Trevor.png"), (int(472 * TILETOTALSIZE / 281), TILETOTALSIZE))
+
 
 Textures = [
 	None,

@@ -33,8 +33,20 @@ class GameObject:
 
 
 class StaticObject(GameObject):
-    def __init__(self, game, x: float, y: float, w: float, h: float, name: str="StaticObject"):
+    def __init__(self, game, x: float, y: float, w: float, h: float, name: str = "StaticObject", image: py.Surface = None):
+        """
+        :param game: class of the game
+        :param x: x coordinate
+        :param y: y coordinate
+        :param w: width
+        :param h: height
+        :param name: nom (optional)
+        :param image: (optional) image to blit (override the width and height)
+        """
         super().__init__(game, x, y, w, h)
+        self.image = image
+        if self.image is not None:
+            self.transform.size = Vector2(self.image.get_width(), self.image.get_height())
         self.name = name
         self.color = (100, 100, 100)
         self.isStatic = True
@@ -48,6 +60,12 @@ class StaticObject(GameObject):
         chaine += f"----{self.name}----\n"
         chaine += f"position = {self.transform.position}, size = {self.transform.size}"
         return chaine
+
+    def blit(self, screen: py.Surface):
+        if self.image is not None:
+            screen.blit(self.image, (self.transform.position - self.game.camera.position).tuple())
+        else:
+            super().blit(screen)
 
     def update(self):
         super().update()
@@ -80,12 +98,12 @@ class PhysicalObject(GameObject):
         self.isGrabbingRight = False
 
         width = self.transform.size.x() / 3
-        height = self.transform.size.y() / 3
+        height = self.transform.size.y() / 10
 
         self.box_over = Box(self.transform.position + Vector2(width / 2, -5), Vector2(2 * width, 5))
         self.box_under = Box(self.transform.position + Vector2(width / 2, self.transform.size.y()), Vector2(2 * width, 5))
-        self.box_left = Box(self.transform.position + Vector2(-5, height / 2), Vector2(5, height * 2))
-        self.box_right = Box(self.transform.position + Vector2(self.transform.size.x(), height / 2), Vector2(5, height * 2))
+        self.box_left = Box(self.transform.position + Vector2(-5, int(height * 2.5)), Vector2(5, height * 5))
+        self.box_right = Box(self.transform.position + Vector2(self.transform.size.x(), int(height * 2.5)), Vector2(5, height * 5))
 
         for elt in self.game.ground + self.game.interactible:
             if id(self) != id(elt) and self.transform.CollideRect(elt.transform):
@@ -116,7 +134,7 @@ class PhysicalObject(GameObject):
                     self.isGrabbingLeft = True
 
         if not self.isGrounded:
-            self.velocity -= Vector2(0, -GRAVITY) * self.game.deltatime
+            self.velocity -= Vector2(0, -GRAVITY * 2) * self.game.deltatime
         else:
             self.velocity = Vector2(0, 0)
 
@@ -183,7 +201,7 @@ class Player(Entity):
 
     def jump(self):
         if self.CanJump:
-            self.velocity -= Vector2(0, 10)
+            self.velocity -= Vector2(0, 15)
             self.CanJump = False
 
     def dash(self):

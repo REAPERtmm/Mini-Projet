@@ -13,7 +13,7 @@ class Game:
         self.map: Map = None
 
         self.ground = []
-        self.interactible = [StaticObject(self, -1000, 0, 1000, 1000)]
+        self.interactible = [StaticObject(self, -Trevor.get_width(), 0, 1000, 1000, "Trevor", Trevor)]
 
         self.inv = Inventory(self)
         self.MainMenu = Menu(self,
@@ -60,8 +60,7 @@ class Game:
 
     def update(self):
         self.ground = self.map.get_physique_on_screen(self.camera)
-        for elt in self.interactible:
-            elt.update()
+        self.interactible[0].transform.position.moveX(self.deltatime * 10)
         for elt in self.ground:
             elt.update()
         self.player.update()
@@ -76,7 +75,10 @@ class Game:
             elt.blit(SCREEN)
         self.map.blit(SCREEN, self.camera)
         self.player.blit(SCREEN)
-        py.draw.rect(SCREEN, (50, 25, 5), (0, -self.camera.position.y() + TILERESOLUTION * RESOLUTION, WIDTH, HEIGHT))
+        py.draw.rect(SCREEN, (50, 25, 5), (0, TILETOTALSIZE - self.camera.position.y(), WIDTH, HEIGHT))
+        Xpos = self.interactible[0].transform.position.x() - self.camera.position.x() + self.interactible[0].transform.size.x()
+        print(Xpos)
+        py.draw.line(SCREEN, (255, 0, 0), (Xpos, 0), (Xpos, TILETOTALSIZE))
         # self.ParaX.draw_ground(SCREEN)
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
