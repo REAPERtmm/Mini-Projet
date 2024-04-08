@@ -1,22 +1,37 @@
 from Settings import *
 from GameObject import *
+from Inventory import Inventory
 from Map import *
 from Menus import *
+from parallax import *
+
 
 
 class Game:
     def __init__(self):
         self.running = True
-
         self.ground = [
-            StaticObject(self, -200, 200, 400, 100, "Ground"),
-            StaticObject(self, 200, 100, 100, 200, "Wall"),
-            StaticObject(self, 150, 0, 100, 50, "Platform"),
+
         ]
 
-        self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
+        self.map = Map(10, 10, 1, RESOLUTION, *TILES)
 
-        self.main_menu = Menu(self, 500, 500)
+        self.inv = Inventory(self)
+        self.MainMenu = Menu(self,
+                             Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                             Vector2(500, 500),
+                             WHITE)
+
+        """self.labelTest = Label(self,
+                               Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                               Vector2(100, 100),
+                               "YOOOO", BLACK, WHITE)"""
+
+        """self.buttonTest = Button(self,
+                                 Vector2(WIDTH // 2 - 100 // 2, HEIGHT // 2 - 100 // 2),
+                                 Vector2(100, 100),
+                                 "YOOOO", WHITE, BLACK,
+                                 self.openmenu)"""
 
         self.leftPressed = False
         self.rightPressed = False
@@ -28,16 +43,25 @@ class Game:
         self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
         self.deltatime = 0
+        self.ParaX = Parallax(self)
 
     def update(self):
+        self.player.update()
+        self.ground = self.map.get_physique_on_screen(self.camera)
+        for elt in self.ground:
+            elt.update()
         self.camera.update()
+        """self.buttonTest.update()"""
 
     def draw(self):
+        self.ParaX.draw_bg(SCREEN)
         self.map.blit(SCREEN, self.camera)
-
+        self.player.blit(SCREEN)
+        py.draw.rect(SCREEN, (50, 25, 5), (0, -self.camera.position.y() + TILERESOLUTION * RESOLUTION, WIDTH, HEIGHT))
+        # self.ParaX.draw_ground(SCREEN)
         if self.tabPressed:
-            self.main_menu.blit(SCREEN)
-
+            self.MainMenu.blit(SCREEN)
+        self.inv.draw()
         py.display.flip()
 
     def run(self):
@@ -47,15 +71,11 @@ class Game:
             self.clock.tick(60)
             self.update()
             self.draw()
-
-            if self.leftPressed:
-                self.player.transform.position.moveX(-10)
-            if self.rightPressed:
-                self.player.transform.position.moveX(10)
-            if self.up:
-                self.player.transform.position.moveY(-10)
-            if self.down:
-                self.player.transform.position.moveY(10)
+            if not self.tabPressed:
+                if self.leftPressed:
+                    self.player.transform.position.moveX(-10)
+                if self.rightPressed:
+                    self.player.transform.position.moveX(10)
             for event in py.event.get():
                 if event.type == py.QUIT:
                     self.running = False
@@ -68,6 +88,25 @@ class Game:
                         self.up = False
                     if event.key == py.K_s:
                         self.down = False
+                    if event.key == py.K_b:
+                        self.inv.increaseBlue()
+                    if event.key == py.K_r:
+                        self.inv.increaseRed()
+                    if event.key == py.K_w:
+                        self.inv.increaseWhite()
+                    if event.key == py.K_i:
+                        self.inv.select(2)
+                    if event.key == py.K_o:
+                        self.inv.select(1)
+                    if event.key == py.K_p:
+                        self.inv.select(0)
+                    if event.key == py.K_1:
+                        self.inv.selected_card = 0
+                    if event.key == py.K_2:
+                        self.inv.selected_card = 1
+                    if event.key == py.K_3:
+                        self.inv.selected_card = 2
+
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
                         self.leftPressed = True
@@ -79,12 +118,14 @@ class Game:
                         self.down = True
                     if event.key == py.K_SPACE:
                         self.player.jump()
+                    if event.key == py.K_RSHIFT:
+                        self.player.dash()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
                             self.tabPressed = False
                         else:
                             self.tabPressed = True
 
-
 g = Game()
 g.run()
+
