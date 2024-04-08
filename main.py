@@ -6,14 +6,14 @@ from Menus import *
 from Cards.Card import *
 from parallax import *
 
+
 class Game:
     def __init__(self):
         self.running = True
         self.ground = [
-            StaticObject(self, -200, 200, 400, 100, "Ground"),
-            StaticObject(self, 200, 100, 100, 200, "Wall"),
-            StaticObject(self, 150, 0, 100, 50, "Platform"),
+
         ]
+
 
         #self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
 
@@ -48,6 +48,7 @@ class Game:
 
     def update(self):
         self.player.update()
+        self.ground = self.map.get_physique_on_screen(self.camera)
         for elt in self.ground:
             elt.update()
         self.camera.update()
@@ -55,11 +56,8 @@ class Game:
 
 
     def draw(self):
-        # self.map.blit(SCREEN, self.camera)
+        self.map.blit(SCREEN, self.camera)
         self.player.blit(SCREEN)
-        for elt in self.ground:
-            elt.blit(SCREEN)
-
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
         self.inv.draw()

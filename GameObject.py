@@ -1,4 +1,4 @@
-import pygame
+import copy
 
 import Events
 from GeoMath import *
@@ -38,6 +38,10 @@ class StaticObject(GameObject):
         self.name = name
         self.color = (100, 100, 100)
         self.isStatic = True
+
+    def get_decal(self, position: Vector2):
+        c = StaticObject(self.game, self.transform.position.x() + position.x(), self.transform.position.y() + position.y(), self.transform.size.x(), self.transform.size.y())
+        return c
 
     def __str__(self):
         chaine = ""
@@ -101,6 +105,9 @@ class PhysicalObject(GameObject):
                 if check_over and not check_left and not check_right:
                     self.transform.position.y(elt.transform.position.y() + elt.transform.size.y())
                     self.isGrabbingFloor = True
+                    if self.velocity.y() < 0:
+                        self.velocity.y(0)
+
                 if check_right:
                     self.transform.position.x(elt.transform.position.x() - self.transform.size.x())
                     self.isGrabbingRight = True
@@ -186,13 +193,13 @@ class Player(Entity):
         if self.CanDash and self.CountDash > 0:
             if self.velocity < 0:
                 self.velocity += Vector2(-10, 0)
-                pygame.time.wait(500)
+                py.time.wait(500)
             if self.velocity.x > 0:
                 self.velocity += Vector2(10, 0)
-                pygame.time.wait(500)
+                py.time.wait(500)
     
     def WallJump(self):
-        if self.is
+        pass
 
 
 

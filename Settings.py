@@ -1,4 +1,5 @@
 import pygame as py
+from os import listdir
 
 py.init()
 py.font.init()
@@ -8,8 +9,8 @@ py.mixer.init()
 WIDTH, HEIGHT = 800, 600
 TITLE = "JEU VACHEMENT COOL"
 GRAVITY = 9.8
-RESOLUTION = 50
-TILERESOLUTION = 16
+RESOLUTION = 25
+TILERESOLUTION = 32
 
 # SET THE VALUES
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
@@ -35,12 +36,7 @@ Textures = [
 	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/castle.png"), (RESOLUTION, RESOLUTION)),
 ]
 
-TILES = [
-	"Tile/tile.tile",
-	"Tile/tile2.tile",
-	"Tile/tile3.tile",
-	"Tile/tile4.tile"
-]
+TILES = ["Tile/" + path for path in listdir("./Tile")]
 
 # Color Palette
 WHITE = (255, 255, 255)
