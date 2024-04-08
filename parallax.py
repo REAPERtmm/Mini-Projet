@@ -5,6 +5,19 @@ from GameObject import *
 from Map import *
 from Menus import *
 
+#define game variables
+scroll = 0
+
+ground_image = pygame.image.load("ground.png").convert_alpha()
+ground_width = ground_image.get_width()
+ground_height = ground_image.get_height()
+
+bg_images = []
+for i in range(1, 6):
+  bg_image = pygame.image.load(f"plx-{i}.png").convert_alpha()
+  bg_images.append(bg_image)
+bg_width = bg_images[0].get_width()
+
 class parallax:
     def __init__(self):
 
