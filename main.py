@@ -1,3 +1,4 @@
+from Inventory import Inventory
 from Settings import *
 from GameObject import *
 from Map import *
@@ -5,10 +6,10 @@ from Menus import *
 from parallax import *
 
 
+
 class Game:
     def __init__(self):
         self.running = True
-
         self.ground = [
             StaticObject(self, -200, 200, 400, 100, "Ground"),
             StaticObject(self, 200, 100, 100, 200, "Wall"),
@@ -17,6 +18,7 @@ class Game:
 
         self.map = Map(10, 1, 50, *[loadTile(path) for path in TILES])
 
+        self.inv = Inventory(self)
         self.MainMenu = Menu(self,
                              Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
                              Vector2(500, 500),
@@ -61,10 +63,7 @@ class Game:
 
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
-
-        """self.buttonTest.blit(SCREEN)"""
-        """self.labelTest.blit(SCREEN)"""
-
+        self.inv.draw()
         py.display.flip()
 
 
@@ -75,7 +74,6 @@ class Game:
             self.clock.tick(60)
             self.update()
             self.draw()
-
             if not self.tabPressed:
               if self.leftPressed:
                   self.player.transform.position.moveX(-10)
@@ -97,6 +95,25 @@ class Game:
                         self.up = False
                     if event.key == py.K_s:
                         self.down = False
+                    if event.key == py.K_b:
+                        self.inv.increaseBlue()
+                    if event.key == py.K_r:
+                        self.inv.increaseRed()
+                    if event.key == py.K_w:
+                        self.inv.increaseWhite()
+                    if event.key == py.K_i:
+                        self.inv.select(2)
+                    if event.key == py.K_o:
+                        self.inv.select(1)
+                    if event.key == py.K_p:
+                        self.inv.select(0)
+                    if event.key == py.K_1:
+                        self.inv.selected_card = 0
+                    if event.key == py.K_2:
+                        self.inv.selected_card = 1
+                    if event.key == py.K_3:
+                        self.inv.selected_card = 2
+
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
                         self.leftPressed = True
@@ -115,6 +132,7 @@ class Game:
                             self.tabPressed = False
                         else:
                             self.tabPressed = True
+
 
             # get keypresses
             key = py.key.get_pressed()
