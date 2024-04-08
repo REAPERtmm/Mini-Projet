@@ -1,4 +1,4 @@
-import Card
+from Card import *
 
 class DashCard(Card):
     
@@ -8,7 +8,7 @@ class DashCard(Card):
         cdOnDash = 1.0
         #On va utiliser isGrounded mais qui sera plutôt sur le joueur
 
-    # def Dash(self):
-    #     while(self.isDash == False):
-    #         if ('''isGrounded = False''' )
+    def Dash(self):
+         while(self.isDash == False):
+            if ('''isGrounded = False''' )
 
