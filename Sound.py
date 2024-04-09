@@ -15,20 +15,15 @@ class Sound:
         self.running = True
         
     def ShamanVoice(self):
-        # Generate a random index for the dialogue sound file
         filedecider = randint(1, 17)
-        
-        # Construct the file path based on the random index
         filename = 'SoundFiles/ShamanMP3-{:02d}.mp3'.format(filedecider)
-        
-        # Load the dialogue sound
         dialogue_sound = py.mixer.Sound(filename)
-        
-        # Create a sound channel for dialogue
         dialogue_channel = py.mixer.Channel(0)
-        
-        # Play the dialogue sound in a loop
         dialogue_channel.play(dialogue_sound, loops=-1)
 
     def ShamanVoiceStop(self):
         py.mixer.Channel(0).stop()
+
+    def PlayMenuSwap(self):
+        PlaySound = py.mixer.Sound("SoundFiles/MenuSwapPercLighten.wav")
+        py.mixer.Sound.play(PlaySound)

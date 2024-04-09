@@ -3,6 +3,7 @@ from Map import *
 from Menus import *
 from parallax import *
 from Events import *
+from Sound import *
 
 
 def checkpoints(self):
@@ -24,6 +25,7 @@ class Game:
         self.running = True
         self.spawnpoint: Vector2 = None
         self.map: Map = None
+        self.sounds = Sound(self)
 
         self.ground = []
         self.interactible = [StaticObject(self, -Trevor.get_width(), 0, 1000, 1000, "Trevor", Trevor)]
@@ -157,10 +159,15 @@ class Game:
                         self.inv.increaseRed()
                     if event.key == py.K_1:
                         self.inv.select("Bomb")
+                        self.sounds.ShamanVoice()
                     if event.key == py.K_2:
                         self.inv.select("Jump+")
+                        self.sounds.ShamanVoiceStop()
+                        self.sounds.PlayMenuSwap()
                     if event.key == py.K_3:
                         self.inv.select("Dash")
+                        self.sounds.ShamanVoiceStop()
+                        self.sounds.PlayMenuSwap()
 
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
