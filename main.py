@@ -16,21 +16,47 @@ class Game:
         self.interactible = [StaticObject(self, -Trevor.get_width(), 0, 1000, 1000, "Trevor", Trevor)]
 
         self.inv = Inventory(self)
-        self.MainMenu = Menu(self,
-                             Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
-                             Vector2(500, 500),
-                             WHITE)
+        self.MainMenu = Menu(
+            self,
+            Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+            Vector2(500, 500),
+            WHITE,
+            Frame(
+                self,
+                Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                Button(
+                    self,
+                    Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                    Vector2(75, 75),
+                    "YOOO",
+                    RED,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(50, 50),
+                    "YOOO",
+                    GREEN,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(50, 50),
+                    "YOOO",
+                    BLUE,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                wrap=2,
+                gap_x=5,
+                gap_y=5
+            )
+        )
 
-        """self.labelTest = Label(self,
-                               Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
-                               Vector2(100, 100),
-                               "YOOOO", BLACK, WHITE)"""
-
-        """self.buttonTest = Button(self,
-                                 Vector2(WIDTH // 2 - 100 // 2, HEIGHT // 2 - 100 // 2),
-                                 Vector2(100, 100),
-                                 "YOOOO", WHITE, BLACK,
-                                 self.openmenu)"""
 
         self.player = Player(self, 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
         self.loadMap()
@@ -67,7 +93,6 @@ class Game:
         if self.player.transform.position.y() > TILETOTALSIZE + 50:
             self.player.transform.position = self.spawnpoint.copy()
         self.camera.update()
-        """self.buttonTest.update()"""
 
     def draw(self):
         self.ParaX.draw_bg(SCREEN)
