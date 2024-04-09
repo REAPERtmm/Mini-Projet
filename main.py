@@ -19,6 +19,10 @@ def game_over(self):
     print("Game Over! Score:")
 
 
+def btn_play(self):
+    self.tabPressed = False
+
+
 class Game:
     def __init__(self):
         self.running = True
@@ -36,42 +40,53 @@ class Game:
             Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
             Vector2(500, 500),
             WHITE,
+            Label(
+                self,
+                Vector2(WIDTH//2 - 300//2, HEIGHT//2 - 400//2),
+                Vector2(300, 50),
+                "PAUSE",
+                BLACK,
+                WHITE,
+                "Grand arial"
+            ),
             Frame(
                 self,
-                Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                Vector2(WIDTH//2 - 300//2, HEIGHT//2 - 200//2),
                 Button(
                     self,
-                    Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
-                    Vector2(75, 75),
-                    "YOOO",
+                    Vector2(0, 0),
+                    Vector2(300, 50),
+                    "Jouer",
                     RED,
                     BLACK,
-                    lambda: print("test")
+                    "Grand arial",
+                    btn_play(self)
                 ),
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(50, 50),
-                    "YOOO",
+                    Vector2(300, 50),
+                    "Paramètres",
                     GREEN,
                     BLACK,
+                    "Grand arial",
                     lambda: print("test")
                 ),
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(50, 50),
-                    "YOOO",
+                    Vector2(300, 50),
+                    "Quitter",
                     BLUE,
                     BLACK,
+                    "Grand arial",
                     lambda: print("test")
                 ),
-                wrap=2,
-                gap_x=5,
-                gap_y=5
+                wrap=1,
+                gap_x=50,
+                gap_y=50
             )
         )
-
 
         self.player = Player(self, 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
         self.loadMap()

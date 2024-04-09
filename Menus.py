@@ -34,7 +34,6 @@ class Widget:
         self.size = size
         self.position = position
 
-
     def update(self):
         pass
 
@@ -55,14 +54,14 @@ class Rectangle(Widget):
 
 
 class Label:
-    def __init__(self, game, position: Vector2, size: Vector2, text: str, color, text_color):
+    def __init__(self, game, position: Vector2, size: Vector2, text: str, color, text_color, font_name: str):
         self.game = game
         self.position = position
         self.size = size
         self.text = text
         self.color = color
         self.text_color = text_color
-        self.font = Fonts["arial"].render(self.text, True, text_color)
+        self.font = Fonts[font_name].render(self.text, True, text_color)
 
     def update(self):
         pass
@@ -83,8 +82,8 @@ class Label:
 
 
 class Button(Label):
-    def __init__(self, game, position: Vector2, size: Vector2, text: str, color, text_color, callback):
-        super().__init__(game, position, size, text, color, text_color)
+    def __init__(self, game, position: Vector2, size: Vector2, text: str, color, text_color, font_name, callback):
+        super().__init__(game, position, size, text, color, text_color, font_name)
         self.callback = callback
 
     def update(self):
@@ -125,5 +124,3 @@ class Frame(Widget):
                 y_align += max_height + self.gap_y
 
             self.widget[i].blit(screen)
-
-
