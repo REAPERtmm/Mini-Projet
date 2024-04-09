@@ -2,11 +2,12 @@ from GeoMath import *
 
 
 class Menu:
-    def __init__(self, game, position: Vector2, size: Vector2, color):
+    def __init__(self, game, position: Vector2, size: Vector2, color, *widget):
         self.game = game
         self.size = size
         self.position = position
         self.color = color
+        self.widget = list(widget)
 
     def update(self):
         pass
@@ -22,6 +23,9 @@ class Menu:
                 self.size.y()
             )
         )
+
+        for widget in self.widget:
+            widget.blit(screen)
 
 
 class Widget:
@@ -90,3 +94,36 @@ class Button(Label):
 
     def blit(self, screen):
         super().blit(screen)
+
+
+class Frame(Widget):
+    def __init__(self, game, position: Vector2, *widget, wrap=0, gap_x=0, gap_y=0):
+        super().__init__(game, position, Vector2(0, 0))
+        self.widget = list(widget)
+        self.wrap = wrap
+        self.gap_x = gap_x
+        self.gap_y = gap_y
+
+    def update(self):
+        for w in self.widget:
+            w.self.update()
+
+    def blit(self, screen):
+        x_align = self.position.x()
+        y_align = self.position.y()
+        max_height = 0
+        for i in range(len(self.widget)):
+            if self.widget[i].size.y() > max_height:
+                max_height = self.widget[i].size.y()
+
+            self.widget[i].position.y(y_align)
+            self.widget[i].position.x(x_align)
+            x_align += self.widget[i].size.x() + self.gap_x
+
+            if self.wrap > 0 and i % self.wrap == self.wrap - 1:
+                x_align = self.position.x()
+                y_align += max_height + self.gap_y
+
+            self.widget[i].blit(screen)
+
+

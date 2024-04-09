@@ -16,6 +16,9 @@ class Vector2:
     def _UpdateData(self):
         self.magnitude = sqrt(self._x ** 2 + self._y ** 2)
 
+    def copy(self):
+        return Vector2(self._x, self._y)
+
     def moveX(self, dx: float) -> None:
         self._x += dx
         self._UpdateData()
