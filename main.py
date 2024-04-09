@@ -118,7 +118,7 @@ class Game:
                         self.down = True
                     if event.key == py.K_SPACE:
                         self.player.jump()
-                    if event.key == py.K_RSHIFT:
+                    if event.key == py.K_LSHIFT:
                         self.player.dash()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
