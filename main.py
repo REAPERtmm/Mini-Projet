@@ -144,7 +144,7 @@ class Game:
             self.draw()
 
             self.soundTimer += self.deltatime
-            if self.soundflag == True and self.soundTimer > 0.25:
+            if self.soundflag == True and self.soundTimer > 0.15:
                 self.soundTimer = 0
                 self.sounds.ShamanVoice(randint(1, 17))
 
