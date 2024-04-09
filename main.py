@@ -133,6 +133,7 @@ class Game:
         py.display.flip()
 
     def run(self):
+        self.sounds.ThemeMusic()
         self.soundflag = False
         self.soundTimer = 0
         while self.running:
@@ -161,8 +162,10 @@ class Game:
                 if event.type == py.KEYUP:
                     if event.key == py.K_q:
                         self.leftPressed = False
+                        self.sounds.EffectStop()
                     if event.key == py.K_d:
                         self.rightPressed = False
+                        self.sounds.EffectStop()
                     if event.key == py.K_r:
                         self.inv.increaseRed()
                     if event.key == py.K_1:
@@ -181,8 +184,10 @@ class Game:
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
                         self.leftPressed = True
+                        self.sounds.Walking()
                     if event.key == py.K_d:
                         self.rightPressed = True
+                        self.sounds.Walking()
                     if event.key == py.K_SPACE:
                         self.player.jump()
                     if event.key == py.K_LSHIFT:
