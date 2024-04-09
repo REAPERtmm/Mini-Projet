@@ -61,16 +61,14 @@ browse_but2.grid(row=0, column=2)
 
 button.grid(row=2, column=0)
 
-window.mainloop()
+All = False
 
-from os import path
-from Settings import *
+if not All:
+	window.mainloop()
+
 from GeoMath import *
 
-print(file)
-print(SavePath)
-
-running = True
+running = not All
 
 TILESIZE = int(600 / TILERESOLUTION)
 
@@ -165,63 +163,141 @@ while running:
 		if event.type == py.QUIT:
 			running = False
 
-if SavePath == "":
-	while SavePath == "" or path.exists(SavePath):
-		SavePath = f"Tile/tile{id(Vector2(0, 0))}.tile"
 
+if All:
+	for elt in TILES:
+		Matrix = [
+			[0 for _ in range(TILERESOLUTION)] for __ in range(TILERESOLUTION)
+		]
 
-rectangles = []
+		with open(elt, "r") as f:
+			y = 0
+			for line in f:
+				if y < TILERESOLUTION:
+					l = line.split(",")
+					l[-1] = l[-1].split("\n")[0]
+					for x in range(TILERESOLUTION):
+						Matrix[x][y] = int(l[x])
+				y += 1
+			f.close()
 
-startAt = 0
-precIsVide = True
-height = 0
-for x in range(TILERESOLUTION):
-	for y in range(TILERESOLUTION):
-		if Matrix[x][y] != 0:
-			if precIsVide:
-				startAt = y
-			height += 1
-			precIsVide = False
-		if Matrix[x][y] == 0 and not precIsVide:
-			rectangles.append((x, startAt, 1, height))
-			height = 0
-			precIsVide = True
-	if height > 0:
-		rectangles.append((x, startAt, 1, y - startAt))
-	precIsVide = True
+		rectangles = []
 
-rectangles2 = []
-current_rect = []
-Found = False
-width = 1
-used = []
-for i in range(len(rectangles)):
-	if i not in used:
-		current_rect = list(rectangles[i])
-		width = 1
-		while True:
-			Found = False
-			for j in range(len(rectangles)):
-				if i != j:
-					if rectangles[j][0] == rectangles[i][0] + width and rectangles[i][1] == rectangles[j][1] and rectangles[j][3] == rectangles[i][3]:
-						used.append(j)
-						Found = True
-						width += 1
-						current_rect[2] += 1
-			if not Found:
-				break
-		rectangles2.append(current_rect)
-
-
-with open(SavePath, "w+") as f:
-	for y in range(TILERESOLUTION):
+		startAt = 0
+		precIsVide = True
+		height = 0
 		for x in range(TILERESOLUTION):
-			f.write(str(Matrix[x][y]))
-			if x == TILERESOLUTION-1:
-				f.write("\n")
-			else:
-				f.write(",")
-	for elt in rectangles2:
-		f.write(f"{elt[0]}, {elt[1]}, {elt[2]}, {elt[3]}\n")
-	f.write("S\n")
-	f.close()
+			for y in range(TILERESOLUTION):
+				if Matrix[x][y] != 0:
+					if precIsVide:
+						startAt = y
+					height += 1
+					precIsVide = False
+				if Matrix[x][y] == 0 and not precIsVide:
+					rectangles.append((x, startAt, 1, height))
+					height = 0
+					precIsVide = True
+			if height > 0:
+				rectangles.append((x, startAt, 1, y - startAt))
+			precIsVide = True
+			height = 0
+			startAt = 0
+
+		rectangles2 = []
+		current_rect = []
+		Found = False
+		width = 1
+		used = []
+		for i in range(len(rectangles)):
+			if i not in used:
+				current_rect = list(rectangles[i])
+				width = 1
+				while True:
+					Found = False
+					for j in range(len(rectangles)):
+						if i != j:
+							if rectangles[j][0] == rectangles[i][0] + width and rectangles[i][1] == rectangles[j][1] and \
+									rectangles[j][3] == rectangles[i][3]:
+								used.append(j)
+								Found = True
+								width += 1
+								current_rect[2] += 1
+					if not Found:
+						break
+				rectangles2.append(current_rect)
+
+		SavePath = elt
+		with open(SavePath, "w+") as f:
+			for y in range(TILERESOLUTION):
+				for x in range(TILERESOLUTION):
+					f.write(str(Matrix[x][y]))
+					if x == TILERESOLUTION - 1:
+						f.write("\n")
+					else:
+						f.write(",")
+			for elt in rectangles2:
+				f.write(f"{elt[0]}, {elt[1]}, {elt[2]}, {elt[3]}\n")
+			f.write("S\n")
+			f.close()
+else:
+	if SavePath == "":
+		while SavePath == "" or path.exists(SavePath):
+			SavePath = f"Tile/tile{id(Vector2(0, 0))}.tile"
+
+	rectangles = []
+
+	startAt = 0
+	precIsVide = True
+	height = 0
+	for x in range(TILERESOLUTION):
+		for y in range(TILERESOLUTION):
+			if Matrix[x][y] != 0:
+				if precIsVide:
+					startAt = y
+				height += 1
+				precIsVide = False
+			if Matrix[x][y] == 0 and not precIsVide:
+				rectangles.append((x, startAt, 1, height))
+				height = 0
+				precIsVide = True
+		if height > 0:
+			rectangles.append((x, startAt, 1, y - startAt))
+		precIsVide = True
+		height = 0
+		startAt = 0
+
+	rectangles2 = []
+	current_rect = []
+	Found = False
+	width = 1
+	used = []
+	for i in range(len(rectangles)):
+		if i not in used:
+			current_rect = list(rectangles[i])
+			width = 1
+			while True:
+				Found = False
+				for j in range(len(rectangles)):
+					if i != j:
+						if rectangles[j][0] == rectangles[i][0] + width and rectangles[i][1] == rectangles[j][1] and rectangles[j][3] == rectangles[i][3]:
+							used.append(j)
+							Found = True
+							width += 1
+							current_rect[2] += 1
+				if not Found:
+					break
+			rectangles2.append(current_rect)
+
+
+	with open(SavePath, "w+") as f:
+		for y in range(TILERESOLUTION):
+			for x in range(TILERESOLUTION):
+				f.write(str(Matrix[x][y]))
+				if x == TILERESOLUTION-1:
+					f.write("\n")
+				else:
+					f.write(",")
+		for elt in rectangles2:
+			f.write(f"{elt[0]}, {elt[1]}, {elt[2]}, {elt[3]}\n")
+		f.write("S\n")
+		f.close()
