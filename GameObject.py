@@ -192,17 +192,17 @@ class Player(Entity):
         self.CanJump = True
         self.CanDash = True
         self.right = True
-        self.last = pygame.time.get_ticks()
-        self.cooldown = 500  
+        self.last = py.time.get_ticks()
+        self.cooldown = 500
+        self.CountDash = 0
 
     def update(self):
         super().update()
         if self.isGrounded:
             self.CanJump = True
             self.CanDash = True
-
-    def blit(self, screen: py.Surface):
-        screen.blit()
+        else:
+            self.CanJump = False
 
     def jump(self):
         if self.CanJump:
@@ -210,42 +210,36 @@ class Player(Entity):
             self.CanJump = False
 
     def dash(self):
-        for event in py.event.get():
-            if event.type == py.KEYUP:
-                if event.key == py.K_d:
-                    print("oui")
-                    self.right = True
-                elif event.key == py.K_q:
-                    print("non")
-                    self.right = False
+        right = self.game.rightPressed
+        left = self.game.leftPressed
         self.CountDash = 0
         if self.isGrounded:
             self.CountDash += 1
         if self.CanDash and self.CountDash > 0:
-            if self.right == True:
+            if right:
                 self.velocity += Vector2(100, 0)
-                self.CountDash-=1
-            if self.right == False:
+                self.CountDash -= 1
+            if left:
                 self.velocity += Vector2(-100, 0)
-                self.CountDash-=1
+                self.CountDash -= 1
     
     def CooldownDash(self):
-        now = pygame.time.get_ticks()
+        now = py.time.get_ticks()
         if now - self.last >= self.cooldown:
             self.last = now
             self.dash()
 
     def WallJump(self):
         wall = []
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
+        keys = py.key.get_pressed()
+        if keys[py.K_SPACE]:
             self.velocity.y = -500
             if self.wall_jump:
                 self.velocity.x = 500
                 self.wall_jump = False
         if self.rect.colliderect(wall):
             self.velocity.x = 0
-            if keys[pygame.K_SPACE]:
+            if keys[py.K_SPACE]:
                 self.wall_jump = True
         self.velocity.y += 10
         self.rect.move_ip(self.velocity)

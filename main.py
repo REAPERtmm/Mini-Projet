@@ -1,8 +1,4 @@
-import pygame as py
-
-from Settings import *
-from GameObject import *
-from Inventory import Inventory
+from Inventory import *
 from Map import *
 from Menus import *
 from parallax import *
@@ -12,6 +8,7 @@ from Events import *
 def checkpoints(self):
     print("Nouveau Checkpoint")
 
+
 # Fonction pour démarrer les checkpoints
 def start_checkpoint(self):
     print("Checkpoint")
@@ -20,7 +17,8 @@ def start_checkpoint(self):
 # Fonction pour gérer le game over
 def game_over(self):
     print("Game Over! Score:")
-   
+
+
 class Game:
     def __init__(self):
         self.running = True
@@ -31,6 +29,8 @@ class Game:
         self.interactible = [StaticObject(self, -Trevor.get_width(), 0, 1000, 1000, "Trevor", Trevor)]
 
         self.inv = Inventory(self)
+        fill_inventory(self.inv, "Dash", "Jump+", "Bomb")
+
         self.MainMenu = Menu(
             self,
             Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
@@ -135,7 +135,6 @@ class Game:
             SCREEN.fill(SKY)
             self.deltatime = self.clock.get_time() / 1000
             self.clock.tick(200)
-            print(self.deltatime)
             self.update()
             self.inv.update()
             self.draw()
@@ -150,42 +149,24 @@ class Game:
                 if event.type == py.QUIT:
                     self.running = False
                 if event.type == py.KEYUP:
-                    if event.key == py.K_a:
+                    if event.key == py.K_q:
                         self.leftPressed = False
                     if event.key == py.K_d:
                         self.rightPressed = False
-                    if event.key == py.K_w:
-                        self.up = False
-                    if event.key == py.K_s:
-                        self.down = False
-                    if event.key == py.K_b:
-                        self.inv.increaseBlue()
                     if event.key == py.K_r:
                         self.inv.increaseRed()
-                    if event.key == py.K_q:
-                        self.inv.increaseWhite()
-                    if event.key == py.K_i:
-                        self.inv.AddCard("Dash")
-                    if event.key == py.K_o:
-                        self.inv.AddCard("Jump+")
-                    if event.key == py.K_p:
-                        self.inv.AddCard("Bomb")
                     if event.key == py.K_1:
-                        self.inv.selected_card = 2
+                        self.inv.select("Bomb")
                     if event.key == py.K_2:
-                        self.inv.selected_card = 1
+                        self.inv.select("Jump+")
                     if event.key == py.K_3:
-                        self.inv.selected_card = 0
+                        self.inv.select("Dash")
 
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_a:
+                    if event.key == py.K_q:
                         self.leftPressed = True
                     if event.key == py.K_d:
                         self.rightPressed = True
-                    if event.key == py.K_w:
-                        self.up = True
-                    if event.key == py.K_s:
-                        self.down = True
                     if event.key == py.K_SPACE:
                         self.player.jump()
                     if event.key == py.K_LSHIFT:
