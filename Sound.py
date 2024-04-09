@@ -14,12 +14,11 @@ class Sound:
         self.dialogue_channel = None
         self.running = True
         
-    def ShamanVoice(self):
-        filedecider = randint(1, 17)
+    def ShamanVoice(self, filedecider):
+        dialogue_channel = py.mixer.Channel(0)
         filename = 'SoundFiles/ShamanMP3-{:02d}.mp3'.format(filedecider)
         dialogue_sound = py.mixer.Sound(filename)
-        dialogue_channel = py.mixer.Channel(0)
-        dialogue_channel.play(dialogue_sound, loops=-1)
+        dialogue_channel.play(dialogue_sound, loops=0)
 
     def ShamanVoiceStop(self):
         py.mixer.Channel(0).stop()
