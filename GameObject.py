@@ -1,5 +1,4 @@
-import copy
-
+from Animation import *
 import Events
 from GeoMath import *
 
@@ -192,12 +191,16 @@ class Player(Entity):
         super().__init__(game, x, y, w, h)
         self.CanJump = True
         self.CanDash = True
+        self.animator =
 
     def update(self):
         super().update()
         if self.isGrounded:
             self.CanJump = True
             self.CanDash = True
+
+    def blit(self, screen: py.Surface):
+        screen.blit()
 
     def jump(self):
         if self.CanJump:
