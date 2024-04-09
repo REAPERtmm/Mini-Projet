@@ -17,21 +17,47 @@ class Game:
         self.map = Map(10, 10, 1, RESOLUTION, *TILES)
 
         self.inv = Inventory(self)
-        self.MainMenu = Menu(self,
-                             Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
-                             Vector2(500, 500),
-                             WHITE)
+        self.MainMenu = Menu(
+            self,
+            Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+            Vector2(500, 500),
+            WHITE,
+            Frame(
+                self,
+                Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                Button(
+                    self,
+                    Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                    Vector2(75, 75),
+                    "YOOO",
+                    RED,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(50, 50),
+                    "YOOO",
+                    GREEN,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(50, 50),
+                    "YOOO",
+                    BLUE,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                wrap=2,
+                gap_x=5,
+                gap_y=5
+            )
+        )
 
-        """self.labelTest = Label(self,
-                               Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
-                               Vector2(100, 100),
-                               "YOOOO", BLACK, WHITE)"""
-
-        """self.buttonTest = Button(self,
-                                 Vector2(WIDTH // 2 - 100 // 2, HEIGHT // 2 - 100 // 2),
-                                 Vector2(100, 100),
-                                 "YOOOO", WHITE, BLACK,
-                                 self.openmenu)"""
 
         self.leftPressed = False
         self.rightPressed = False
@@ -51,7 +77,6 @@ class Game:
         for elt in self.ground:
             elt.update()
         self.camera.update()
-        """self.buttonTest.update()"""
 
     def draw(self):
         self.ParaX.draw_bg(SCREEN)
