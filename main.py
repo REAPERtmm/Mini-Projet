@@ -30,7 +30,7 @@ class Game:
 
         self.inv = Inventory(self)
         fill_inventory(self.inv, "Dash", "Jump+", "Bomb")
-
+#ici l'exemple de menu dont je dois m'inspirer
         self.MainMenu = Menu(
             self,
             Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
@@ -71,6 +71,46 @@ class Game:
                 gap_y=5
             )
         )
+        self.Shop = Menu(
+            self,
+            Vector2(0,0),
+            Vector2(WIDTH, HEIGHT),
+            WHITE,
+            Frame(
+                self,
+                Vector2(WIDTH//10, HEIGHT//2 - 500//4),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(185, 275),
+                    "Dash Card",
+                    RED,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(185, 275),
+                    "Double Jump Card",
+                    GREEN,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(185, 275),
+                    "Wall Jump Card",
+                    BLUE,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                wrap=5,
+                gap_x=WIDTH//20,
+                gap_y=HEIGHT//20
+            )
+        )
 
 
         self.player = Player(self, 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
@@ -81,6 +121,7 @@ class Game:
         self.up = False
         self.down = False
         self.tabPressed = False
+        self.shopPressed = False
 
         self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
@@ -126,6 +167,8 @@ class Game:
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
         self.inv.draw()
+        if self.shopPressed:
+            self.Shop.blit(SCREEN)
         SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
 
         py.display.flip()
@@ -138,7 +181,7 @@ class Game:
             self.update()
             self.inv.update()
             self.draw()
-            if not self.tabPressed:
+            if not self.tabPressed and not self.shopPressed:
                 if self.leftPressed:
                     self.player.velocity.x(-500 * self.deltatime)
                 elif self.rightPressed:
@@ -176,6 +219,12 @@ class Game:
                             self.tabPressed = False
                         else:
                             self.tabPressed = True
+                    if event.key == py.K_e:
+                        if self.shopPressed:
+                            self.shopPressed = False
+                        else:
+                            self.shopPressed = True
+                        
 
 
 g = Game()
