@@ -1,39 +1,80 @@
-from Settings import *
-from GameObject import *
-from Inventory import Inventory
+from Inventory import *
 from Map import *
 from Menus import *
 from parallax import *
-from Sound import *
+from Events import *
 
 
+def checkpoints(self):
+    print("Nouveau Checkpoint")
+
+
+# Fonction pour démarrer les checkpoints
+def start_checkpoint(self):
+    print("Checkpoint")
+
+
+# Fonction pour gérer le game over
+def game_over(self):
+    print("Game Over! Score:")
 
 
 class Game:
     def __init__(self):
         self.running = True
-        self.ground = [
+        self.spawnpoint: Vector2 = None
+        self.map: Map = None
 
-        ]
+        self.ground = []
+        self.interactible = [StaticObject(self, -Trevor.get_width(), 0, 1000, 1000, "Trevor", Trevor)]
 
-        self.map = Map(10, 10, 1, RESOLUTION, *TILES)
-        self.sounds = Sound(self)
         self.inv = Inventory(self)
-        self.MainMenu = Menu(self,
-                             Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
-                             Vector2(500, 500),
-                             WHITE)
+        fill_inventory(self.inv, "Dash", "Jump+", "Bomb")
 
-        """self.labelTest = Label(self,
-                               Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
-                               Vector2(100, 100),
-                               "YOOOO", BLACK, WHITE)"""
+        self.MainMenu = Menu(
+            self,
+            Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+            Vector2(500, 500),
+            WHITE,
+            Frame(
+                self,
+                Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                Button(
+                    self,
+                    Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+                    Vector2(75, 75),
+                    "YOOO",
+                    RED,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(50, 50),
+                    "YOOO",
+                    GREEN,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(50, 50),
+                    "YOOO",
+                    BLUE,
+                    BLACK,
+                    lambda: print("test")
+                ),
+                wrap=2,
+                gap_x=5,
+                gap_y=5
+            )
+        )
 
-        """self.buttonTest = Button(self,
-                                 Vector2(WIDTH // 2 - 100 // 2, HEIGHT // 2 - 100 // 2),
-                                 Vector2(100, 100),
-                                 "YOOOO", WHITE, BLACK,
-                                 self.openmenu)"""
+
+        self.player = Player(self, 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
+        self.loadMap()
 
         self.leftPressed = False
         self.rightPressed = False
@@ -41,92 +82,94 @@ class Game:
         self.down = False
         self.tabPressed = False
 
-        self.player = Player(self, 0, 0, 50, 75)
         self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
         self.deltatime = 0
         self.ParaX = Parallax(self)
 
+        # Créer les événements pour le checkpoint et le game over
+        self.checkpoint_event = Event(start_checkpoint)
+        self.game_over_event = Event(game_over)
+        
+    def loadMap(self):
+        self.map = createMapStartingWith(self, 10, 0)
+
+        firstground = 0
+        for tile in self.map.map[0].t_left:
+            if tile != 0:
+                break
+            firstground += RESOLUTION
+        self.spawnpoint = Vector2(0, firstground - PLAYER_HEIGHT)
+
+        self.player.transform.position = self.spawnpoint.copy()
+
     def update(self):
-        self.player.update()
         self.ground = self.map.get_physique_on_screen(self.camera)
+        # self.interactible[0].transform.position.moveX(self.deltatime * 10)
         for elt in self.ground:
             elt.update()
+        self.player.update()
+        if self.player.transform.position.y() > TILETOTALSIZE + 50:
+            self.player.transform.position = self.spawnpoint.copy()
         self.camera.update()
-        """self.buttonTest.update()"""
 
     def draw(self):
         self.ParaX.draw_bg(SCREEN)
+        for elt in self.interactible:
+            elt.blit(SCREEN)
         self.map.blit(SCREEN, self.camera)
         self.player.blit(SCREEN)
-        py.draw.rect(SCREEN, (50, 25, 5), (0, -self.camera.position.y() + TILERESOLUTION * RESOLUTION, WIDTH, HEIGHT))
+        py.draw.rect(SCREEN, (50, 25, 5), (0, TILETOTALSIZE - self.camera.position.y(), WIDTH, HEIGHT))
+        Xpos = self.interactible[0].transform.position.x() - self.camera.position.x() + self.interactible[0].transform.size.x()
+        py.draw.line(SCREEN, (255, 0, 0), (Xpos, 0), (Xpos, TILETOTALSIZE))
         # self.ParaX.draw_ground(SCREEN)
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
         self.inv.draw()
+        SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
+
         py.display.flip()
 
     def run(self):
         while self.running:
             SCREEN.fill(SKY)
             self.deltatime = self.clock.get_time() / 1000
-            self.clock.tick(60)
+            self.clock.tick(200)
             self.update()
             self.inv.update()
             self.draw()
             if not self.tabPressed:
                 if self.leftPressed:
-                    self.player.transform.position.moveX(-10)
-                if self.rightPressed:
-                    self.player.transform.position.moveX(10)
+                    self.player.velocity.x(-500 * self.deltatime)
+                elif self.rightPressed:
+                    self.player.velocity.x(500 * self.deltatime)
+                else:
+                    self.player.velocity.x(0)
             for event in py.event.get():
                 if event.type == py.QUIT:
                     self.running = False
                 if event.type == py.KEYUP:
-                    if event.key == py.K_a:
+                    if event.key == py.K_q:
                         self.leftPressed = False
                     if event.key == py.K_d:
                         self.rightPressed = False
-                    if event.key == py.K_w:
-                        self.up = False
-                    if event.key == py.K_s:
-                        self.down = False
-                    if event.key == py.K_b:
-                        self.inv.increaseBlue()
-                        self.sounds.ShamanVoiceStop()
-                    if event.key == py.K_q:
-                        self.inv.increaseWhite()
-                    if event.key == py.K_i:
-                        self.inv.AddCard("Dash")
-                    if event.key == py.K_o:
-                        self.inv.AddCard("Jump+")
-                    if event.key == py.K_p:
-                        self.inv.AddCard("Bomb")
+                    if event.key == py.K_r:
+                        self.inv.increaseRed()
                     if event.key == py.K_1:
-                        self.inv.selected_card = 2
-                        self.sounds.PlayMenuSwap()
+                        self.inv.select("Bomb")
                     if event.key == py.K_2:
-                        self.inv.selected_card = 1
-                        self.sounds.PlayMenuSwap()
+                        self.inv.select("Jump+")
                     if event.key == py.K_3:
-                        self.inv.selected_card = 0
-                        self.sounds.PlayMenuSwap()
+                        self.inv.select("Dash")
 
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_a:
+                    if event.key == py.K_q:
                         self.leftPressed = True
                     if event.key == py.K_d:
                         self.rightPressed = True
-                    if event.key == py.K_w:
-                        self.up = True
-                    if event.key == py.K_s:
-                        self.down = True
-                    if event.key == py.K_r:
-                        self.inv.increaseRed()
-                        self.sounds.ShamanVoice()
                     if event.key == py.K_SPACE:
                         self.player.jump()
-                    if event.key == py.K_RSHIFT:
+                    if event.key == py.K_LSHIFT:
                         self.player.dash()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
@@ -134,6 +177,6 @@ class Game:
                         else:
                             self.tabPressed = True
 
+
 g = Game()
 g.run()
-
