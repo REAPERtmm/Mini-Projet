@@ -4,6 +4,8 @@ from Inventory import Inventory
 from Map import *
 from Menus import *
 from parallax import *
+from Sound import *
+
 
 
 
@@ -15,7 +17,7 @@ class Game:
         ]
 
         self.map = Map(10, 10, 1, RESOLUTION, *TILES)
-
+        self.sounds = Sound(self)
         self.inv = Inventory(self)
         self.MainMenu = Menu(self,
                              Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
@@ -91,8 +93,7 @@ class Game:
                         self.down = False
                     if event.key == py.K_b:
                         self.inv.increaseBlue()
-                    if event.key == py.K_r:
-                        self.inv.increaseRed()
+                        self.sounds.ShamanVoiceStop()
                     if event.key == py.K_q:
                         self.inv.increaseWhite()
                     if event.key == py.K_i:
@@ -103,10 +104,13 @@ class Game:
                         self.inv.AddCard("Bomb")
                     if event.key == py.K_1:
                         self.inv.selected_card = 2
+                        self.sounds.PlayMenuSwap()
                     if event.key == py.K_2:
                         self.inv.selected_card = 1
+                        self.sounds.PlayMenuSwap()
                     if event.key == py.K_3:
                         self.inv.selected_card = 0
+                        self.sounds.PlayMenuSwap()
 
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_a:
@@ -117,6 +121,9 @@ class Game:
                         self.up = True
                     if event.key == py.K_s:
                         self.down = True
+                    if event.key == py.K_r:
+                        self.inv.increaseRed()
+                        self.sounds.ShamanVoice()
                     if event.key == py.K_SPACE:
                         self.player.jump()
                     if event.key == py.K_RSHIFT:

@@ -1,4 +1,5 @@
 from Settings import *
+from Sound import *
 import time
 
 
@@ -25,26 +26,26 @@ class Inventory:
         """Add New Card to the 1st slot"""
         if len(self.InvContents) >= 3:
             self.InvContents.pop(0)
-            self.RedFlow += 200
+            self.RedFlow += 50
             self.ui_hide_timer = time.time()
             self.hide_ui = False
         self.InvContents.append(type)
 
     def increaseBlue(self):
         """increment the blue flower count"""
-        self.BlueFlow += 50
+        self.BlueFlow += 10
         self.ui_hide_timer = time.time()
         self.hide_ui = False
 
     def increaseWhite(self):
         """increment the White flower count"""
-        self.WhiteFlow += 50
+        self.WhiteFlow += 10
         self.ui_hide_timer = time.time()
         self.hide_ui = False
 
     def increaseRed(self):
         """increment the Red flower count"""
-        self.RedFlow += 50
+        self.RedFlow += 10
         self.ui_hide_timer = time.time()
         self.hide_ui = False
         print()
