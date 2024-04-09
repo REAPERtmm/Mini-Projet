@@ -21,27 +21,33 @@ class Inventory:
         self.InvContents = ["Bomb", "Jump+", "Dash"]
         self.selected_card = 0
 
-    def select(self, i):
-        """Select the i ème card"""
-        self.selected_card = i
+    def AddCard(self, type):
+        """Add New Card to the 1st slot"""
+        if len(self.InvContents) >= 3:
+            self.InvContents.pop(0)
+            self.RedFlow += 200
+            self.ui_hide_timer = time.time()
+            self.hide_ui = False
+        self.InvContents.append(type)
 
     def increaseBlue(self):
         """increment the blue flower count"""
-        self.BlueFlow += 1
+        self.BlueFlow += 50
         self.ui_hide_timer = time.time()
         self.hide_ui = False
 
     def increaseWhite(self):
         """increment the White flower count"""
-        self.WhiteFlow += 1
+        self.WhiteFlow += 50
         self.ui_hide_timer = time.time()
         self.hide_ui = False
 
     def increaseRed(self):
         """increment the Red flower count"""
-        self.RedFlow += 1
+        self.RedFlow += 50
         self.ui_hide_timer = time.time()
         self.hide_ui = False
+        print()
 
     def update(self):
         """update the inventory"""
@@ -61,11 +67,12 @@ class Inventory:
 
             SCREEN.blit(img, (SCREEN.get_width() - (i + 1) * 100, SCREEN.get_height() - (100 if self.selected_card == i else 10)))
 
-        tracks = [self.BlueFlow, self.RedFlow, self.WhiteFlow]
-        colors = [(51, 96, 163), (173, 56, 45), (242, 246, 252)]
+        tracks = [self.RedFlow]
+        colors = [(173, 56, 45)]
         if not self.hide_ui:
             for i, (track, color) in enumerate(zip(tracks, colors)):
                 track_text = self.my_font.render(str(track), True, color)
-                SCREEN.blit(Flower, (64, 12 + i * 64))
+                SCREEN.blit(Flower, (24, 64 + i * 64))
                 SCREEN.blit(track_text, (24, 24 + i * 64))
+        
 

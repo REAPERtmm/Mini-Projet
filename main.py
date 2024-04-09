@@ -67,6 +67,7 @@ class Game:
             self.deltatime = self.clock.get_time() / 1000
             self.clock.tick(60)
             self.update()
+            self.inv.update()
             self.draw()
             if not self.tabPressed:
                 if self.leftPressed:
@@ -77,11 +78,11 @@ class Game:
                 if event.type == py.QUIT:
                     self.running = False
                 if event.type == py.KEYUP:
-                    if event.key == py.K_q:
+                    if event.key == py.K_a:
                         self.leftPressed = False
                     if event.key == py.K_d:
                         self.rightPressed = False
-                    if event.key == py.K_z:
+                    if event.key == py.K_w:
                         self.up = False
                     if event.key == py.K_s:
                         self.down = False
@@ -89,27 +90,27 @@ class Game:
                         self.inv.increaseBlue()
                     if event.key == py.K_r:
                         self.inv.increaseRed()
-                    if event.key == py.K_w:
+                    if event.key == py.K_q:
                         self.inv.increaseWhite()
                     if event.key == py.K_i:
-                        self.inv.select(2)
+                        self.inv.AddCard("Dash")
                     if event.key == py.K_o:
-                        self.inv.select(1)
+                        self.inv.AddCard("Jump+")
                     if event.key == py.K_p:
-                        self.inv.select(0)
+                        self.inv.AddCard("Bomb")
                     if event.key == py.K_1:
-                        self.inv.selected_card = 0
+                        self.inv.selected_card = 2
                     if event.key == py.K_2:
                         self.inv.selected_card = 1
                     if event.key == py.K_3:
-                        self.inv.selected_card = 2
+                        self.inv.selected_card = 0
 
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_q:
+                    if event.key == py.K_a:
                         self.leftPressed = True
                     if event.key == py.K_d:
                         self.rightPressed = True
-                    if event.key == py.K_z:
+                    if event.key == py.K_w:
                         self.up = True
                     if event.key == py.K_s:
                         self.down = True

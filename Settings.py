@@ -37,8 +37,12 @@ Bg = [
 
 Textures = [
 	None,
-	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/box.png"), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/castle.png"), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/groundNS_central.png"), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/groundNS_topmid.png"), (RESOLUTION, RESOLUTION)),
+    py.transform.smoothscale(py.image.load("Resources/groundS1_central.png"), (RESOLUTION, RESOLUTION)),
+    py.transform.smoothscale(py.image.load("Resources/groundS1_topmid.png"), (RESOLUTION, RESOLUTION)),
+    py.transform.smoothscale(py.image.load("Resources/groundS2_central.png"), (RESOLUTION, RESOLUTION)),
+    py.transform.smoothscale(py.image.load("Resources/groundS2_topmid.png"), (RESOLUTION, RESOLUTION)),
 ]
 
 TILES = ["Tile/" + path for path in listdir("./Tile")]
