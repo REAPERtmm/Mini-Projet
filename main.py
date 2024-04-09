@@ -1,12 +1,26 @@
+import pygame as py
+
 from Settings import *
 from GameObject import *
 from Inventory import Inventory
 from Map import *
 from Menus import *
 from parallax import *
+from Events import *
 
 
+def checkpoints(self):
+    print("Nouveau Checkpoint")
 
+
+# Fonction pour démarrer les checkpoints
+def start_checkpoint(self):
+    print("Checkpoint")
+
+
+# Fonction pour gérer le game over
+def game_over(self):
+    print("Game Over! Score:")
 class Game:
     def __init__(self):
         self.running = True
@@ -44,6 +58,10 @@ class Game:
         self.clock = py.time.Clock()
         self.deltatime = 0
         self.ParaX = Parallax(self)
+
+        # Créer les événements pour le checkpoint et le game over
+        self.checkpoint_event = Event(start_checkpoint)
+        self.game_over_event = Event(game_over)
 
     def update(self):
         self.player.update()
@@ -128,4 +146,3 @@ class Game:
 
 g = Game()
 g.run()
-
