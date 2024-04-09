@@ -60,7 +60,7 @@ class Game:
 
     def update(self):
         self.ground = self.map.get_physique_on_screen(self.camera)
-        self.interactible[0].transform.position.moveX(self.deltatime * 10)
+        # self.interactible[0].transform.position.moveX(self.deltatime * 10)
         for elt in self.ground:
             elt.update()
         self.player.update()
@@ -77,26 +77,30 @@ class Game:
         self.player.blit(SCREEN)
         py.draw.rect(SCREEN, (50, 25, 5), (0, TILETOTALSIZE - self.camera.position.y(), WIDTH, HEIGHT))
         Xpos = self.interactible[0].transform.position.x() - self.camera.position.x() + self.interactible[0].transform.size.x()
-        print(Xpos)
         py.draw.line(SCREEN, (255, 0, 0), (Xpos, 0), (Xpos, TILETOTALSIZE))
         # self.ParaX.draw_ground(SCREEN)
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
         self.inv.draw()
+        SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
+
         py.display.flip()
 
     def run(self):
         while self.running:
             SCREEN.fill(SKY)
             self.deltatime = self.clock.get_time() / 1000
-            self.clock.tick(60)
+            self.clock.tick(200)
+            print(self.deltatime)
             self.update()
             self.draw()
             if not self.tabPressed:
                 if self.leftPressed:
-                    self.player.transform.position.moveX(-10)
-                if self.rightPressed:
-                    self.player.transform.position.moveX(10)
+                    self.player.velocity.x(-500 * self.deltatime)
+                elif self.rightPressed:
+                    self.player.velocity.x(500 * self.deltatime)
+                else:
+                    self.player.velocity.x(0)
             for event in py.event.get():
                 if event.type == py.QUIT:
                     self.running = False
@@ -146,6 +150,7 @@ class Game:
                             self.tabPressed = False
                         else:
                             self.tabPressed = True
+
 
 g = Game()
 g.run()

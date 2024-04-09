@@ -201,7 +201,7 @@ class Player(Entity):
 
     def jump(self):
         if self.CanJump:
-            self.velocity -= Vector2(0, 15)
+            self.velocity = Vector2(0, -1000) * self.game.deltatime
             self.CanJump = False
 
     def dash(self):
