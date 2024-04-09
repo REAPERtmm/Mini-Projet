@@ -6,3 +6,6 @@ class Event:
 
 	def trigger(self):
 		self.callback(*self.args)
+
+	def start(self):
+		print("Début du jeu")

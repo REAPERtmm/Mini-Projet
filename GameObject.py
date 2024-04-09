@@ -1,5 +1,4 @@
-import copy
-
+from Animation import *
 import Events
 from GeoMath import *
 
@@ -33,8 +32,20 @@ class GameObject:
 
 
 class StaticObject(GameObject):
-    def __init__(self, game, x: float, y: float, w: float, h: float, name: str="StaticObject"):
+    def __init__(self, game, x: float, y: float, w: float, h: float, name: str = "StaticObject", image: py.Surface = None):
+        """
+        :param game: class of the game
+        :param x: x coordinate
+        :param y: y coordinate
+        :param w: width
+        :param h: height
+        :param name: nom (optional)
+        :param image: (optional) image to blit (override the width and height)
+        """
         super().__init__(game, x, y, w, h)
+        self.image = image
+        if self.image is not None:
+            self.transform.size = Vector2(self.image.get_width(), self.image.get_height())
         self.name = name
         self.color = (100, 100, 100)
         self.isStatic = True
@@ -48,6 +59,12 @@ class StaticObject(GameObject):
         chaine += f"----{self.name}----\n"
         chaine += f"position = {self.transform.position}, size = {self.transform.size}"
         return chaine
+
+    def blit(self, screen: py.Surface):
+        if self.image is not None:
+            screen.blit(self.image, (self.transform.position - self.game.camera.position).tuple())
+        else:
+            super().blit(screen)
 
     def update(self):
         super().update()
@@ -80,14 +97,14 @@ class PhysicalObject(GameObject):
         self.isGrabbingRight = False
 
         width = self.transform.size.x() / 3
-        height = self.transform.size.y() / 3
+        height = self.transform.size.y() / 10
 
         self.box_over = Box(self.transform.position + Vector2(width / 2, -5), Vector2(2 * width, 5))
         self.box_under = Box(self.transform.position + Vector2(width / 2, self.transform.size.y()), Vector2(2 * width, 5))
-        self.box_left = Box(self.transform.position + Vector2(-5, height / 2), Vector2(5, height * 2))
-        self.box_right = Box(self.transform.position + Vector2(self.transform.size.x(), height / 2), Vector2(5, height * 2))
+        self.box_left = Box(self.transform.position + Vector2(-5, int(height * 2.5)), Vector2(5, height * 5))
+        self.box_right = Box(self.transform.position + Vector2(self.transform.size.x(), int(height * 2.5)), Vector2(5, height * 5))
 
-        for elt in self.game.ground:
+        for elt in self.game.ground + self.game.interactible:
             if id(self) != id(elt) and self.transform.CollideRect(elt.transform):
                 if type(elt) is ReactiveObject and elt.triggerOnColision:
                     elt.Trigger()
@@ -116,7 +133,7 @@ class PhysicalObject(GameObject):
                     self.isGrabbingLeft = True
 
         if not self.isGrounded:
-            self.velocity -= Vector2(0, -GRAVITY) * self.game.deltatime
+            self.velocity -= Vector2(0, -GRAVITY * 2) * self.game.deltatime
         else:
             self.velocity = Vector2(0, 0)
 
@@ -174,6 +191,9 @@ class Player(Entity):
         super().__init__(game, x, y, w, h)
         self.CanJump = True
         self.CanDash = True
+        self.right = True
+        self.last = pygame.time.get_ticks()
+        self.cooldown = 500  
 
     def update(self):
         super().update()
@@ -181,25 +201,54 @@ class Player(Entity):
             self.CanJump = True
             self.CanDash = True
 
+    def blit(self, screen: py.Surface):
+        screen.blit()
+
     def jump(self):
         if self.CanJump:
-            self.velocity -= Vector2(0, 10)
+            self.velocity = Vector2(0, -1000) * self.game.deltatime
             self.CanJump = False
 
     def dash(self):
+        for event in py.event.get():
+            if event.type == py.KEYUP:
+                if event.key == py.K_d:
+                    print("oui")
+                    self.right = True
+                elif event.key == py.K_q:
+                    print("non")
+                    self.right = False
         self.CountDash = 0
         if self.isGrounded:
             self.CountDash += 1
         if self.CanDash and self.CountDash > 0:
-            if self.velocity < 0:
-                self.velocity += Vector2(-10, 0)
-                py.time.wait(500)
-            if self.velocity.x > 0:
-                self.velocity += Vector2(10, 0)
-                py.time.wait(500)
+            if self.right == True:
+                self.velocity += Vector2(100, 0)
+                self.CountDash-=1
+            if self.right == False:
+                self.velocity += Vector2(-100, 0)
+                self.CountDash-=1
     
+    def CooldownDash(self):
+        now = pygame.time.get_ticks()
+        if now - self.last >= self.cooldown:
+            self.last = now
+            self.dash()
+
     def WallJump(self):
-        pass
+        wall = []
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            self.velocity.y = -500
+            if self.wall_jump:
+                self.velocity.x = 500
+                self.wall_jump = False
+        if self.rect.colliderect(wall):
+            self.velocity.x = 0
+            if keys[pygame.K_SPACE]:
+                self.wall_jump = True
+        self.velocity.y += 10
+        self.rect.move_ip(self.velocity)
 
 
 
