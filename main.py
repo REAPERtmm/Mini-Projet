@@ -1,7 +1,10 @@
+from Settings import *
+from GameObject import *
 from Inventory import Inventory
 from Map import *
 from Menus import *
 from parallax import *
+
 
 
 class Game:
