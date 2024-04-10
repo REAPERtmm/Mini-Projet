@@ -65,14 +65,23 @@ Trevor = py.transform.scale(py.image.load("Resources/Trevor.png").convert_alpha(
 
 Textures = [
 	None,
-	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/box.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/Base pack/Tiles/castle.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/groundNS_central.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/groundNS_topmid.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/groundS1_central.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/groundS1_topmid.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/groundS2_central.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/groundS2_topmid.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/box.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/castle.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/groundNS_central.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/groundNS_topmid.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/groundS1_central.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/groundS1_topmid.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/groundS2_central.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/groundS2_topmid.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc1.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc2.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc3.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc4.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc5.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc6.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc7.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc8.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc9.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
 ]
 
 TILES = ["Tile/" + path for path in listdir("./Tile")]

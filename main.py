@@ -4,6 +4,7 @@ from Menus import *
 from GameObject import *
 from parallax import *
 from Events import *
+from Game_over_test import *
 from Sound import *
 
 TRANSPARENT_COLOR = (255, 255, 255, 0)
@@ -42,6 +43,7 @@ class Game:
         self.inv = Inventory(self)
         fill_inventory(self.inv, "Dash", "Jump+", "Bomb")
 
+        self.game_over = GameOver()
 
         self.show_quit_screen = False
         self.show_param_screen = False
@@ -310,12 +312,7 @@ class Game:
         self.deltatime = 0
         self.ParaX = Parallax(self)
 
-        # Créer les événements pour le checkpoint et le game over
-        self.checkpoint_event = Event(start_checkpoint)
-        self.game_over_event = Event(game_over)
-
     def load_shop_image(self):
-        
         shop_image = py.image.load("Resources/magasin.png").convert_alpha()
         self.shop_image = py.transform.scale(shop_image, (WIDTH, HEIGHT))
 
@@ -436,6 +433,8 @@ class Game:
         if self.show_param_screen:
             self.ParamMenu.blit(SCREEN)
 
+        self.game_over.Affichage()
+
         py.display.flip()
 
     def run(self):
@@ -500,13 +499,18 @@ class Game:
                         self.player.dash()
                         self.sounds.dash()
                     if event.key == py.K_TAB:
-                        if not self.shopPressed:
-                            self.tabPressed = not self.tabPressed
+                        if self.tabPressed:
+                            self.tabPressed = False
+                        else:
+                            self.tabPressed = True
+                    if event.key == py.K_o:
+                        self.game_over.game_over()
+
                     #Ici pour gérer les event du shop
                     if event.key == py.K_e:
                         if not self.tabPressed:
                             self.shopPressed = not self.shopPressed
-                        
+
 
 
 g = Game()
