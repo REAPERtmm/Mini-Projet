@@ -229,6 +229,9 @@ class Player(Entity):
         self.CanJump = True
         self.CanDash = True
         self.right = True
+        self.CountDash = 0
+        self.wall_jump_count = 0  
+        self.wall_jump_max_count = 1  
         self._decalX = int(PLAYER_HEIGHT/2 - PLAYER_WIDTH/2)
         self.last = py.time.get_ticks()
         self.cooldown = 500
@@ -247,6 +250,7 @@ class Player(Entity):
 
     def blit(self, screen: py.Surface):
         screen.blit(self.animator.get_current_image(), (self.transform.position - self.game.camera.position - Vector2(self._decalX, 0)).tuple())
+
 
     def update(self):
         super().update()
@@ -269,8 +273,11 @@ class Player(Entity):
                     self.animator.set_anim("r_idle")
             self.CanJump = True
             self.CanDash = True
+            self.wall_jump_count = 0  
+            self.CanDoubleJump = False
         else:
             self.CanJump = False
+            self.CanDoubleJump = True
             if self.velocity.y() > 0:
                 if self.right:
                     self.animator.set_anim("fall")
@@ -286,6 +293,27 @@ class Player(Entity):
         if self.CanJump:
             self.velocity = Vector2(0, -1000) * self.game.deltatime * RESMULT
             self.CanJump = False
+            self.wall_jump_count = 0  
+    
+    def double_jump(self):
+        if self.CandoubleJump == False :
+            if self.CountJump !=0 :
+                self.velocity = Vector2(0, -1000) * self.game.deltatime
+                self.wall_jump_count = 0
+                self.CountJump = 0
+                
+    def wall_jump(self):
+        wall_side = self.check_wall_contact()
+        if wall_side and self.wall_jump_count < self.wall_jump_max_count:
+            
+            jump_direction = Vector2(0, -1) 
+            if wall_side == 'left':
+                jump_direction.x = 1 
+            elif wall_side == 'right':
+                jump_direction.x = -1  
+            
+            self.velocity = jump_direction * 1000 * self.game.deltatime
+            self.wall_jump_count += 1  
 
     def dash(self):
         right = self.game.rightPressed
@@ -300,25 +328,18 @@ class Player(Entity):
             if left:
                 self.velocity += Vector2(-100, 0)
                 self.CountDash -= 1
-    
-    def CooldownDash(self):
-        now = py.time.get_ticks()
-        if now - self.last >= self.cooldown:
-            self.last = now
-            self.dash()
 
-    def WallJump(self):
-        wall = []
-        keys = py.key.get_pressed()
-        if keys[py.K_SPACE]:
-            self.velocity.y = -500
-            if self.wall_jump:
-                self.velocity.x = 500
-                self.wall_jump = False
-        if self.rect.colliderect(wall):
-            self.velocity.x = 0
-            if keys[py.K_SPACE]:
-                self.wall_jump = True
-        self.velocity.y += 10
-        self.rect.move_ip(self.velocity)
+    def check_wall_contact(self):
+        
+        for elt in self.game.ground + self.game.interactible:
+            if id(self) != id(elt) and self.transform.CollideRect(elt.transform):
+                check_left = self.box_left.CollideRect(elt.transform)
+                check_right = self.box_right.CollideRect(elt.transform)
+
+                if check_left:
+                    return 'left'
+                elif check_right:
+                    return 'right'
+
+        return None  
 

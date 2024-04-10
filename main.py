@@ -481,6 +481,7 @@ class Game:
                     if event.key == py.K_SPACE:
                         if not self.tabPressed and not self.shopPressed:
                             self.player.jump()
+                            self.player.wall_jump()
                     if event.key == py.K_LSHIFT:
                         self.player.dash()
                     if event.key == py.K_TAB:
