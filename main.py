@@ -4,6 +4,7 @@ from Menus import *
 from GameObject import *
 from parallax import *
 from Events import *
+from Sound import *
 
 TRANSPARENT_COLOR = (255, 255, 255, 0)
 
@@ -28,6 +29,7 @@ class Game:
         self.spawnpoint: Vector2 = None
         self.lastPoint: Vector2 = None
         self.map: Map = None
+        self.sounds = Sound(self)
         self.load_shop_image()
         self.boss = Boss(self, TILETOTALSIZE * MAP_LENGHT, 100 * RESMULT, 75 * RESMULT, 75 * RESMULT)
 
@@ -437,6 +439,7 @@ class Game:
         py.display.flip()
 
     def run(self):
+        self.sounds.ThemeMusic()
         while self.running:
             SCREEN.fill(SKY)
             self.deltatime = self.clock.get_time() / 1000
@@ -444,6 +447,9 @@ class Game:
             self.update()
             self.inv.update()
             self.draw()
+            self.sounds.ShamanStart()
+            self.sounds.soundTimer += self.deltatime
+
             
             if self.leftPressed:
                 self.player.velocity.x(-500 * self.deltatime * RESMULT)
@@ -462,28 +468,37 @@ class Game:
                 if event.type == py.KEYUP:
                     if event.key == py.K_q:
                         self.leftPressed = False
+                        self.sounds.AmbientStop()
                     if event.key == py.K_d:
                         self.rightPressed = False
+                        self.sounds.AmbientStop()
                     if event.key == py.K_r:
                         self.inv.increaseRed()
                     if event.key == py.K_1:
                         self.inv.select("Bomb")
+                        self.sounds.FlagOn()
                     if event.key == py.K_2:
                         self.inv.select("Jump+")
+                        self.sounds.FlagOff()
                     if event.key == py.K_3:
                         self.inv.select("Dash")
+                        self.sounds.FlagOff()
 
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
                         self.leftPressed = True
+                        self.sounds.Walking()
                     if event.key == py.K_d:
                         self.rightPressed = True
+                        self.sounds.Walking()
                     if event.key == py.K_SPACE:
                         if not self.tabPressed and not self.shopPressed:
                             self.player.jump()
                             self.player.wall_jump()
+                            self.sounds.Jump()
                     if event.key == py.K_LSHIFT:
                         self.player.dash()
+                        self.sounds.dash()
                     if event.key == py.K_TAB:
                         if not self.shopPressed:
                             self.tabPressed = not self.tabPressed
