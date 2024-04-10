@@ -162,23 +162,23 @@ class Game:
                 if event.type == py.KEYUP:
                     if event.key == py.K_q:
                         self.leftPressed = False
-                        self.sounds.EffectStop()
+                        self.sounds.AmbientStop()
                     if event.key == py.K_d:
                         self.rightPressed = False
-                        self.sounds.EffectStop()
+                        self.sounds.AmbientStop()
                     if event.key == py.K_r:
                         self.inv.increaseRed()
                     if event.key == py.K_1:
                         self.inv.select("Bomb")
-                        self.sounds.PlayMenuSwap()
+                        self.sounds.CardSwap()
                         self.soundflag = True
                     if event.key == py.K_2:
                         self.inv.select("Jump+")
-                        self.sounds.PlayMenuSwap()
+                        self.sounds.CardSwap()
                         self.soundflag = False
                     if event.key == py.K_3:
                         self.inv.select("Dash")
-                        self.sounds.PlayMenuSwap()
+                        self.sounds.CardSwap()
                         self.soundflag = False
 
                 if event.type == py.KEYDOWN:
@@ -190,6 +190,7 @@ class Game:
                         self.sounds.Walking()
                     if event.key == py.K_SPACE:
                         self.player.jump()
+                        self.sounds.Jump()
                     if event.key == py.K_LSHIFT:
                         self.player.dash()
                     if event.key == py.K_TAB:

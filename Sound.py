@@ -13,6 +13,8 @@ class Sound:
         self.dialogue_sound = None
         self.dialogue_channel = None
         self.running = True
+        self.soundflag = False
+        self.soundTimer = 0
         
     def ShamanVoice(self, filedecider):
         dialogue_channel = py.mixer.Channel(1)
@@ -33,7 +35,27 @@ class Sound:
     def Walking(self):
         PlaySound = py.mixer.Sound("SoundFiles/GrassStep.mp3")
         PlaySound.set_volume(0.3)
-        py.mixer.Channel(2).play(PlaySound, loops = -1)
+        py.mixer.Channel(4).play(PlaySound, loops = -1)
+
+    def Jump(self):
+        PlaySound = py.mixer.Sound("SoundFiles/Jump.mp3")
+        PlaySound.set_volume(0.5)
+        py.mixer.Channel(5).play(PlaySound, loops = 0)
+
+    def FlowerCollect(self):
+        PlaySound = py.mixer.Sound("SoundFiles/Success.mp3")
+        PlaySound.set_volume(0.3)
+        py.mixer.Channel(2).play(PlaySound, loops = 0)
+
+    def Cardcollect(self):
+        PlaySound = py.mixer.Sound("SoundFiles/CardCollect.mp3")
+        PlaySound.set_volume(0.3)
+        py.mixer.Channel(6).play(PlaySound, loops = 0)
+
+    def CardSwap(self):
+        PlaySound = py.mixer.Sound("SoundFiles/CardSwap.mp3")
+        PlaySound.set_volume(0.1)
+        py.mixer.Channel(7).play(PlaySound, loops = 0)
 
     def VoiceStop(self):
         py.mixer.Channel(1).stop()
@@ -43,3 +65,6 @@ class Sound:
 
     def MusicStop(self):
         py.mixer.Channel(3).stop()
+
+    def AmbientStop(self):
+        py.mixer.Channel(4).stop()
