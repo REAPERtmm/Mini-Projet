@@ -5,6 +5,8 @@ from GameObject import *
 from parallax import *
 from Events import *
 
+TRANSPARENT_COLOR = (255, 255, 255, 0)
+
 
 def checkpoints(self):
     print("Nouveau Checkpoint")
@@ -26,6 +28,7 @@ class Game:
         self.spawnpoint: Vector2 = None
         self.lastPoint: Vector2 = None
         self.map: Map = None
+        self.load_shop_image()
         self.boss = Boss(self, TILETOTALSIZE * MAP_LENGHT, 100 * RESMULT, 75 * RESMULT, 75 * RESMULT)
 
         self.ground = []
@@ -36,6 +39,7 @@ class Game:
 
         self.inv = Inventory(self)
         fill_inventory(self.inv, "Dash", "Jump+", "Bomb")
+
 
         self.show_quit_screen = False
         self.show_param_screen = False
@@ -93,6 +97,123 @@ class Game:
                 gap_x=50,
                 gap_y=50
             )
+        )
+        self.Shop = Menu(
+            self,
+            Vector2(0,0),
+            Vector2(WIDTH//10, HEIGHT//10),
+            TRANSPARENT_COLOR,
+            Frame(
+                self,
+                Vector2(WIDTH//16, HEIGHT//8),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(WIDTH//13, HEIGHT//5.5),
+                    "Dash Card",
+                    RED,
+                    TRANSPARENT_COLOR,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(WIDTH//13, HEIGHT//5.5),
+                    "Double Jump Card",
+                    GREEN,
+                    TRANSPARENT_COLOR,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(WIDTH//13, HEIGHT//5.5),
+                    "Wall Jump Card",
+                    BLUE,
+                    TRANSPARENT_COLOR,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(WIDTH//13, HEIGHT//5.5),
+                    "Wall Jump Card",
+                    BLUE,
+                    TRANSPARENT_COLOR,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(WIDTH//13, HEIGHT//5.5),
+                    "Wall Jump Card",
+                    BLUE,
+                    TRANSPARENT_COLOR,
+                    lambda: print("test")
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(WIDTH//13, HEIGHT//5.5),
+                    "Wall Jump Card",
+                    BLUE,
+                    TRANSPARENT_COLOR,
+                    lambda: print("test")
+                ),
+                wrap=4,
+                gap_x=WIDTH//55,
+                gap_y=HEIGHT//55
+            ),
+            Label(
+                self,
+                Vector2(WIDTH//20, HEIGHT//1.9),
+                Vector2(WIDTH//10, HEIGHT//20),
+                "Titre",
+                TRANSPARENT_COLOR,
+                BLACK,
+                
+            ),
+            Label(
+                self,
+                Vector2(WIDTH//5.5, HEIGHT//1.9),
+                Vector2(WIDTH//5, HEIGHT//20),
+                "Description",
+                TRANSPARENT_COLOR,
+                BLACK,
+                
+            ),
+            Label(
+                self,
+                Vector2(WIDTH//5.5, HEIGHT//1.7),
+                Vector2(WIDTH//5, HEIGHT//5.8),
+                "Lorem Ipsul dsiniosninsifnisnf",
+                TRANSPARENT_COLOR,
+                BLACK,
+            ),
+            Label(
+                self,
+                Vector2(WIDTH//20, HEIGHT//1.14),
+                Vector2(WIDTH//10, HEIGHT//35),
+                "Acheter",
+                TRANSPARENT_COLOR,
+                BLACK,
+            ),
+            Label(
+                self,
+                Vector2(WIDTH//1.75, HEIGHT//1.13),
+                Vector2(WIDTH//10, HEIGHT//35),
+                "Vendre :",
+                TRANSPARENT_COLOR,
+                BLACK,      
+            ),
+             Label(
+                self,
+                Vector2(WIDTH//1.65, HEIGHT//1.13),
+                Vector2(WIDTH//10, HEIGHT//35),
+                "Vendre :",
+                TRANSPARENT_COLOR,
+                BLACK,      
+            ),
         )
 
         self.delay = time.time() + TREVOR_DELAY_BEFORE_START
@@ -180,6 +301,7 @@ class Game:
         self.up = False
         self.down = False
         self.tabPressed = False
+        self.shopPressed = False
 
         self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
@@ -189,7 +311,12 @@ class Game:
         # Créer les événements pour le checkpoint et le game over
         self.checkpoint_event = Event(start_checkpoint)
         self.game_over_event = Event(game_over)
+
+    def load_shop_image(self):
         
+        shop_image = py.image.load("Resources/magasin.png").convert_alpha()
+        self.shop_image = py.transform.scale(shop_image, (WIDTH, HEIGHT))
+
     def loadMap(self):
         self.map = createMapStartingWith(self, MAP_LENGHT, 0)
         self.boss.Start(creatingMapStrict(
@@ -285,12 +412,20 @@ class Game:
         self.boss.blit(SCREEN)
         # self.ParaX.draw_ground(SCREEN)
 
+        
+        if self.shopPressed and not self.tabPressed:
+            SCREEN.blit(self.shop_image, (0, 0))
+            self.Shop.blit(SCREEN)
+        elif not self.tabPressed:
+            self.inv.draw()
+  
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
         self.interactible[1].blit(SCREEN)
         print(f"player :\nposition : {self.player.transform.position}, size: {self.player.transform.size}")
         print(f"portail :\nposition : {self.interactible[1].transform.position}, size: {self.interactible[1].transform.size}")
         self.inv.draw()
+
         SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
         SCREEN.blit(Fonts["arial"].render(f"time : {time.time_ns()}", True, GREEN, BLACK), (10, 30))
         if self.show_quit_screen:
@@ -344,14 +479,18 @@ class Game:
                     if event.key == py.K_d:
                         self.rightPressed = True
                     if event.key == py.K_SPACE:
-                        self.player.jump()
+                        if not self.tabPressed and not self.shopPressed:
+                            self.player.jump()
                     if event.key == py.K_LSHIFT:
                         self.player.dash()
                     if event.key == py.K_TAB:
-                        if self.tabPressed:
-                            self.tabPressed = False
-                        else:
-                            self.tabPressed = True
+                        if not self.shopPressed:
+                            self.tabPressed = not self.tabPressed
+                    #Ici pour gérer les event du shop
+                    if event.key == py.K_e:
+                        if not self.tabPressed:
+                            self.shopPressed = not self.shopPressed
+                        
 
 
 g = Game()
