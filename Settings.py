@@ -33,6 +33,11 @@ CardImg = [
 	py.transform.scale(py.image.load("Resources/Purify_Soul_Card.webp").convert_alpha(), (100, 200)),
 ]
 
+MenuImg = [
+    py.transform.scale(py.image.load("Resources/magasin.png").convert_alpha(), (WIDTH, HEIGHT)),
+    #py.transform.scale(py.image.load("Resources/mainMenu.png").convert_alpha(), (100, 200)),
+]
+
 Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png").convert_alpha(), (64, 64))
 #Ground = py.transform.scale(py.image.load("Resources/ground.png"), (WIDTH, HEIGHT / 10))
 Bg = [
