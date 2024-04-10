@@ -1,6 +1,7 @@
 from Inventory import *
 from Map import *
 from Menus import *
+from GameObject import *
 from parallax import *
 from Events import *
 
@@ -23,10 +24,15 @@ class Game:
     def __init__(self):
         self.running = True
         self.spawnpoint: Vector2 = None
+        self.lastPoint: Vector2 = None
         self.map: Map = None
+        self.boss = Boss(self, TILETOTALSIZE * MAP_LENGHT, 100 * RESMULT, 75 * RESMULT, 75 * RESMULT)
 
         self.ground = []
-        self.interactible = [StaticObject(self, -Trevor.get_width(), 0, 1000, 1000, "Trevor", Trevor)]
+        self.interactible = [
+            StaticObject(self, -Trevor.get_width(), 0, 1000 * RESMULT, 1000 * RESMULT, "Trevor", Trevor),
+            StaticObject(self, MAP_LENGHT * TILETOTALSIZE - TILERESOLUTION * 2, 0, TILERESOLUTION * 2, TILERESOLUTION * 4, "Portail")
+        ]
 
         self.inv = Inventory(self)
         fill_inventory(self.inv, "Dash", "Jump+", "Bomb")
@@ -72,9 +78,10 @@ class Game:
             )
         )
 
-
-        self.player = Player(self, 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
+        self.delay = time.time() + TREVOR_DELAY_BEFORE_START
+        self.player = Player(self, 0, 0)
         self.loadMap()
+        self.interactible[1].transform.position = self.lastPoint - self.interactible[1].transform.size
 
         self.leftPressed = False
         self.rightPressed = False
@@ -92,7 +99,16 @@ class Game:
         self.game_over_event = Event(game_over)
         
     def loadMap(self):
-        self.map = createMapStartingWith(self, 10, 0)
+        self.map = createMapStartingWith(self, MAP_LENGHT, 0)
+        self.boss.Start(creatingMapStrict(
+            self,
+            [
+                createTileFromPath(self, "BossTile/1.tile"),
+                createTileFromPath(self, "BossTile/3.tile")
+            ],
+            [0, 1],
+            Vector2(TILETOTALSIZE * MAP_LENGHT + 1000, 0))
+        )
 
         firstground = 0
         for tile in self.map.map[0].t_left:
@@ -101,14 +117,31 @@ class Game:
             firstground += RESOLUTION
         self.spawnpoint = Vector2(0, firstground - PLAYER_HEIGHT)
 
+        firstground = 0
+        for tile in self.map.map[-1].t_right:
+            if tile != 0:
+                break
+            firstground += RESOLUTION
+        self.lastPoint = Vector2(MAP_LENGHT * TILETOTALSIZE - 1, firstground)
         self.player.transform.position = self.spawnpoint.copy()
 
     def update(self):
-        self.ground = self.map.get_physique_on_screen(self.camera)
-        # self.interactible[0].transform.position.moveX(self.deltatime * 10)
+        self.ground.clear()
+        self.ground += self.map.get_physique_on_screen(self.camera)
+        if self.player.transform.position.x() > (MAP_LENGHT - 1) * TILETOTALSIZE:
+            print("COLLISION !")
+            self.ground += self.boss.map.get_physique_on_screen(self.camera)
+
+        """if time.time() > self.delay and self.interactible[0].transform.position.x() < MAP_LENGHT * TILETOTALSIZE - self.interactible[0].transform.size.x():
+            self.interactible[0].transform.position.moveX(self.deltatime * TREVOR_SPEED)"""
         for elt in self.ground:
             elt.update()
         self.player.update()
+        self.boss.update()
+        if self.player.transform.CollideRect(self.interactible[1].transform):
+            self.player.transform.position = Vector2(TILETOTALSIZE * (MAP_LENGHT + len(self.boss.map.map) // 2), 0)
+            self.boss.is_Active = True
+
         if self.player.transform.position.y() > TILETOTALSIZE + 50:
             self.player.transform.position = self.spawnpoint.copy()
         self.camera.update()
@@ -122,12 +155,19 @@ class Game:
         py.draw.rect(SCREEN, (50, 25, 5), (0, TILETOTALSIZE - self.camera.position.y(), WIDTH, HEIGHT))
         Xpos = self.interactible[0].transform.position.x() - self.camera.position.x() + self.interactible[0].transform.size.x()
         py.draw.line(SCREEN, (255, 0, 0), (Xpos, 0), (Xpos, TILETOTALSIZE))
+
+        py.draw.line(SCREEN, (255, 0, 0), (self.boss.map.offset.x() - self.camera.position.x(), 0), (self.boss.map.offset.x() - self.camera.position.x(), TILETOTALSIZE))
+        self.boss.map.blit(SCREEN, self.camera)
+        self.boss.blit(SCREEN)
         # self.ParaX.draw_ground(SCREEN)
         if self.tabPressed:
             self.MainMenu.blit(SCREEN)
+        self.interactible[1].blit(SCREEN)
+        print(f"player :\nposition : {self.player.transform.position}, size: {self.player.transform.size}")
+        print(f"portail :\nposition : {self.interactible[1].transform.position}, size: {self.interactible[1].transform.size}")
         self.inv.draw()
         SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
-
+        SCREEN.blit(Fonts["arial"].render(f"time : {time.time_ns()}", True, GREEN, BLACK), (10, 30))
         py.display.flip()
 
     def run(self):
@@ -140,9 +180,9 @@ class Game:
             self.draw()
             if not self.tabPressed:
                 if self.leftPressed:
-                    self.player.velocity.x(-500 * self.deltatime)
+                    self.player.velocity.x(-500 * self.deltatime * RESMULT)
                 elif self.rightPressed:
-                    self.player.velocity.x(500 * self.deltatime)
+                    self.player.velocity.x(500 * self.deltatime * RESMULT)
                 else:
                     self.player.velocity.x(0)
             for event in py.event.get():
