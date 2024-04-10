@@ -1,6 +1,6 @@
 import pygame as py
 import random
-import CardSystem.Inventory as Inventory
+from Inventory import *
 
 class Shop:
 
@@ -14,15 +14,18 @@ class Shop:
             rand = random.randrange(0, len(Inventory.cardList)-1)
             print(Inventory.cardList[rand])
             i += 1
+    def draw(self):
+        py.transform.scale(py.image.load("Resources/magasin.png").convert_alpha(), (WIDTH, HEIGHT))
 
-    def quitShop(self):
-        #sera utilisé lors de la selection du bouton quit
-        exit(1)
+#Pas besoin ?
+    # def quitShop(self):
+    #     #sera utilisé lors de la selection du bouton quit
+    #     exit(1)
 
 
 class DeckShop():
     def __init__(self):
-        self.SlotList = [" "," "," "," "," "]
+        self.SlotList = [" "," "," "]
         for i in range(5):
             for i in range(len(self.InvContents)):
                 if self.InvContents[i] == 'Dash':
@@ -33,6 +36,7 @@ class DeckShop():
                     py.SCREEN.blit(py.image.load("Resources/Purify_Soul_Card.webp"), (py.WIDTH-(200+(100*i)), py.HEIGHT-250))
 
                 i += 1
+
 
 
     #Bulle de dialogue ou description d'object

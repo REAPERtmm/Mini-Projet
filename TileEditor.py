@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
+from os import path
 file = ""  # From This File ("" pour créer un vie)
 SavePath = ""  # To This File (Required)
 

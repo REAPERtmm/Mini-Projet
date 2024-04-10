@@ -63,6 +63,7 @@ class Inventory:
         """update the inventory"""
         if not self.hide_ui and time.time() - self.ui_hide_timer >= 3:
             self.hide_ui = True
+            
 
     def draw(self):
         """Draw the inventory"""
