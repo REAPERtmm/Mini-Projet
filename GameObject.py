@@ -288,9 +288,9 @@ class Player(Entity):
                     self.animator.set_anim("jump")
                 else:
                     self.animator.set_anim("r_jump")
-        if self.isGrabbingLeft:
+        if self.isGrabbingLeft and not self.isGrounded:
             self.animator.set_anim("wallfall")
-        if self.isGrabbingRight:
+        if self.isGrabbingRight and not self.isGrounded:
             self.animator.set_anim("r_wallfall")
 
     def jump(self):

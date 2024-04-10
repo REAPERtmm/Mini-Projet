@@ -1,9 +1,4 @@
 from Inventory import *
-from Map import *
-from Menus import *
-from GameObject import *
-from parallax import *
-from Events import *
 from Game_over_test import *
 from Sound import *
 
