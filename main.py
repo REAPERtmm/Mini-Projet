@@ -169,6 +169,8 @@ class Game:
                         self.rightPressed = True
                     if event.key == py.K_SPACE:
                         self.player.jump()
+                        self.player.wall_jump()
+                        #self.player.double_jump()
                     if event.key == py.K_LSHIFT:
                         self.player.dash()
                     if event.key == py.K_TAB:
