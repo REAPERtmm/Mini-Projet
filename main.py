@@ -19,10 +19,6 @@ def game_over(self):
     print("Game Over! Score:")
 
 
-def btn_play(self):
-    self.tabPressed = False
-
-
 class Game:
     def __init__(self):
         self.running = True
@@ -60,7 +56,7 @@ class Game:
                     RED,
                     BLACK,
                     "Grand arial",
-                    btn_play(self)
+                    self.btn_play
                 ),
                 Button(
                     self,
@@ -118,6 +114,9 @@ class Game:
 
         self.player.transform.position = self.spawnpoint.copy()
 
+    def btn_play(self):
+        self.tabPressed = False
+
     def update(self):
         self.ground = self.map.get_physique_on_screen(self.camera)
         # self.interactible[0].transform.position.moveX(self.deltatime * 10)
@@ -127,6 +126,8 @@ class Game:
         if self.player.transform.position.y() > TILETOTALSIZE + 50:
             self.player.transform.position = self.spawnpoint.copy()
         self.camera.update()
+        if self.tabPressed:
+            self.MainMenu.update()
 
     def draw(self):
         self.ParaX.draw_bg(SCREEN)

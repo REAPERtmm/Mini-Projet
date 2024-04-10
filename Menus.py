@@ -10,7 +10,8 @@ class Menu:
         self.widget = list(widget)
 
     def update(self):
-        pass
+        for w in self.widget:
+            w.update()
 
     def blit(self, screen):
         py.draw.rect(
@@ -53,11 +54,9 @@ class Rectangle(Widget):
         pass
 
 
-class Label:
+class Label(Widget):
     def __init__(self, game, position: Vector2, size: Vector2, text: str, color, text_color, font_name: str):
-        self.game = game
-        self.position = position
-        self.size = size
+        super().__init__(game, position, size)
         self.text = text
         self.color = color
         self.text_color = text_color
@@ -87,6 +86,7 @@ class Button(Label):
         self.callback = callback
 
     def update(self):
+        #ajouter keydown
         if py.mouse.get_pressed(3)[0]:
             if self.position.x() < py.mouse.get_pos()[0] < self.position.x() + self.size.x() and self.position.y() < py.mouse.get_pos()[1] < self.position.y() + self.size.y():
                 self.callback()
@@ -105,7 +105,7 @@ class Frame(Widget):
 
     def update(self):
         for w in self.widget:
-            w.self.update()
+            w.update()
 
     def blit(self, screen):
         x_align = self.position.x()
