@@ -1,4 +1,5 @@
 from Settings import *
+from Sound import *
 import time
 
 
@@ -19,6 +20,7 @@ class Inventory:
         # Références
         self.game = game
         self.my_font = py.font.SysFont('Resources/GEO_AI__.TTF', 64)
+        self.sounds = Sound(self)
 
         # UI Datas
         self.ui_hide_timer = 0
@@ -36,13 +38,15 @@ class Inventory:
         """ INUTILE + Casse tout + ratio
         if len(self.InvContents) >= 3:
             self.InvContents.pop(0)
-            self.RedFlow += 200
+            self.RedFlow += 50
             self.ui_hide_timer = time.time()
             self.hide_ui = False
             """
+        self.sounds.Cardcollect()
         self.InvContents.append(type)
 
     def select(self, card):
+        self.sounds.CardSwap()
         if issubclass(type(card), int):
             self.selected_card = card
         else:
@@ -50,7 +54,8 @@ class Inventory:
 
     def increaseRed(self):
         """increment the Red flower count"""
-        self.RedFlow += 50
+        self.sounds.FlowerCollect()
+        self.RedFlow += 10
         self.ui_hide_timer = time.time()
         self.hide_ui = False
 
@@ -58,6 +63,7 @@ class Inventory:
         """update the inventory"""
         if not self.hide_ui and time.time() - self.ui_hide_timer >= 3:
             self.hide_ui = True
+            
 
     def draw(self):
         """Draw the inventory"""

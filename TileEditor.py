@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
+from os import path
 file = ""  # From This File ("" pour créer un vie)
 SavePath = ""  # To This File (Required)
 
@@ -104,7 +105,7 @@ while running:
 		)
 	)
 
-	LARGE = int(180 / TILESIZE)
+	LARGE = int(100 / TILESIZE)
 	for i in range(1, len(Textures)):
 		if selected == i:
 			py.draw.rect(

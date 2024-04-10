@@ -1,6 +1,5 @@
 from Settings import *
 
-
 class Parallax:
     def __init__(self, game):
         self.game = game
