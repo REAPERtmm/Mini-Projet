@@ -202,6 +202,10 @@ def Rotation(vec: Vector2, angle: float) -> Vector2:
     return Vector2(vec.x() * cos(angle) - vec.y() * sin(angle), vec.x() * sin(angle) + vec.y() * cos(angle))
 
 
+def distance(v1: Vector2, v2: Vector2):
+    return (v2 - v1).magnitude
+
+
 def Lerp(v1: Vector2, v2: Vector2, t: float) -> Vector2:
     return v1 * (1 - t) + v2 * t
 
