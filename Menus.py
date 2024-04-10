@@ -2,11 +2,11 @@ from GeoMath import *
 
 
 class Menu:
-    def __init__(self, game, position: Vector2, size: Vector2, image, *widget):
+    def __init__(self, game, position: Vector2, size: Vector2, color, *widget):
         self.game = game
         self.size = size
         self.position = position
-        self.image = image
+        self.color = color
         self.widget = list(widget)
 
     def update(self):
@@ -14,7 +14,17 @@ class Menu:
             w.update()
 
     def blit(self, screen):
-        screen.blit(self.image, (self.position.x(), self.position.y()))
+        py.draw.rect(
+            screen,
+            self.color,
+            (
+                self.position.x(),
+                self.position.y(),
+                self.size.x(),
+                self.size.y()
+            )
+        )
+        # screen.blit(self.image, (self.position.x(), self.position.y()))
 
         for widget in self.widget:
             widget.blit(screen)

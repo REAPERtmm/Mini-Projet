@@ -190,7 +190,7 @@ class Boss(Entity):
     def __init__(self, game, x: float, y: float, w: float, h: float):
         super().__init__(game, x, y, w, h)
         self.animator = Animator(
-            Animation(1, *load_all_images("Resources/Animation/Yack/idle/", ()))
+            idle=Animation(1, *load_all_images("Resources/Animation/Yack/idle/", self.transform.size.tuple()))
         )
         self.is_Active = False
         self.phase = 0
@@ -245,12 +245,12 @@ class Player(Entity):
             r_fall=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/fall/", (PLAYER_HEIGHT, PLAYER_HEIGHT), reverseX=True)),
             jump=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/jump/", (PLAYER_HEIGHT, PLAYER_HEIGHT))),
             r_jump=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/jump/", (PLAYER_HEIGHT, PLAYER_HEIGHT), reverseX=True)),
-
+            wallfall=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/wallfall/", (PLAYER_HEIGHT, PLAYER_HEIGHT), reverseX=True)),
+            r_wallfall=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/wallfall/", (PLAYER_HEIGHT, PLAYER_HEIGHT))),
         )
 
     def blit(self, screen: py.Surface):
         screen.blit(self.animator.get_current_image(), (self.transform.position - self.game.camera.position - Vector2(self._decalX, 0)).tuple())
-
 
     def update(self):
         super().update()
@@ -288,6 +288,10 @@ class Player(Entity):
                     self.animator.set_anim("jump")
                 else:
                     self.animator.set_anim("r_jump")
+        if self.isGrabbingLeft:
+            self.animator.set_anim("wallfall")
+        if self.isGrabbingRight:
+            self.animator.set_anim("r_wallfall")
 
     def jump(self):
         if self.CanJump:
@@ -298,7 +302,7 @@ class Player(Entity):
     def double_jump(self):
         if self.CandoubleJump == False :
             if self.CountJump !=0 :
-                self.velocity = Vector2(0, -1000) * self.game.deltatime
+                self.velocity = Vector2(0, -1000) * self.game.deltatime * RESMULT
                 self.wall_jump_count = 0
                 self.CountJump = 0
                 
@@ -312,7 +316,7 @@ class Player(Entity):
             elif wall_side == 'right':
                 jump_direction.x = -1  
             
-            self.velocity = jump_direction * 1000 * self.game.deltatime
+            self.velocity = jump_direction * 1000 * self.game.deltatime * RESMULT
             self.wall_jump_count += 1  
 
     def dash(self):

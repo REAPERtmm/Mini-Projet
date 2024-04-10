@@ -1,6 +1,6 @@
 from Settings import *
 
-bg_game_over = py.image.load("C:/Users/gravit/Documents/GitHub/Mini-Projet/Resources/Game_over.png").convert_alpha()
+bg_game_over = py.image.load("Resources/Game_over.png").convert_alpha()
 
 img = py.Surface((WIDTH, HEIGHT))
 img.fill((0,0,0))
@@ -11,7 +11,7 @@ class GameOver:
         self.opacity = 0
         self.img = img
         self.is_game_over = False
-        self.screen =py.display.set_mode((WIDTH, HEIGHT))
+
 
     def fade(self):
         if self.xf:
@@ -29,9 +29,9 @@ class GameOver:
         self.is_game_over = True
         print("Game Over")
 
-    def Affichage(self):
+    def Affichage(self, screen):
         if self.is_game_over:
-            self.screen.fill((0,0,0))
+            screen.blit(self.img, (0, 0))
 
     def Alpha(self):
         self.img.set_alpha(self.opacity)

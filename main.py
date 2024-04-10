@@ -30,7 +30,7 @@ class Game:
         self.spawnpoint: Vector2 = None
         self.lastPoint: Vector2 = None
         self.map: Map = None
-        self.sounds = Sound(self)
+        # self.sounds = Sound(self)
         self.load_shop_image()
         self.boss = Boss(self, TILETOTALSIZE * MAP_LENGHT, 100 * RESMULT, 75 * RESMULT, 75 * RESMULT)
 
@@ -117,6 +117,7 @@ class Game:
                     "Dash Card",
                     RED,
                     TRANSPARENT_COLOR,
+                    "arial",
                     lambda: print("test")
                 ),
                 Button(
@@ -126,6 +127,7 @@ class Game:
                     "Double Jump Card",
                     GREEN,
                     TRANSPARENT_COLOR,
+                    "arial",
                     lambda: print("test")
                 ),
                 Button(
@@ -135,6 +137,7 @@ class Game:
                     "Wall Jump Card",
                     BLUE,
                     TRANSPARENT_COLOR,
+                    "arial",
                     lambda: print("test")
                 ),
                 Button(
@@ -144,6 +147,7 @@ class Game:
                     "Wall Jump Card",
                     BLUE,
                     TRANSPARENT_COLOR,
+                    "arial",
                     lambda: print("test")
                 ),
                 Button(
@@ -153,6 +157,7 @@ class Game:
                     "Wall Jump Card",
                     BLUE,
                     TRANSPARENT_COLOR,
+                    "arial",
                     lambda: print("test")
                 ),
                 Button(
@@ -162,6 +167,7 @@ class Game:
                     "Wall Jump Card",
                     BLUE,
                     TRANSPARENT_COLOR,
+                    "arial",
                     lambda: print("test")
                 ),
                 wrap=4,
@@ -175,7 +181,8 @@ class Game:
                 "Titre",
                 TRANSPARENT_COLOR,
                 BLACK,
-                
+                "arial",
+
             ),
             Label(
                 self,
@@ -184,7 +191,8 @@ class Game:
                 "Description",
                 TRANSPARENT_COLOR,
                 BLACK,
-                
+                "arial",
+
             ),
             Label(
                 self,
@@ -193,6 +201,7 @@ class Game:
                 "Lorem Ipsul dsiniosninsifnisnf",
                 TRANSPARENT_COLOR,
                 BLACK,
+                "arial",
             ),
             Label(
                 self,
@@ -201,6 +210,7 @@ class Game:
                 "Acheter",
                 TRANSPARENT_COLOR,
                 BLACK,
+                "arial",
             ),
             Label(
                 self,
@@ -208,7 +218,8 @@ class Game:
                 Vector2(WIDTH//10, HEIGHT//35),
                 "Vendre :",
                 TRANSPARENT_COLOR,
-                BLACK,      
+                BLACK,
+                "arial",
             ),
              Label(
                 self,
@@ -216,7 +227,8 @@ class Game:
                 Vector2(WIDTH//10, HEIGHT//35),
                 "Vendre :",
                 TRANSPARENT_COLOR,
-                BLACK,      
+                BLACK,
+                "arial",
             ),
         )
 
@@ -411,34 +423,35 @@ class Game:
         self.boss.blit(SCREEN)
         # self.ParaX.draw_ground(SCREEN)
 
-        
+        self.inv.draw()
+
         if self.shopPressed and not self.tabPressed:
+            print("shop")
             SCREEN.blit(self.shop_image, (0, 0))
             self.Shop.blit(SCREEN)
-        elif not self.tabPressed:
-            self.inv.draw()
-  
+
         if self.tabPressed:
+            print("menu")
             self.MainMenu.blit(SCREEN)
+
         self.interactible[1].blit(SCREEN)
-        print(f"player :\nposition : {self.player.transform.position}, size: {self.player.transform.size}")
-        print(f"portail :\nposition : {self.interactible[1].transform.position}, size: {self.interactible[1].transform.size}")
-        self.inv.draw()
 
         SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
         SCREEN.blit(Fonts["arial"].render(f"time : {time.time_ns()}", True, GREEN, BLACK), (10, 30))
         if self.show_quit_screen:
+            print("quit screen")
             self.QuitMenu.blit(SCREEN)
 
         if self.show_param_screen:
+            print("quit param")
             self.ParamMenu.blit(SCREEN)
 
-        self.game_over.Affichage()
+        # self.game_over.Affichage(SCREEN)
 
         py.display.flip()
 
     def run(self):
-        self.sounds.ThemeMusic()
+        # self.sounds.ThemeMusic()
         while self.running:
             SCREEN.fill(SKY)
             self.deltatime = self.clock.get_time() / 1000
@@ -446,10 +459,9 @@ class Game:
             self.update()
             self.inv.update()
             self.draw()
-            self.sounds.ShamanStart()
-            self.sounds.soundTimer += self.deltatime
+            # self.sounds.ShamanStart()
+            # self.sounds.soundTimer += self.deltatime
 
-            
             if self.leftPressed:
                 self.player.velocity.x(-500 * self.deltatime * RESMULT)
             elif self.rightPressed:
@@ -467,37 +479,37 @@ class Game:
                 if event.type == py.KEYUP:
                     if event.key == py.K_q:
                         self.leftPressed = False
-                        self.sounds.AmbientStop()
+                        # self.sounds.AmbientStop()
                     if event.key == py.K_d:
                         self.rightPressed = False
-                        self.sounds.AmbientStop()
+                        # self.sounds.AmbientStop()
                     if event.key == py.K_r:
                         self.inv.increaseRed()
                     if event.key == py.K_1:
                         self.inv.select("Bomb")
-                        self.sounds.FlagOn()
+                        # self.sounds.FlagOn()
                     if event.key == py.K_2:
                         self.inv.select("Jump+")
-                        self.sounds.FlagOff()
+                        # self.sounds.FlagOff()
                     if event.key == py.K_3:
                         self.inv.select("Dash")
-                        self.sounds.FlagOff()
+                        # self.sounds.FlagOff()
 
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
                         self.leftPressed = True
-                        self.sounds.Walking()
+                        # self.sounds.Walking()
                     if event.key == py.K_d:
                         self.rightPressed = True
-                        self.sounds.Walking()
+                        # self.sounds.Walking()
                     if event.key == py.K_SPACE:
                         if not self.tabPressed and not self.shopPressed:
                             self.player.jump()
                             self.player.wall_jump()
-                            self.sounds.Jump()
+                            # self.sounds.Jump()
                     if event.key == py.K_LSHIFT:
                         self.player.dash()
-                        self.sounds.dash()
+                        # self.sounds.dash()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
                             self.tabPressed = False
