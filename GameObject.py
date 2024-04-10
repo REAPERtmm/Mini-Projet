@@ -186,19 +186,91 @@ class Entity(PhysicalObject):
             print("Collide : ", self.transform.CollideRect(elt.transform))"""
 
 
-class Player(Entity):
+class Boss(Entity):
     def __init__(self, game, x: float, y: float, w: float, h: float):
         super().__init__(game, x, y, w, h)
+        self.animator = Animator(
+            Animation(1, *load_all_images("Resources/Animation/Yack/idle/", ()))
+        )
+        self.is_Active = False
+        self.phase = 0
+        self.map = None
+        self.goleft = True
+        self.left = Vector2(0, 0)
+        self.right = Vector2(0, 0)
+        self.speed = 1
+
+    def Start(self, map):
+        self.map = map
+        self.left = self.map.offset + Vector2(3 * RESOLUTION, TILETOTALSIZE - self.transform.size.y() - 3 * RESOLUTION)
+        self.right = self.map.offset + Vector2(self.map.width * TILETOTALSIZE - 6 * RESOLUTION, TILETOTALSIZE - self.transform.size.y() - 3 * RESOLUTION)
+        self.transform.position = self.right.copy()
+
+    def update(self):
+        if self.is_Active:
+            if self.phase == 0:
+                if self.goleft:
+                    self.transform.position = Lerp(self.transform.position, self.left, self.game.deltatime)
+                    if distance(self.transform.position, self.left) < 10:
+                        self.goleft = False
+                else:
+                    self.transform.position = Lerp(self.transform.position, self.right, self.game.deltatime)
+                    if distance(self.transform.position, self.right) < 10:
+                        self.goleft = True
+
+    def blit(self, screen: py.Surface):
+        super().blit(screen)
+        self.map.blit(screen, self.game.camera)
+
+
+class Player(Entity):
+    def __init__(self, game, x: float, y: float):
+        super().__init__(game, x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
         self.CanJump = True
         self.CanDash = True
         self.right = True
         self.CountDash = 0
         self.wall_jump_count = 0  
         self.wall_jump_max_count = 1  
+        self._decalX = int(PLAYER_HEIGHT/2 - PLAYER_WIDTH/2)
+        self.last = py.time.get_ticks()
+        self.cooldown = 500
+        self.CountDash = 0
+        self.animator = Animator(
+            idle=Animation(400_000_000, *load_all_images("Resources/Animation/Player/idle/", (PLAYER_HEIGHT, PLAYER_HEIGHT))),
+            r_idle=Animation(400_000_000, *load_all_images("Resources/Animation/Player/idle/", (PLAYER_HEIGHT, PLAYER_HEIGHT), reverseX=True)),
+            run=Animation(800_000_000, *load_all_images("Resources/Animation/Player/run/", (PLAYER_HEIGHT, PLAYER_HEIGHT))),
+            r_run=Animation(400_000_000, *load_all_images("Resources/Animation/Player/run/", (PLAYER_HEIGHT, PLAYER_HEIGHT), reverseX=True)),
+            fall=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/fall/", (PLAYER_HEIGHT, PLAYER_HEIGHT))),
+            r_fall=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/fall/", (PLAYER_HEIGHT, PLAYER_HEIGHT), reverseX=True)),
+            jump=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/jump/", (PLAYER_HEIGHT, PLAYER_HEIGHT))),
+            r_jump=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/jump/", (PLAYER_HEIGHT, PLAYER_HEIGHT), reverseX=True)),
+
+        )
+
+    def blit(self, screen: py.Surface):
+        screen.blit(self.animator.get_current_image(), (self.transform.position - self.game.camera.position - Vector2(self._decalX, 0)).tuple())
+
 
     def update(self):
         super().update()
+        if self.game.rightPressed:
+            self.right = True
+        elif self.game.leftPressed:
+            self.right = False
+
+        self.animator.update()
         if self.isGrounded:
+            if self.game.leftPressed or self.game.rightPressed:
+                if self.right:
+                    self.animator.set_anim("run")
+                else:
+                    self.animator.set_anim("r_run")
+            else:
+                if self.right:
+                    self.animator.set_anim("idle")
+                else:
+                    self.animator.set_anim("r_idle")
             self.CanJump = True
             self.CanDash = True
             self.wall_jump_count = 0  
@@ -206,10 +278,20 @@ class Player(Entity):
         else:
             self.CanJump = False
             self.CanDoubleJump = True
+            if self.velocity.y() > 0:
+                if self.right:
+                    self.animator.set_anim("fall")
+                else:
+                    self.animator.set_anim("r_fall")
+            else:
+                if self.right:
+                    self.animator.set_anim("jump")
+                else:
+                    self.animator.set_anim("r_jump")
 
     def jump(self):
         if self.CanJump:
-            self.velocity = Vector2(0, -1000) * self.game.deltatime
+            self.velocity = Vector2(0, -1000) * self.game.deltatime * RESMULT
             self.CanJump = False
             self.wall_jump_count = 0  
     
@@ -261,19 +343,3 @@ class Player(Entity):
 
         return None  
 
-
-
-
-if __name__ == '__main__':
-    r1 = Box(Vector2(0, 0), Vector2(10, 10))
-    r2 = Box(Vector2(11, 0), Vector2(10, 10))
-    movement = Vector2(40, 40)
-
-    print(r1.position)
-    print(r2.position)
-
-    mire = Line(r1.position + r1.size / 2, r2.position + r2.size / 2)
-    print(mire.start(), " to ", mire.end())
-
-    print("hit on r2 :", r2.CollideLine(mire))
-    print("hit on r1 :", r1.CollideLine(mire))

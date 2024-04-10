@@ -1,7 +1,6 @@
-from Settings import *
 from random import randint
-from copy import copy
-from GameObject import *
+from GameObject import StaticObject
+from GeoMath import *
 
 header = """
 0 : Box
@@ -20,16 +19,15 @@ class Map:
 		self.res = res
 		self.width = width
 		self.tile_collection = list(tile_collection)
-
 		self.mapping = []
-
+		self.offset = Vector2(0, 0)
 		self.map = [-1 for __ in range(width)]
 
 	def get_on_Screen(self, camera):
 		camera_box = Box(camera.position, camera.Dimention())
 		valid_tile = []
 		for x in range(self.width):
-			if camera_box.CollideRect(Box(Vector2(x * TILETOTALSIZE, 0), Vector2(TILETOTALSIZE, TILETOTALSIZE))):
+			if camera_box.CollideRect(Box(Vector2(x * TILETOTALSIZE, 0) + self.offset, Vector2(TILETOTALSIZE, TILETOTALSIZE))):
 				valid_tile.append(x)
 		return valid_tile
 
@@ -49,16 +47,13 @@ class Tile:  # a 32x32 grid
 		self.game = game
 		self.position: Vector2 = position
 		self.collision = []
-	
+
 		self.image: py.Surface = None
 		self.t_top: list = None
 		self.t_bottom: list = None
 		self.t_left: list = None
 		self.t_right: list = None
-	
-	def copy(self, position: Vector2):
-		return createTileFromData(self.game, position, self.image, self.collision.copy())
-	
+
 	def blit(self, screen: py.Surface):
 		screen.blit(self.image, (self.position - self.game.camera.position).tuple())
 
@@ -100,13 +95,7 @@ class Tile:  # a 32x32 grid
 		return False
 
 	def __str__(self):
-		chaine = ""
-		for y in range(TILERESOLUTION):
-			chaine += "|"
-			for x in range(TILERESOLUTION):
-				chaine += f" {self.grid[x][y]} |"
-			chaine += "\n"
-		return chaine
+		return str(id(self))
 
 
 def createRandomMap(game, width) -> Map:
@@ -133,6 +122,7 @@ def createMapStartingWith(game, width, start_tile_index, excluded=True):
 	fillMap(o_map)
 	replace_with_tiles(o_map)
 	return o_map
+
 
 
 def get_mapping_from_tile_collection(tile_collection: list, exclude: tuple = ()) -> list:
@@ -180,9 +170,21 @@ def fillMap(o_map: Map) -> None:
 					remaining -= 1
 
 
+def creatingMapStrict(game, tiles: list, tiles_index: list, offset=Vector2(0, 0)) -> Map:
+	o_map: Map = Map(game, len(tiles), RESOLUTION, tiles)
+	o_map.offset = offset
+	o_map.mapping = get_mapping_from_tile_collection(tiles)
+
+	# définir les tiles
+	for index in range(len(tiles_index)):
+		o_map.map[index] = tiles_index[index]
+	replace_with_tiles(o_map)
+	return o_map
+
+
 def replace_with_tiles(o_map: Map) -> None:
 	for x in range(len(o_map.map)):
-		o_map.map[x] = createTileFromExisting(o_map.tile_collection[o_map.map[x]], Vector2(x * TILETOTALSIZE, 0))
+		o_map.map[x] = createTileFromExisting(o_map.tile_collection[o_map.map[x]], Vector2(x * TILETOTALSIZE, 0) + o_map.offset)
 
 
 def createTileFromExisting(tile: Tile, position: Vector2) -> Tile:
@@ -196,7 +198,7 @@ def _createTileFromData(game, position: Vector2, image: py.Surface, collision: l
 	tile = Tile(game, position)
 	tile.image = image
 	tile.collision = collision
-	
+
 	tile.t_top = top
 	tile.t_bottom = bottom
 	tile.t_left = left
@@ -240,7 +242,7 @@ def createTileFromPath(game, path: str) -> Tile:
 					)
 					i += 1
 		f.close()
-		
+
 	# List des tuiles sur chacune des bordures
 	tile.t_top = [top[0] for top in grid]
 	tile.t_bottom = [bottom[-1] for bottom in grid]
