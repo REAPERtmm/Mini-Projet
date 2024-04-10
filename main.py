@@ -143,7 +143,7 @@ class Game:
             self.draw()
             self.sounds.ShamanStart()
             self.sounds.soundTimer += self.deltatime
-            
+
             if not self.tabPressed:
                 if self.leftPressed:
                     self.player.velocity.x(-500 * self.deltatime)
@@ -185,6 +185,7 @@ class Game:
                         self.sounds.Jump()
                     if event.key == py.K_LSHIFT:
                         self.player.dash()
+                        self.sounds.dash()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
                             self.tabPressed = False

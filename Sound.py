@@ -59,6 +59,12 @@ class Sound:
         PlaySound.set_volume(0.1)
         py.mixer.Channel(7).play(PlaySound, loops = 0)
 
+
+    def dash(self):
+        PlaySound = py.mixer.Sound("SoundFiles/DashWind.mp3")
+        PlaySound.set_volume(0.1)
+        py.mixer.Channel(7).play(PlaySound, loops = 0)
+
     def FlagOff(self):
         self.soundflag = False
     
