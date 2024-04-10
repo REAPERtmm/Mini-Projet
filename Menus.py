@@ -2,11 +2,11 @@ from GeoMath import *
 
 
 class Menu:
-    def __init__(self, game, position: Vector2, size: Vector2, color, *widget):
+    def __init__(self, game, position: Vector2, size: Vector2, image, *widget):
         self.game = game
         self.size = size
         self.position = position
-        self.color = color
+        self.image = image
         self.widget = list(widget)
 
     def update(self):
@@ -14,16 +14,7 @@ class Menu:
             w.update()
 
     def blit(self, screen):
-        py.draw.rect(
-            screen,
-            self.color,
-            (
-                self.position.x(),
-                self.position.y(),
-                self.size.x(),
-                self.size.y()
-            )
-        )
+        screen.blit(self.image, (self.position.x(), self.position.y()))
 
         for widget in self.widget:
             widget.blit(screen)
@@ -86,10 +77,10 @@ class Button(Label):
         self.callback = callback
 
     def update(self):
-        #ajouter keydown
-        if py.mouse.get_pressed(3)[0]:
+        if py.mouse.get_pressed(3)[0] and self.game.mouse_down:
             if self.position.x() < py.mouse.get_pos()[0] < self.position.x() + self.size.x() and self.position.y() < py.mouse.get_pos()[1] < self.position.y() + self.size.y():
                 self.callback()
+                self.game.mouse_down = False
 
     def blit(self, screen):
         super().blit(screen)
