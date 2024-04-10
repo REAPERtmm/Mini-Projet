@@ -3,7 +3,7 @@ from Map import *
 from Menus import *
 from parallax import *
 from Events import *
-
+from Game_over_test import *
 
 def checkpoints(self):
     print("Nouveau Checkpoint")
@@ -30,6 +30,8 @@ class Game:
 
         self.inv = Inventory(self)
         fill_inventory(self.inv, "Dash", "Jump+", "Bomb")
+
+        self.game_over = GameOver()
 
         self.MainMenu = Menu(
             self,
@@ -86,10 +88,6 @@ class Game:
         self.clock = py.time.Clock()
         self.deltatime = 0
         self.ParaX = Parallax(self)
-
-        # Créer les événements pour le checkpoint et le game over
-        self.checkpoint_event = Event(start_checkpoint)
-        self.game_over_event = Event(game_over)
         
     def loadMap(self):
         self.map = createMapStartingWith(self, 10, 0)
@@ -112,6 +110,8 @@ class Game:
         if self.player.transform.position.y() > TILETOTALSIZE + 50:
             self.player.transform.position = self.spawnpoint.copy()
         self.camera.update()
+        self.game_over.fade()
+
 
     def draw(self):
         self.ParaX.draw_bg(SCREEN)
@@ -127,6 +127,8 @@ class Game:
             self.MainMenu.blit(SCREEN)
         self.inv.draw()
         SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
+
+        self.game_over.Affichage()
 
         py.display.flip()
 
@@ -176,6 +178,8 @@ class Game:
                             self.tabPressed = False
                         else:
                             self.tabPressed = True
+                    if event.key == py.K_o:
+                        self.game_over.game_over()
 
 
 g = Game()
