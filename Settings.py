@@ -48,6 +48,13 @@ CardImg = [
 ]
 
 Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png").convert_alpha(), (64 * RESMULT, 64 * RESMULT))
+
+MenuImg = [
+	py.transform.scale(py.image.load("image/MenuImg/menu_pause_img.png").convert_alpha(), (100, 200)),
+	py.transform.scale(py.image.load("image/MenuImg/param_menu_img.png").convert_alpha(), (100, 200)),
+	py.transform.scale(py.image.load("image/MenuImg/quit_menu_img.png").convert_alpha(), (100, 200)),
+]
+
 #Ground = py.transform.scale(py.image.load("Resources/ground.png"), (WIDTH, HEIGHT / 10))
 Bg = [
 	py.transform.scale(py.image.load(f"Resources/plx-{i}.png").convert_alpha(), (int(WIDTH * 1.5), int(HEIGHT * 1.5))) for i in range(1, 6)
