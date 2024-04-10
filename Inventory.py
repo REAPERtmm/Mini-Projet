@@ -46,6 +46,7 @@ class Inventory:
         self.InvContents.append(type)
 
     def select(self, card):
+        self.sounds.CardSwap()
         if issubclass(type(card), int):
             self.selected_card = card
         else:

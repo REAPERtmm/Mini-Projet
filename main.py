@@ -134,8 +134,6 @@ class Game:
 
     def run(self):
         self.sounds.ThemeMusic()
-        self.soundflag = False
-        self.soundTimer = 0
         while self.running:
             SCREEN.fill(SKY)
             self.deltatime = self.clock.get_time() / 1000
@@ -143,12 +141,9 @@ class Game:
             self.update()
             self.inv.update()
             self.draw()
-
-            self.soundTimer += self.deltatime
-            if self.soundflag == True and self.soundTimer > 0.15:
-                self.soundTimer = 0
-                self.sounds.ShamanVoice(randint(1, 17))
-
+            self.sounds.ShamanStart()
+            self.sounds.soundTimer += self.deltatime
+            
             if not self.tabPressed:
                 if self.leftPressed:
                     self.player.velocity.x(-500 * self.deltatime)
@@ -170,16 +165,13 @@ class Game:
                         self.inv.increaseRed()
                     if event.key == py.K_1:
                         self.inv.select("Bomb")
-                        self.sounds.CardSwap()
-                        self.soundflag = True
+                        self.sounds.FlagOn()
                     if event.key == py.K_2:
                         self.inv.select("Jump+")
-                        self.sounds.CardSwap()
-                        self.soundflag = False
+                        self.sounds.FlagOff()
                     if event.key == py.K_3:
                         self.inv.select("Dash")
-                        self.sounds.CardSwap()
-                        self.soundflag = False
+                        self.sounds.FlagOff()
 
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:

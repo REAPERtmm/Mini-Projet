@@ -9,6 +9,8 @@ from random import randint
 class Sound:
     def __init__(self, game):
         self.game = game
+        self.clock = py.time.Clock()
+        self.deltatime = self.clock.get_time() / 1000
         py.mixer.init()
         self.dialogue_sound = None
         self.dialogue_channel = None
@@ -57,6 +59,17 @@ class Sound:
         PlaySound.set_volume(0.1)
         py.mixer.Channel(7).play(PlaySound, loops = 0)
 
+    def FlagOff(self):
+        self.soundflag = False
+    
+    def FlagOn(self):
+        self.soundflag = True
+
+    def ShamanStart(self):
+        if self.soundflag == True and self.soundTimer > 0.15:
+                self.soundTimer = 0
+                self.ShamanVoice(randint(1, 17))
+        
     def VoiceStop(self):
         py.mixer.Channel(1).stop()
 
