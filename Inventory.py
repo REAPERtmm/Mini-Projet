@@ -19,7 +19,7 @@ class Inventory:
     def __init__(self, game):
         # Références
         self.game = game
-        self.my_font = py.font.SysFont('Resources/GEO_AI__.TTF', 64)
+        self.my_font = Fonts["arial"]
         # self.sounds = Sound(self)
 
         # UI Datas
@@ -34,14 +34,6 @@ class Inventory:
         self.selected_card = 0
 
     def AddCard(self, type):
-        """Add New Card to the 1st slot"""
-        """ INUTILE + Casse tout + ratio
-        if len(self.InvContents) >= 3:
-            self.InvContents.pop(0)
-            self.RedFlow += 50
-            self.ui_hide_timer = time.time()
-            self.hide_ui = False
-            """
         # self.sounds.Cardcollect()
         try:
             self.game.player.ability_enable[type] = True

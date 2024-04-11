@@ -5,9 +5,9 @@ py.init()
 py.font.init()
 
 # CONSTANT
+TITLE = "Echoes Of Harmony"
 RESMULT = 1.8
 WIDTH, HEIGHT = int(800 * RESMULT), int(600 * RESMULT)
-TITLE = "JEU VACHEMENT COOL"
 GRAVITY = 9.8 * 2 * RESMULT
 RESOLUTION = int(25 * RESMULT)
 TILERESOLUTION = 32
@@ -28,8 +28,7 @@ MAP_LENGHT = 3
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
 py.display.set_caption(TITLE)
 
-# TODO Remettre le FullScreen
-# py.display.toggle_fullscreen()
+py.display.toggle_fullscreen()
 
 # Yack
 YACK_WIDTH = int(300 * RESMULT)
@@ -60,11 +59,14 @@ FLOWER_SIZE = int(64 * RESMULT)
 Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png").convert_alpha(), (FLOWER_SIZE, FLOWER_SIZE))
 
 MenuImg = [
-	py.transform.scale(py.image.load("image/MenuImg/menu_pause_img.png").convert_alpha(), (100, 200)),
-	py.transform.scale(py.image.load("image/MenuImg/param_menu_img.png").convert_alpha(), (100, 200)),
-	py.transform.scale(py.image.load("image/MenuImg/quit_menu_img.png").convert_alpha(), (100, 200)),
+	py.transform.scale(py.image.load("image/MenuImg/menu_pause_img.png").convert_alpha(), (1500, 750)),
+	py.transform.scale(py.image.load("image/MenuImg/param_menu_img.png").convert_alpha(), (500, 550)),
+	py.transform.scale(py.image.load("image/MenuImg/quit_menu_img.png").convert_alpha(), (1500, 750)),
+	py.transform.scale(py.image.load("image/MenuImg/magasin.png").convert_alpha(), (1500, 1000)),
 ]
 
+IMAGE_VIDE = py.surface.Surface((1, 1))
+IMAGE_VIDE.set_alpha(0)
 
 # Parallax
 PARALLAX_WIDTH = int(WIDTH * 1.5)
