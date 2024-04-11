@@ -3,24 +3,23 @@ from os import listdir
 
 py.init()
 py.font.init()
-#py.mixer.init()
 
 # CONSTANT
-RESMULT = 2
-WIDTH, HEIGHT = 800 * RESMULT, 600 * RESMULT
 TITLE = "Echoes Of Harmony"
+RESMULT = 1.8
+WIDTH, HEIGHT = int(800 * RESMULT), int(600 * RESMULT)
 GRAVITY = 9.8 * 2 * RESMULT
-RESOLUTION = 25 * RESMULT
+RESOLUTION = int(25 * RESMULT)
 TILERESOLUTION = 32
 TILETOTALSIZE = RESOLUTION * TILERESOLUTION
 
 # Player Values :
-PLAYER_WIDTH = 50 * RESMULT
-PLAYER_HEIGHT = 100 * RESMULT
+PLAYER_WIDTH = int(50 * RESMULT)
+PLAYER_HEIGHT = int(100 * RESMULT)
 
 # Trevor :
 TREVOR_DELAY_BEFORE_START = 3# en seconde
-TREVOR_SPEED = 400 * RESMULT  # pixels / sec
+TREVOR_SPEED = int(400 * RESMULT)  # pixels / sec
 
 # Map:
 MAP_LENGHT = 3
@@ -29,11 +28,11 @@ MAP_LENGHT = 3
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
 py.display.set_caption(TITLE)
 
-# py.display.toggle_fullscreen()
+py.display.toggle_fullscreen()
 
 # Yack
-YACK_WIDTH = 200 * RESMULT
-YACK_HEIGHT = 150 * RESMULT
+YACK_WIDTH = int(300 * RESMULT)
+YACK_HEIGHT = int(225 * RESMULT)
 
 # Fonts
 Fonts = {
@@ -41,13 +40,23 @@ Fonts = {
 	"Grand arial": py.font.Font("./Resources/arial.ttf", 25),
 }
 
+CLOCHE = py.transform.scale(py.image.load("Resources/cloche purificatrice.png").convert_alpha(), (235, 333))
+HALO = py.transform.scale(py.image.load("Resources/Halo.png").convert_alpha(), (TILETOTALSIZE//2, TILETOTALSIZE))
+
+SHAMAN_WIDTH = 100
+SHAMAN_HEIGHT = 200
+SHAMAN = py.transform.scale(py.image.load("Resources/shaman.png").convert_alpha(), (SHAMAN_WIDTH, SHAMAN_HEIGHT))
+
+CARD_WIDTH = int(100 * RESMULT)
+CARD_HEIGHT = int(200 * RESMULT)
 CardImg = [
-	py.transform.scale(py.image.load("Resources/Godspeed_Soul_Card.webp").convert_alpha(), (100 * RESMULT, 200 * RESMULT)),
-	py.transform.scale(py.image.load("Resources/Elevate_Soul_Card.webp").convert_alpha(), (100 * RESMULT, 200 * RESMULT)),
-	py.transform.scale(py.image.load("Resources/Purify_Soul_Card.webp").convert_alpha(), (100 * RESMULT, 200 * RESMULT)),
+	py.transform.scale(py.image.load("Resources/Godspeed_Soul_Card.webp").convert_alpha(), (CARD_WIDTH, CARD_HEIGHT)),
+	py.transform.scale(py.image.load("Resources/Elevate_Soul_Card.webp").convert_alpha(), (CARD_WIDTH, CARD_HEIGHT)),
+	py.transform.scale(py.image.load("Resources/Purify_Soul_Card.webp").convert_alpha(), (CARD_WIDTH, CARD_HEIGHT)),
 ]
 
-Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png").convert_alpha(), (64 * RESMULT, 64 * RESMULT))
+FLOWER_SIZE = int(64 * RESMULT)
+Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png").convert_alpha(), (FLOWER_SIZE, FLOWER_SIZE))
 
 MenuImg = [
 	py.transform.scale(py.image.load("image/MenuImg/menu_pause_img.png").convert_alpha(), (1500, 750)),
@@ -59,10 +68,17 @@ MenuImg = [
 IMAGE_VIDE = py.surface.Surface((1, 1))
 IMAGE_VIDE.set_alpha(0)
 
-#Ground = py.transform.scale(py.image.load("Resources/ground.png"), (WIDTH, HEIGHT / 10))
-Bg = [
-	py.transform.scale(py.image.load(f"Resources/plx-{i}.png").convert_alpha(), (int(WIDTH * 1.5), int(HEIGHT * 1.5))) for i in range(1, 6)
-]
+# Parallax
+PARALLAX_WIDTH = int(WIDTH * 1.5)
+PARALLAX_HEIGHT = int(HEIGHT * 1.5)
+Bg = {
+	"Plaine": [
+		py.transform.scale(py.image.load(f"Resources/Parallax/Plaine/{i}.png").convert_alpha(), (PARALLAX_WIDTH, PARALLAX_HEIGHT)) for i in range(1, 4)
+	],
+	"Grotte": [
+			py.transform.scale(py.image.load(f"Resources/Parallax/Grotte/{i}.png").convert_alpha(), (PARALLAX_WIDTH, PARALLAX_HEIGHT)) for i in range(1, 4)
+		]
+}
 
 Trevor = py.transform.scale(py.image.load("Resources/Trevor.png").convert_alpha(), (int(472 * TILETOTALSIZE / 281), TILETOTALSIZE))
 

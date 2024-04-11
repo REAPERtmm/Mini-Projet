@@ -35,6 +35,10 @@ class Inventory:
 
     def AddCard(self, type):
         # self.sounds.Cardcollect()
+        try:
+            self.game.player.ability_enable[type] = True
+        except KeyError:
+            pass
         self.InvContents.append(type)
 
     def select(self, card):
@@ -55,7 +59,6 @@ class Inventory:
         """update the inventory"""
         if not self.hide_ui and time.time() - self.ui_hide_timer >= 3:
             self.hide_ui = True
-            
 
     def draw(self):
         """Draw the inventory"""
@@ -65,7 +68,7 @@ class Inventory:
             else:
                 img = CardImg[CardEq[self.InvContents[i]]]  # Image equivalant au text
 
-            SCREEN.blit(img, (SCREEN.get_width() - (i + 1) * 100, SCREEN.get_height() - (100 if self.selected_card == i else 10)))
+            SCREEN.blit(img, (SCREEN.get_width() - (i + 1) * CARD_WIDTH, SCREEN.get_height() - (100 * RESMULT if self.selected_card == i else 10 * RESMULT)))
 
         tracks = self.RedFlow
         colors = (173, 56, 45)

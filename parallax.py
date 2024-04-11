@@ -1,15 +1,28 @@
 from Settings import *
 
+
 class Parallax:
-    def __init__(self, game):
+    def __init__(self, game, offsetY):
         self.game = game
+        self.offsetY = offsetY
+        self.current = "Plaine"
+
+    def set_current(self, new_current):
+        self.current = new_current
 
     def draw_bg(self, screen):
-        speed = .2
-        for i in range(1, 5):
-            for j in range(3):
-                screen.blit(Bg[i], ((-self.game.camera.position.x() * speed) % (WIDTH * 1.5) - (j-1) * (WIDTH * 1.5), -self.game.camera.position.y() - 50))
-            speed += .2
+        depth = len(Bg[self.current])
+        speed = .5
+        for i in range(0, depth):
+            for j in range(2):
+                screen.blit(
+                    Bg[self.current][i],
+                    (
+                        (-self.game.camera.position.x() * speed) % PARALLAX_WIDTH - j * PARALLAX_WIDTH,
+                        TILETOTALSIZE - PARALLAX_HEIGHT - self.game.camera.position.y() + self.offsetY
+                    )
+                )
+            speed += 1 / (depth * 2)
 
 
 """    def draw_ground(self, screen):
