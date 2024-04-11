@@ -13,7 +13,7 @@ def load_all_images(dir_path, size, reverseX=False, reverseY=False):
         if path.split(".")[-1] in ALLOWED_FILES:
             img = py.transform.smoothscale(py.image.load(dir_path + path), size)
             img = py.transform.flip(img, reverseX, reverseY)
-            all_images.append(img)
+            all_images.append(img.convert_alpha())
     return all_images
 
 
@@ -30,6 +30,9 @@ class Animator:
         for v in self.anim.values():
             v.update()
 
+    def is_ended(self):
+        return self.anim[self.current_anim].is_ended()
+
     def set_anim(self, anim):
         if anim == self.current_anim:
             return
@@ -38,14 +41,16 @@ class Animator:
 
 
 class Animation:
-    def __init__(self, duration: float, *images):
+    def __init__(self, duration: float, *images, StopAtEnd=False):
         self.duration = duration
         self.images = list(images)
-        print("================DEBUG=================")
+        self.StopAtEnd = StopAtEnd
         self.delay = self.duration / len(self.images)
-        print(f"Delay : {self.delay}")
         self.current_frame = 0
         self.next_frame = time.time_ns() + self.delay
+
+    def is_ended(self):
+        return self.current_frame + 1 == len(self.images)
 
     def get_current_frame(self):
         return self.images[self.current_frame]
@@ -56,7 +61,12 @@ class Animation:
 
     def update(self):
         if time.time_ns() > self.next_frame:
-            self.current_frame = (self.current_frame + 1) % len(self.images)
+            self.current_frame += 1
+            if self.current_frame == len(self.images):
+                if self.StopAtEnd:
+                    self.current_frame -= 1
+                else:
+                    self.current_frame = 0
             self.next_frame = self.next_frame + self.delay
 
 
