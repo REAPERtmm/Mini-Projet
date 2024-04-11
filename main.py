@@ -713,7 +713,7 @@ class Game:
                     if event.key == py.K_d:
                         self.rightPressed = False
                         self.sounds.FlagOff()
-                    if event.key == py.K_a:
+                    if event.key == py.K_e:
                         self.is_Interacting = False
 
                 if event.type == py.KEYDOWN:
@@ -736,11 +736,9 @@ class Game:
                         else:
                             self.tabPressed = True
 
-                    if event.key == py.K_a:
-                        self.is_Interacting = True
-
                     # Ici pour gérer les event du shop
                     if event.key == py.K_e:
+                        self.is_Interacting = True
                         if not self.tabPressed and distance(self.player.transform.position, self.shaman.transform.position) < 100:
                             self.shopPressed = not self.shopPressed
 
