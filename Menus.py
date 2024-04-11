@@ -41,13 +41,6 @@ class Rectangle(Widget):
         pass
 
     def blit(self, screen):
-        py.draw.rect(
-            screen,
-            WHITE,
-            (self.position.x(), self.position.y(),
-             self.size.x(), self.size.y())
-        )
-
         screen.blit(self.image, (self.position.x(), self.position.y()))
 
 
@@ -72,22 +65,25 @@ class Button(Label):
     def __init__(self, game, position: Vector2, size: Vector2, text: str, image, text_color, font_name, callback):
         super().__init__(game, position, size, text, image, text_color, font_name)
         self.callback = callback
+        self.is_click = False
 
     def update(self):
-        if py.mouse.get_pressed(3)[0] and self.game.mouse_down:
-            if self.position.x() < py.mouse.get_pos()[0] < self.position.x() + self.size.x() and self.position.y() < py.mouse.get_pos()[1] < self.position.y() + self.size.y():
+        if py.mouse.get_pressed(3)[0] and self.position.x() < py.mouse.get_pos()[0] < self.position.x() + self.size.x() and self.position.y() < py.mouse.get_pos()[1] < self.position.y() + self.size.y():
+            self.is_click = True
+            if self.game.mouse_down:
                 self.callback()
                 self.game.mouse_down = False
+        else:
+            self.is_click = False
 
     def blit(self, screen):
-        py.draw.rect(
-            screen,
-            WHITE,
-            (self.position.x(), self.position.y(),
-             self.size.x(), self.size.y())
-        )
-
         super().blit(screen)
+
+        if self.is_click:
+            image = py.Surface(self.size.tuple())
+            image.fill(0)
+            image.set_alpha(100)
+            screen.blit(image, self.position.tuple())
 
 
 class Frame(Widget):

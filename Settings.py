@@ -28,7 +28,7 @@ MAP_LENGHT = 3
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
 py.display.set_caption(TITLE)
 
-py.display.toggle_fullscreen()
+# py.display.toggle_fullscreen()
 
 # Yack
 YACK_WIDTH = int(300 * RESMULT)
@@ -47,23 +47,31 @@ SHAMAN_WIDTH = 100
 SHAMAN_HEIGHT = 200
 SHAMAN = py.transform.scale(py.image.load("Resources/shaman.png").convert_alpha(), (SHAMAN_WIDTH, SHAMAN_HEIGHT))
 
-CARD_WIDTH = int(100 * RESMULT)
-CARD_HEIGHT = int(200 * RESMULT)
+CARD_WIDTH = int(55 * RESMULT)
+CARD_HEIGHT = int(85 * RESMULT)
+
 CardImg = [
-	py.transform.scale(py.image.load("Resources/Godspeed_Soul_Card.webp").convert_alpha(), (CARD_WIDTH, CARD_HEIGHT)),
-	py.transform.scale(py.image.load("Resources/Elevate_Soul_Card.webp").convert_alpha(), (CARD_WIDTH, CARD_HEIGHT)),
-	py.transform.scale(py.image.load("Resources/Purify_Soul_Card.webp").convert_alpha(), (CARD_WIDTH, CARD_HEIGHT)),
+	py.transform.scale(py.image.load("image/Card/carddash.png").convert_alpha(), (CARD_WIDTH, CARD_HEIGHT)),
+	py.transform.scale(py.image.load("image/Card/carddoublejump.png").convert_alpha(), (CARD_WIDTH, CARD_HEIGHT)),
+	py.transform.scale(py.image.load("image/Card/cardwalljump.png").convert_alpha(), (CARD_WIDTH, CARD_HEIGHT)),
 ]
 
 FLOWER_SIZE = int(64 * RESMULT)
 Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png").convert_alpha(), (FLOWER_SIZE, FLOWER_SIZE))
 
-MenuImg = [
-	py.transform.scale(py.image.load("image/MenuImg/menu_pause_img.png").convert_alpha(), (1500, 750)),
-	py.transform.scale(py.image.load("image/MenuImg/param_menu_img.png").convert_alpha(), (500, 550)),
-	py.transform.scale(py.image.load("image/MenuImg/quit_menu_img.png").convert_alpha(), (1500, 750)),
-	py.transform.scale(py.image.load("image/MenuImg/magasin.png").convert_alpha(), (1500, 1000)),
-]
+MenuImg = {
+	"HomeMenu": py.transform.scale(py.image.load("image/MenuImg/home_menu.png").convert_alpha(), (500, 500)),
+	"PauseMenu": py.transform.scale(py.image.load("image/MenuImg/pause_menu.png").convert_alpha(), (500, 500)),
+	"ParamMenu": py.transform.scale(py.image.load("image/MenuImg/pause_menu.png").convert_alpha(), (500, 500)),
+	"QuitMenu": py.transform.scale(py.image.load("image/MenuImg/banner_menu.png").convert_alpha(), (1500, 750)),
+	"ShopMenu": py.transform.scale(py.image.load("image/MenuImg/shop_menu.png").convert_alpha(), (1750, 1000)),
+	"BigButton": py.transform.scale(py.image.load("image/MenuImg/big_button.png").convert_alpha(), (300, 50)),
+	"BigButtonClicked": py.transform.scale(py.image.load("image/MenuImg/big_button_clicked.png").convert_alpha(), (300, 50)),
+	"FlowerButton": py.transform.scale(py.image.load("image/MenuImg/flower_button.png").convert_alpha(), (125, 50)),
+	"FlowerButtonClicked": py.transform.scale(py.image.load("image/MenuImg/flower_button_clicked.png").convert_alpha(), (125, 50)),
+	"LittleButton": py.transform.scale(py.image.load("image/MenuImg/little_button.png").convert_alpha(), (125, 50)),
+	"LittleButtonClicked": py.transform.scale(py.image.load("image/MenuImg/litlle_button_clicked.png").convert_alpha(), (125, 50)),
+}
 
 IMAGE_VIDE = py.surface.Surface((1, 1))
 IMAGE_VIDE.set_alpha(0)

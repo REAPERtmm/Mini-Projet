@@ -10,7 +10,6 @@ class Game:
         self.map: Map = None
         # self.sounds = Sound(self)
 
-        self.load_shop_image()
         self.boss = Boss(self, TILETOTALSIZE * MAP_LENGHT, TILERESOLUTION * 10)
 
         self.ground = []
@@ -31,8 +30,8 @@ class Game:
 
         self.MainMenu = Menu(
             self,
-            Vector2(WIDTH//2 - 1500//2, HEIGHT//2 - 750//2),
-            MenuImg[0],
+            Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
+            MenuImg["PauseMenu"],
             Label(
                 self,
                 Vector2(WIDTH//2 - 300//2, HEIGHT//2 - 400//2),
@@ -50,7 +49,7 @@ class Game:
                     Vector2(0, 0),
                     Vector2(300, 50),
                     "Jouer",
-                    IMAGE_VIDE,
+                    MenuImg["BigButton"],
                     BLACK,
                     "Grand arial",
                     self.btn_play
@@ -60,7 +59,7 @@ class Game:
                     Vector2(0, 0),
                     Vector2(300, 50),
                     "Paramètres",
-                    IMAGE_VIDE,
+                    MenuImg["BigButton"],
                     BLACK,
                     "Grand arial",
                     self.screen_param
@@ -70,7 +69,7 @@ class Game:
                     Vector2(0, 0),
                     Vector2(300, 40),
                     "Quitter",
-                    IMAGE_VIDE,
+                    MenuImg["BigButton"],
                     BLACK,
                     "Grand arial",
                     self.screen_leave_game
@@ -81,8 +80,8 @@ class Game:
         )
         self.ParamMenu = Menu(
             self,
-            Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 550 // 2),
-            MenuImg[1],
+            Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 500 // 2),
+            MenuImg["ParamMenu"],
             Label(
                 self,
                 Vector2(WIDTH // 2 - 300 // 2, HEIGHT // 2 - 400 // 2),
@@ -106,7 +105,7 @@ class Game:
                 Vector2(WIDTH // 2 - 370 // 2, HEIGHT // 2 + 350 // 2),
                 Vector2(125, 50),
                 "Retour",
-                IMAGE_VIDE,
+                MenuImg["LittleButton"],
                 BLACK,
                 "Grand arial",
                 self.screen_param
@@ -115,7 +114,7 @@ class Game:
         self.QuitMenu = Menu(
             self,
             Vector2(WIDTH // 2 - 1500 // 2, HEIGHT // 2 - 750 // 2),
-            MenuImg[2],
+            MenuImg["QuitMenu"],
             Label(
                 self,
                 Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 150 // 2),
@@ -154,17 +153,17 @@ class Game:
 
         self.ShopMenu = Menu(
             self,
-            Vector2(0, 0),
-            MenuImg[3],
+            Vector2(-200, -50),
+            MenuImg["ShopMenu"],
             Frame(
                 self,
-                Vector2(95, 125),
+                Vector2(115, 130),
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(110, 175),
-                    "Dash Card",
-                    IMAGE_VIDE,
+                    Vector2(102, 155),
+                    "",
+                    CardImg[0],
                     BLACK,
                     "arial",
                     self.dash_card_description
@@ -172,9 +171,9 @@ class Game:
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(110, 175),
-                    "Dash Card",
-                    IMAGE_VIDE,
+                    Vector2(102, 155),
+                    "",
+                    CardImg[0],
                     BLACK,
                     "arial",
                     self.dash_card_description
@@ -182,9 +181,9 @@ class Game:
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(110, 175),
-                    "Double Jump Card",
-                    IMAGE_VIDE,
+                    Vector2(102, 155),
+                    "",
+                    CardImg[1],
                     BLACK,
                     "arial",
                     self.doublejump_card_description
@@ -192,9 +191,9 @@ class Game:
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(110, 175),
-                    "Double Jump Card",
-                    IMAGE_VIDE,
+                    Vector2(102, 155),
+                    "",
+                    CardImg[1],
                     BLACK,
                     "arial",
                     self.doublejump_card_description
@@ -202,9 +201,9 @@ class Game:
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(110, 175),
-                    "Wall Jump Card",
-                    IMAGE_VIDE,
+                    Vector2(102, 155),
+                    "",
+                    CardImg[2],
                     BLACK,
                     "arial",
                     self.walljump_card_description
@@ -212,16 +211,16 @@ class Game:
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(110, 175),
-                    "Wall Jump Card",
-                    IMAGE_VIDE,
+                    Vector2(102, 155),
+                    "",
+                    CardImg[2],
                     BLACK,
                     "arial",
                     self.walljump_card_description
                 ),
                 wrap=4,
                 gap_x=32,
-                gap_y=24
+                gap_y=26
             )
         )
         self.DashCardDescription = Menu(
@@ -230,7 +229,7 @@ class Game:
             IMAGE_VIDE,
             Label(
                 self,
-                Vector2(150, 565),
+                Vector2(165, 535),
                 Vector2(0, 0),
                 "Carte",
                 IMAGE_VIDE,
@@ -239,23 +238,23 @@ class Game:
             ),
             Rectangle(
                 self,
-                Vector2(95, 586),
+                Vector2(115, 555),
                 Vector2(110, 175),
-                IMAGE_VIDE,
+                CardImg[0],
             ),
             Button(
                 self,
-                Vector2(80, 820),
-                Vector2(100, 50),
+                Vector2(100, 750),
+                Vector2(125, 50),
                 "Buy",
-                IMAGE_VIDE,
+                MenuImg["FlowerButton"],
                 BLACK,
                 "Grand arial",
                 self.add_dash_card_to_deck
             ),
             Label(
                 self,
-                Vector2(450, 565),
+                Vector2(450, 535),
                 Vector2(0, 0),
                 "Description",
                 IMAGE_VIDE,
@@ -264,7 +263,7 @@ class Game:
             ),
             Label(
                 self,
-                Vector2(450, 650),
+                Vector2(450, 625),
                 Vector2(0, 0),
                 "Permet d'effectuer",
                 IMAGE_VIDE,
@@ -273,7 +272,7 @@ class Game:
             ),
             Label(
                 self,
-                Vector2(450, 675),
+                Vector2(450, 650),
                 Vector2(0, 0),
                 "un dash",
                 IMAGE_VIDE,
@@ -282,7 +281,7 @@ class Game:
             ),
             Label(
                 self,
-                Vector2(550, 845),
+                Vector2(550, 790),
                 Vector2(0, 0),
                 "0",
                 IMAGE_VIDE,
@@ -296,7 +295,7 @@ class Game:
             IMAGE_VIDE,
             Label(
                 self,
-                Vector2(150, 565),
+                Vector2(165, 535),
                 Vector2(0, 0),
                 "Carte",
                 IMAGE_VIDE,
@@ -305,35 +304,23 @@ class Game:
             ),
             Rectangle(
                 self,
-                Vector2(95, 586),
+                Vector2(115, 555),
                 Vector2(110, 175),
-                IMAGE_VIDE,
+                CardImg[1],
             ),
             Button(
                 self,
-                Vector2(80, 820),
-                Vector2(100, 50),
+                Vector2(100, 750),
+                Vector2(125, 50),
                 "Buy",
-                IMAGE_VIDE,
+                MenuImg["FlowerButton"],
                 BLACK,
                 "Grand arial",
-                self.add_jump_card_to_deck
+                self.add_dash_card_to_deck
             ),
-        )
-
-        self.TrevorIsMoving = False
-        self.player = Player(self, 0, 0)
-        self.inv = Inventory(self)
-        fill_inventory(self.inv, "Dash", "Jump+", "WallJump")
-
-        self.QuitMenu = Menu(
-            self,
-            Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 200 // 2),
-            Vector2(500, 200),
-            WHITE,
             Label(
                 self,
-                Vector2(450, 565),
+                Vector2(450, 535),
                 Vector2(0, 0),
                 "Description",
                 IMAGE_VIDE,
@@ -342,7 +329,7 @@ class Game:
             ),
             Label(
                 self,
-                Vector2(450, 650),
+                Vector2(450, 625),
                 Vector2(0, 0),
                 "Permet d'effectuer",
                 IMAGE_VIDE,
@@ -351,16 +338,16 @@ class Game:
             ),
             Label(
                 self,
-                Vector2(450, 675),
+                Vector2(450, 650),
                 Vector2(0, 0),
-                "un double saut",
+                "un double jump",
                 IMAGE_VIDE,
                 BLACK,
                 "Grand arial",
             ),
             Label(
                 self,
-                Vector2(550, 845),
+                Vector2(550, 790),
                 Vector2(0, 0),
                 "0",
                 IMAGE_VIDE,
@@ -374,7 +361,7 @@ class Game:
             IMAGE_VIDE,
             Label(
                 self,
-                Vector2(150, 565),
+                Vector2(165, 535),
                 Vector2(0, 0),
                 "Carte",
                 IMAGE_VIDE,
@@ -383,23 +370,23 @@ class Game:
             ),
             Rectangle(
                 self,
-                Vector2(95, 586),
+                Vector2(115, 555),
                 Vector2(110, 175),
-                IMAGE_VIDE,
+                CardImg[2],
             ),
             Button(
                 self,
-                Vector2(80, 820),
-                Vector2(100, 50),
+                Vector2(100, 750),
+                Vector2(125, 50),
                 "Buy",
-                IMAGE_VIDE,
+                MenuImg["FlowerButton"],
                 BLACK,
                 "Grand arial",
-                self.add_walljump_card_to_deck
+                self.add_dash_card_to_deck
             ),
             Label(
                 self,
-                Vector2(450, 565),
+                Vector2(450, 535),
                 Vector2(0, 0),
                 "Description",
                 IMAGE_VIDE,
@@ -408,7 +395,7 @@ class Game:
             ),
             Label(
                 self,
-                Vector2(450, 650),
+                Vector2(450, 625),
                 Vector2(0, 0),
                 "Permet d'effectuer",
                 IMAGE_VIDE,
@@ -417,16 +404,16 @@ class Game:
             ),
             Label(
                 self,
-                Vector2(450, 675),
+                Vector2(450, 650),
                 Vector2(0, 0),
-                "un saut contre le mur",
+                "un wall jump",
                 IMAGE_VIDE,
                 BLACK,
                 "Grand arial",
             ),
             Label(
                 self,
-                Vector2(550, 845),
+                Vector2(550, 790),
                 Vector2(0, 0),
                 "0",
                 IMAGE_VIDE,
@@ -434,6 +421,11 @@ class Game:
                 "Grand arial",
             )
         )
+
+        self.TrevorIsMoving = False
+        self.player = Player(self, 0, 0)
+        self.inv = Inventory(self)
+        fill_inventory(self.inv, "Dash", "Jump+", "WallJump")
 
         self.delay = time.time() + TREVOR_DELAY_BEFORE_START
         self.player = Player(self, 0, 0)
@@ -455,11 +447,6 @@ class Game:
         self.deltatime = 0
         self.ParaX = Parallax(self, HEIGHT / 3)
         self.firstTileLeft = createfulltile(self, Vector2(-TILETOTALSIZE, 0))
-
-
-    def load_shop_image(self):
-        shop_image = py.image.load("image/MenuImg/magasin.png").convert_alpha()
-        self.shop_image = py.transform.scale(shop_image, (WIDTH, HEIGHT))
 
     def loadBoss(self):
         self.boss.Start(creatingMapStrict(
@@ -599,6 +586,7 @@ class Game:
                 self.loadBoss()
                 self.TrevorIsMoving = False
                 self.interactible[0].transform.position.x(-Trevor.get_width() - 100)
+
         if self.tabPressed:
             self.MainMenu.update()
         if self.show_quit_screen:
@@ -608,12 +596,12 @@ class Game:
 
         if self.shopPressed:
             self.ShopMenu.update()
-        if self.show_dash_card_description:
-            self.DashCardDescription.update()
-        if self.show_doublejump_card_description:
-            self.DoubleJumpCardDescription.update()
-        if self.show_walljump_card_description:
-            self.WallJumpCardDescription.update()
+            if self.show_dash_card_description:
+                self.DashCardDescription.update()
+            if self.show_doublejump_card_description:
+                self.DoubleJumpCardDescription.update()
+            if self.show_walljump_card_description:
+                self.WallJumpCardDescription.update()
 
 
     def draw(self):
@@ -656,12 +644,12 @@ class Game:
 
         if self.shopPressed and not self.tabPressed:
             self.ShopMenu.blit(SCREEN)
-        if self.show_dash_card_description:
-            self.DashCardDescription.blit(SCREEN)
-        if self.show_doublejump_card_description:
-            self.DoubleJumpCardDescription.blit(SCREEN)
-        if self.show_walljump_card_description:
-            self.WallJumpCardDescription.blit(SCREEN)
+            if self.show_dash_card_description:
+                self.DashCardDescription.blit(SCREEN)
+            if self.show_doublejump_card_description:
+                self.DoubleJumpCardDescription.blit(SCREEN)
+            if self.show_walljump_card_description:
+                self.WallJumpCardDescription.blit(SCREEN)
 
         # dessine les fps et le temps
         SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
