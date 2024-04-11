@@ -2,10 +2,6 @@ from random import randint
 from GameObject import StaticObject
 from GeoMath import *
 
-header = """
-0 : Box
-"""
-
 
 def get_a_element_of_set(s: set):
 	for i in range(randint(1, len(s))):
@@ -171,7 +167,7 @@ def fillMap(o_map: Map) -> None:
 
 
 def creatingMapStrict(game, tiles: list, tiles_index: list, offset=Vector2(0, 0)) -> Map:
-	o_map: Map = Map(game, len(tiles), RESOLUTION, tiles)
+	o_map: Map = Map(game, len(tiles_index), RESOLUTION, tiles)
 	o_map.offset = offset
 	o_map.mapping = get_mapping_from_tile_collection(tiles)
 
@@ -250,6 +246,10 @@ def createTileFromPath(game, path: str) -> Tile:
 	tile.t_right = [right for right in grid[-1]]
 	tile.image = image
 	return tile
+
+
+def createfulltile(game, position) -> Tile:
+	return createTileFromExisting(createTileFromPath(game, "BossTile/tile2297503285312.tile"), position)
 
 
 if __name__ == '__main__':

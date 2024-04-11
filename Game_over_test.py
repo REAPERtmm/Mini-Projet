@@ -1,32 +1,39 @@
 from Settings import *
 
-bg_game_over = py.image.load("Resources/Game_over.png").convert_alpha()
 
-img = py.Surface((WIDTH, HEIGHT))
-img.fill((0,0,0))
+img = py.Surface((WIDTH, HEIGHT)).convert_alpha()
+img.fill((0, 0, 0))
+
 
 class GameOver:
-    def __init__(self):
+    def __init__(self, speed):
+        self.speed = speed
         self.xf = False
         self.opacity = 0
         self.img = img
         self.is_game_over = False
+        self.reset = False
 
-
-    def fade(self):
+    def fade(self, dt):
+        if self.reset:
+            self.reset = False
         if self.xf:
-            self.opacity += 1
+            self.opacity += dt * self.speed
             print("fade in progress")
-            if self.opacity > 2000:
+            if self.opacity > 255:
+                self.reset = True
                 self.xf = False
-
         else:
-            self.opacity -= 1
+            self.opacity -= dt * self.speed
+            if self.opacity < 0:
+                self.is_game_over = False
 
         self.Alpha()
 
     def game_over(self):
         self.is_game_over = True
+        self.opacity = 0
+        self.xf = True
         print("Game Over")
 
     def Affichage(self, screen):
