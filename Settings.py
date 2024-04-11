@@ -8,7 +8,7 @@ py.font.init()
 # CONSTANT
 RESMULT = 2
 WIDTH, HEIGHT = 800 * RESMULT, 600 * RESMULT
-TITLE = "JEU VACHEMENT COOL"
+TITLE = "Echoes Of Harmony"
 GRAVITY = 9.8 * 2 * RESMULT
 RESOLUTION = 25 * RESMULT
 TILERESOLUTION = 32
@@ -29,7 +29,7 @@ MAP_LENGHT = 3
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
 py.display.set_caption(TITLE)
 
-py.display.toggle_fullscreen()
+# py.display.toggle_fullscreen()
 
 # Yack
 YACK_WIDTH = 200 * RESMULT
@@ -50,10 +50,14 @@ CardImg = [
 Flower = py.transform.scale(py.image.load("Resources/collectible_fleur.png").convert_alpha(), (64 * RESMULT, 64 * RESMULT))
 
 MenuImg = [
-	py.transform.scale(py.image.load("image/MenuImg/menu_pause_img.png").convert_alpha(), (100, 200)),
-	py.transform.scale(py.image.load("image/MenuImg/param_menu_img.png").convert_alpha(), (100, 200)),
-	py.transform.scale(py.image.load("image/MenuImg/quit_menu_img.png").convert_alpha(), (100, 200)),
+	py.transform.scale(py.image.load("image/MenuImg/menu_pause_img.png").convert_alpha(), (1500, 750)),
+	py.transform.scale(py.image.load("image/MenuImg/param_menu_img.png").convert_alpha(), (500, 550)),
+	py.transform.scale(py.image.load("image/MenuImg/quit_menu_img.png").convert_alpha(), (1500, 750)),
+	py.transform.scale(py.image.load("image/MenuImg/magasin.png").convert_alpha(), (1500, 1000)),
 ]
+
+IMAGE_VIDE = py.surface.Surface((1, 1))
+IMAGE_VIDE.set_alpha(0)
 
 #Ground = py.transform.scale(py.image.load("Resources/ground.png"), (WIDTH, HEIGHT / 10))
 Bg = [
@@ -97,5 +101,6 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 MAGENTA = (255, 0, 255)
+TRANSPARENT_COLOR = (255, 255, 255, 0)
 
 

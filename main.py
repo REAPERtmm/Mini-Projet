@@ -2,8 +2,6 @@ from Inventory import *
 from Game_over_test import *
 from Sound import *
 
-TRANSPARENT_COLOR = (255, 255, 255, 0)
-
 
 def checkpoints(self):
     print("Nouveau Checkpoint")
@@ -26,7 +24,6 @@ class Game:
         self.lastPoint: Vector2 = None
         self.map: Map = None
         # self.sounds = Sound(self)
-        self.load_shop_image()
         self.boss = Boss(self, TILETOTALSIZE * MAP_LENGHT, 100 * RESMULT, 75 * RESMULT, 75 * RESMULT)
 
         self.ground = []
@@ -42,32 +39,34 @@ class Game:
 
         self.show_quit_screen = False
         self.show_param_screen = False
+        self.show_dash_card_description = False
+        self.show_doublejump_card_description = False
+        self.show_walljump_card_description = False
 
         self.mouse_down = False
 
         self.MainMenu = Menu(
             self,
-            Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
-            Vector2(500, 500),
-            WHITE,
+            Vector2(WIDTH//2 - 1500//2, HEIGHT//2 - 750//2),
+            MenuImg[0],
             Label(
                 self,
                 Vector2(WIDTH//2 - 300//2, HEIGHT//2 - 400//2),
                 Vector2(300, 50),
                 "PAUSE",
-                WHITE,
+                IMAGE_VIDE,
                 BLACK,
                 "Grand arial"
             ),
             Frame(
                 self,
-                Vector2(WIDTH//2 - 300//2, HEIGHT//2 - 200//2),
+                Vector2(WIDTH//2 - 300//2, HEIGHT//2 - 135//2),
                 Button(
                     self,
                     Vector2(0, 0),
                     Vector2(300, 50),
                     "Jouer",
-                    RED,
+                    IMAGE_VIDE,
                     BLACK,
                     "Grand arial",
                     self.btn_play
@@ -77,7 +76,7 @@ class Game:
                     Vector2(0, 0),
                     Vector2(300, 50),
                     "Paramètres",
-                    GREEN,
+                    IMAGE_VIDE,
                     BLACK,
                     "Grand arial",
                     self.screen_param
@@ -85,202 +84,27 @@ class Game:
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(300, 50),
+                    Vector2(300, 40),
                     "Quitter",
-                    BLUE,
+                    IMAGE_VIDE,
                     BLACK,
                     "Grand arial",
                     self.screen_leave_game
                 ),
                 wrap=1,
-                gap_x=50,
-                gap_y=50
+                gap_y=40
             )
         )
-        self.Shop = Menu(
-            self,
-            Vector2(0,0),
-            Vector2(WIDTH//10, HEIGHT//10),
-            TRANSPARENT_COLOR,
-            Frame(
-                self,
-                Vector2(WIDTH//16, HEIGHT//8),
-                Button(
-                    self,
-                    Vector2(0, 0),
-                    Vector2(WIDTH//13, HEIGHT//5.5),
-                    "Dash Card",
-                    RED,
-                    TRANSPARENT_COLOR,
-                    "arial",
-                    lambda: print("test")
-                ),
-                Button(
-                    self,
-                    Vector2(0, 0),
-                    Vector2(WIDTH//13, HEIGHT//5.5),
-                    "Double Jump Card",
-                    GREEN,
-                    TRANSPARENT_COLOR,
-                    "arial",
-                    lambda: print("test")
-                ),
-                Button(
-                    self,
-                    Vector2(0, 0),
-                    Vector2(WIDTH//13, HEIGHT//5.5),
-                    "Wall Jump Card",
-                    BLUE,
-                    TRANSPARENT_COLOR,
-                    "arial",
-                    lambda: print("test")
-                ),
-                Button(
-                    self,
-                    Vector2(0, 0),
-                    Vector2(WIDTH//13, HEIGHT//5.5),
-                    "Wall Jump Card",
-                    BLUE,
-                    TRANSPARENT_COLOR,
-                    "arial",
-                    lambda: print("test")
-                ),
-                Button(
-                    self,
-                    Vector2(0, 0),
-                    Vector2(WIDTH//13, HEIGHT//5.5),
-                    "Wall Jump Card",
-                    BLUE,
-                    TRANSPARENT_COLOR,
-                    "arial",
-                    lambda: print("test")
-                ),
-                Button(
-                    self,
-                    Vector2(0, 0),
-                    Vector2(WIDTH//13, HEIGHT//5.5),
-                    "Wall Jump Card",
-                    BLUE,
-                    TRANSPARENT_COLOR,
-                    "arial",
-                    lambda: print("test")
-                ),
-                wrap=4,
-                gap_x=WIDTH//55,
-                gap_y=HEIGHT//55
-            ),
-            Label(
-                self,
-                Vector2(WIDTH//20, HEIGHT//1.9),
-                Vector2(WIDTH//10, HEIGHT//20),
-                "Titre",
-                TRANSPARENT_COLOR,
-                BLACK,
-                "arial",
-
-            ),
-            Label(
-                self,
-                Vector2(WIDTH//5.5, HEIGHT//1.9),
-                Vector2(WIDTH//5, HEIGHT//20),
-                "Description",
-                TRANSPARENT_COLOR,
-                BLACK,
-                "arial",
-
-            ),
-            Label(
-                self,
-                Vector2(WIDTH//5.5, HEIGHT//1.7),
-                Vector2(WIDTH//5, HEIGHT//5.8),
-                "Lorem Ipsul dsiniosninsifnisnf",
-                TRANSPARENT_COLOR,
-                BLACK,
-                "arial",
-            ),
-            Label(
-                self,
-                Vector2(WIDTH//20, HEIGHT//1.14),
-                Vector2(WIDTH//10, HEIGHT//35),
-                "Acheter",
-                TRANSPARENT_COLOR,
-                BLACK,
-                "arial",
-            ),
-            Label(
-                self,
-                Vector2(WIDTH//1.75, HEIGHT//1.13),
-                Vector2(WIDTH//10, HEIGHT//35),
-                "Vendre :",
-                TRANSPARENT_COLOR,
-                BLACK,
-                "arial",
-            ),
-             Label(
-                self,
-                Vector2(WIDTH//1.65, HEIGHT//1.13),
-                Vector2(WIDTH//10, HEIGHT//35),
-                "Vendre :",
-                TRANSPARENT_COLOR,
-                BLACK,
-                "arial",
-            ),
-        )
-
-        self.delay = time.time() + TREVOR_DELAY_BEFORE_START
-        self.player = Player(self, 0, 0)
-        self.QuitMenu = Menu(
-            self,
-            Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 200 // 2),
-            Vector2(500, 200),
-            WHITE,
-            Label(
-                self,
-                Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 150//2),
-                Vector2(500, 50),
-                "Voulez-vous vraiment quitter le jeu ?",
-                WHITE,
-                BLACK,
-                "Grand arial"
-            ),
-            Frame(
-                self,
-                Vector2(WIDTH//2 - 250//2, HEIGHT//2),
-                Button(
-                    self,
-                    Vector2(0, 0),
-                    Vector2(100, 50),
-                    "OUI",
-                    BLACK,
-                    WHITE,
-                    "Grand arial",
-                    self.leaving_game
-                ),
-                Button(
-                    self,
-                    Vector2(0, 0),
-                    Vector2(100, 50),
-                    "NON",
-                    BLACK,
-                    WHITE,
-                    "Grand arial",
-                    self.screen_leave_game
-                ),
-                gap_x=50
-            )
-        )
-
         self.ParamMenu = Menu(
             self,
-            Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 500 // 2),
-            Vector2(500, 500),
-            WHITE,
+            Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 550 // 2),
+            MenuImg[1],
             Label(
                 self,
                 Vector2(WIDTH // 2 - 300 // 2, HEIGHT // 2 - 400 // 2),
                 Vector2(300, 50),
                 "PARAMETRES",
-                WHITE,
+                IMAGE_VIDE,
                 BLACK,
                 "Grand arial"
             ),
@@ -289,21 +113,335 @@ class Game:
                 Vector2(WIDTH // 2 - 250 // 2, HEIGHT // 2 - 100 // 2),
                 Vector2(250, 50),
                 "Coming Soon !",
-                WHITE,
+                IMAGE_VIDE,
                 BLACK,
                 "Grand arial"
             ),
             Button(
                 self,
-                Vector2(WIDTH // 2 - 450 // 2, HEIGHT // 2 + 350 // 2),
+                Vector2(WIDTH // 2 - 370 // 2, HEIGHT // 2 + 350 // 2),
                 Vector2(125, 50),
-                "← Retour",
+                "Retour",
+                IMAGE_VIDE,
                 BLACK,
-                WHITE,
                 "Grand arial",
                 self.screen_param
             )
         )
+        self.QuitMenu = Menu(
+            self,
+            Vector2(WIDTH // 2 - 1500 // 2, HEIGHT // 2 - 750 // 2),
+            MenuImg[2],
+            Label(
+                self,
+                Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 150 // 2),
+                Vector2(500, 50),
+                "Voulez-vous vraiment quitter le jeu ?",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial"
+            ),
+            Frame(
+                self,
+                Vector2(WIDTH // 2 - 290 // 2, HEIGHT // 2 - 10 // 2),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(105, 50),
+                    "OUI",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "Grand arial",
+                    self.leaving_game
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(100, 50),
+                    "NON",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "Grand arial",
+                    self.screen_leave_game
+                ),
+                gap_x=80
+            )
+        )
+
+        self.ShopMenu = Menu(
+            self,
+            Vector2(0, 0),
+            MenuImg[3],
+            Frame(
+                self,
+                Vector2(95, 125),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(110, 175),
+                    "Dash Card",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "arial",
+                    self.dash_card_description
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(110, 175),
+                    "Dash Card",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "arial",
+                    self.dash_card_description
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(110, 175),
+                    "Double Jump Card",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "arial",
+                    self.doublejump_card_description
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(110, 175),
+                    "Double Jump Card",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "arial",
+                    self.doublejump_card_description
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(110, 175),
+                    "Wall Jump Card",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "arial",
+                    self.walljump_card_description
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(110, 175),
+                    "Wall Jump Card",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "arial",
+                    self.walljump_card_description
+                ),
+                wrap=4,
+                gap_x=32,
+                gap_y=24
+            )
+        )
+        self.DashCardDescription = Menu(
+            self,
+            Vector2(0, 0),
+            IMAGE_VIDE,
+            Label(
+                self,
+                Vector2(150, 565),
+                Vector2(0, 0),
+                "Carte",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Rectangle(
+                self,
+                Vector2(95, 586),
+                Vector2(110, 175),
+                IMAGE_VIDE,
+            ),
+            Button(
+                self,
+                Vector2(80, 820),
+                Vector2(100, 50),
+                "Buy",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+                self.add_dash_card_to_deck
+            ),
+            Label(
+                self,
+                Vector2(450, 565),
+                Vector2(0, 0),
+                "Description",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Label(
+                self,
+                Vector2(450, 650),
+                Vector2(0, 0),
+                "Permet d'effectuer",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Label(
+                self,
+                Vector2(450, 675),
+                Vector2(0, 0),
+                "un dash",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Label(
+                self,
+                Vector2(550, 845),
+                Vector2(0, 0),
+                "0",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            )
+        )
+        self.DoubleJumpCardDescription = Menu(
+            self,
+            Vector2(0, 0),
+            IMAGE_VIDE,
+            Label(
+                self,
+                Vector2(150, 565),
+                Vector2(0, 0),
+                "Carte",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Rectangle(
+                self,
+                Vector2(95, 586),
+                Vector2(110, 175),
+                IMAGE_VIDE,
+            ),
+            Button(
+                self,
+                Vector2(80, 820),
+                Vector2(100, 50),
+                "Buy",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+                self.add_jump_card_to_deck
+            ),
+            Label(
+                self,
+                Vector2(450, 565),
+                Vector2(0, 0),
+                "Description",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Label(
+                self,
+                Vector2(450, 650),
+                Vector2(0, 0),
+                "Permet d'effectuer",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Label(
+                self,
+                Vector2(450, 675),
+                Vector2(0, 0),
+                "un double saut",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Label(
+                self,
+                Vector2(550, 845),
+                Vector2(0, 0),
+                "0",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            )
+        )
+        self.WallJumpCardDescription = Menu(
+            self,
+            Vector2(0, 0),
+            IMAGE_VIDE,
+            Label(
+                self,
+                Vector2(150, 565),
+                Vector2(0, 0),
+                "Carte",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Rectangle(
+                self,
+                Vector2(95, 586),
+                Vector2(110, 175),
+                IMAGE_VIDE,
+            ),
+            Button(
+                self,
+                Vector2(80, 820),
+                Vector2(100, 50),
+                "Buy",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+                self.add_walljump_card_to_deck
+            ),
+            Label(
+                self,
+                Vector2(450, 565),
+                Vector2(0, 0),
+                "Description",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Label(
+                self,
+                Vector2(450, 650),
+                Vector2(0, 0),
+                "Permet d'effectuer",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Label(
+                self,
+                Vector2(450, 675),
+                Vector2(0, 0),
+                "un saut contre le mur",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            ),
+            Label(
+                self,
+                Vector2(550, 845),
+                Vector2(0, 0),
+                "0",
+                IMAGE_VIDE,
+                BLACK,
+                "Grand arial",
+            )
+        )
+
+        self.delay = time.time() + TREVOR_DELAY_BEFORE_START
+        self.player = Player(self, 0, 0)
+
         self.loadMap()
         self.interactible[1].transform.position = self.lastPoint - self.interactible[1].transform.size
 
@@ -318,10 +456,6 @@ class Game:
         self.clock = py.time.Clock()
         self.deltatime = 0
         self.ParaX = Parallax(self)
-
-    def load_shop_image(self):
-        shop_image = py.image.load("Resources/magasin.png").convert_alpha()
-        self.shop_image = py.transform.scale(shop_image, (WIDTH, HEIGHT))
 
     def loadMap(self):
         self.map = createMapStartingWith(self, MAP_LENGHT, 0)
@@ -372,6 +506,31 @@ class Game:
             self.show_param_screen = True
             self.tabPressed = False
 
+    """3 fonctions pour faire presque la même chose, parce que pas le temps de généraliser avec un dictionnaire"""
+    def dash_card_description(self):
+        self.show_dash_card_description = True
+        self.show_walljump_card_description = False
+        self.show_doublejump_card_description = False
+
+    def doublejump_card_description(self):
+        self.show_doublejump_card_description = True
+        self.show_walljump_card_description = False
+        self.show_dash_card_description = False
+
+    def walljump_card_description(self):
+        self.show_walljump_card_description = True
+        self.show_doublejump_card_description = False
+        self.show_dash_card_description = False
+
+    def add_dash_card_to_deck(self):
+        self.inv.AddCard("Dash")
+
+    def add_jump_card_to_deck(self):
+        self.inv.AddCard("Jump+")
+
+    def add_walljump_card_to_deck(self):
+        self.inv.AddCard("WallJump")
+
     def update(self):
         if not self.tabPressed and not self.show_quit_screen and not self.show_param_screen:
             self.ground.clear()
@@ -382,6 +541,7 @@ class Game:
 
             """if time.time() > self.delay and self.interactible[0].transform.position.x() < MAP_LENGHT * TILETOTALSIZE - self.interactible[0].transform.size.x():
                 self.interactible[0].transform.position.moveX(self.deltatime * TREVOR_SPEED)"""
+
             for elt in self.ground:
                 elt.update()
             self.player.update()
@@ -396,12 +556,19 @@ class Game:
 
         if self.tabPressed:
             self.MainMenu.update()
-
         if self.show_quit_screen:
             self.QuitMenu.update()
-
         if self.show_param_screen:
             self.ParamMenu.update()
+
+        if self.shopPressed:
+            self.ShopMenu.update()
+        if self.show_dash_card_description:
+            self.DashCardDescription.update()
+        if self.show_doublejump_card_description:
+            self.DoubleJumpCardDescription.update()
+        if self.show_walljump_card_description:
+            self.WallJumpCardDescription.update()
 
     def draw(self):
         self.ParaX.draw_bg(SCREEN)
@@ -420,26 +587,26 @@ class Game:
 
         self.inv.draw()
 
-        if self.shopPressed and not self.tabPressed:
-            print("shop")
-            SCREEN.blit(self.shop_image, (0, 0))
-            self.Shop.blit(SCREEN)
-
         if self.tabPressed:
-            print("menu")
             self.MainMenu.blit(SCREEN)
+        if self.show_quit_screen:
+            self.QuitMenu.blit(SCREEN)
+        if self.show_param_screen:
+            self.ParamMenu.blit(SCREEN)
+
+        if self.shopPressed and not self.tabPressed:
+            self.ShopMenu.blit(SCREEN)
+        if self.show_dash_card_description:
+            self.DashCardDescription.blit(SCREEN)
+        if self.show_doublejump_card_description:
+            self.DoubleJumpCardDescription.blit(SCREEN)
+        if self.show_walljump_card_description:
+            self.WallJumpCardDescription.blit(SCREEN)
 
         self.interactible[1].blit(SCREEN)
 
         SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
         SCREEN.blit(Fonts["arial"].render(f"time : {time.time_ns()}", True, GREEN, BLACK), (10, 30))
-        if self.show_quit_screen:
-            print("quit screen")
-            self.QuitMenu.blit(SCREEN)
-
-        if self.show_param_screen:
-            print("quit param")
-            self.ParamMenu.blit(SCREEN)
 
         # self.game_over.Affichage(SCREEN)
 
@@ -517,7 +684,6 @@ class Game:
                     if event.key == py.K_e:
                         if not self.tabPressed:
                             self.shopPressed = not self.shopPressed
-
 
 
 g = Game()

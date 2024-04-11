@@ -2,11 +2,10 @@ from GeoMath import *
 
 
 class Menu:
-    def __init__(self, game, position: Vector2, size: Vector2, color, *widget):
+    def __init__(self, game, position: Vector2, image, *widget):
         self.game = game
-        self.size = size
         self.position = position
-        self.color = color
+        self.image = image
         self.widget = list(widget)
 
     def update(self):
@@ -14,17 +13,7 @@ class Menu:
             w.update()
 
     def blit(self, screen):
-        py.draw.rect(
-            screen,
-            self.color,
-            (
-                self.position.x(),
-                self.position.y(),
-                self.size.x(),
-                self.size.y()
-            )
-        )
-        # screen.blit(self.image, (self.position.x(), self.position.y()))
+        screen.blit(self.image, (self.position.x(), self.position.y()))
 
         for widget in self.widget:
             widget.blit(screen)
@@ -44,24 +33,9 @@ class Widget:
 
 
 class Rectangle(Widget):
-    def __init__(self, game, position: Vector2, size: Vector2, color):
+    def __init__(self, game, position: Vector2, size: Vector2, image):
         super().__init__(game, position, size)
-        self.color = color
-
-    def update(self):
-        pass
-
-    def blit(self, screen):
-        pass
-
-
-class Label(Widget):
-    def __init__(self, game, position: Vector2, size: Vector2, text: str, color, text_color, font_name: str):
-        super().__init__(game, position, size)
-        self.text = text
-        self.color = color
-        self.text_color = text_color
-        self.font = Fonts[font_name].render(self.text, True, text_color)
+        self.image = image
 
     def update(self):
         pass
@@ -69,21 +43,34 @@ class Label(Widget):
     def blit(self, screen):
         py.draw.rect(
             screen,
-            self.color,
-            (
-                self.position.x(),
-                self.position.y(),
-                self.size.x(),
-                self.size.y()
-            )
+            WHITE,
+            (self.position.x(), self.position.y(),
+             self.size.x(), self.size.y())
         )
+
+        screen.blit(self.image, (self.position.x(), self.position.y()))
+
+
+class Label(Widget):
+    def __init__(self, game, position: Vector2, size: Vector2, text: str, image, text_color, font_name: str):
+        super().__init__(game, position, size)
+        self.text = text
+        self.image = image
+        self.text_color = text_color
+        self.font = Fonts[font_name].render(self.text, True, text_color)
+
+    def update(self):
+        pass
+
+    def blit(self, screen):
+        screen.blit(self.image, (self.position.x(), self.position.y()))
 
         screen.blit(self.font, (self.position.x() + self.size.x() // 2 - self.font.get_width() // 2, self.position.y() + self.size.y() // 2 - self.font.get_height() // 2))
 
 
 class Button(Label):
-    def __init__(self, game, position: Vector2, size: Vector2, text: str, color, text_color, font_name, callback):
-        super().__init__(game, position, size, text, color, text_color, font_name)
+    def __init__(self, game, position: Vector2, size: Vector2, text: str, image, text_color, font_name, callback):
+        super().__init__(game, position, size, text, image, text_color, font_name)
         self.callback = callback
 
     def update(self):
@@ -93,6 +80,13 @@ class Button(Label):
                 self.game.mouse_down = False
 
     def blit(self, screen):
+        py.draw.rect(
+            screen,
+            WHITE,
+            (self.position.x(), self.position.y(),
+             self.size.x(), self.size.y())
+        )
+
         super().blit(screen)
 
 
