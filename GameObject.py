@@ -504,27 +504,28 @@ class Player(Entity):
 
     def jump(self):
         if self.CanJump:
-            print("jump")
+            self.game.sounds.Jump()
             self.velocity = Vector2(self.velocity.x(), -13) * RESMULT
             self.CanJump = False
             self.CanDoubleJump = True
     
     def double_jump(self):
         if self.CanDoubleJump and self.ability_enable["Jump+"]:
-            print("double jump")
+            self.game.sounds.Jump()
             self.animatorVFX.set_anim("doublejump")
             self.velocity = Vector2(self.velocity.x(), -13) * RESMULT
             self.CanDoubleJump = False
 
     def wall_jump(self):
         if self.ability_enable["WallJump"] and (self.isGrabbingLeft or self.isGrabbingRight) and self.CanDoubleJump:
-            print("Wall jump")
+            self.game.sounds.Jump()
             jump_direction = Vector2(self.velocity.x() + (-5 if self.isGrabbingRight else 5), -13)
             self.velocity = jump_direction * RESMULT
             self.CanDoubleJump = False
 
     def dash(self):
         if self.ability_enable["Dash"] and self.CanDash and self.isGrounded:
+            self.game.sounds.dash()
             movementX = 100  # distance du dash
             if self.game.rightPressed:
                 leftest = None

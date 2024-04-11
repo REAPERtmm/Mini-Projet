@@ -16,7 +16,7 @@ class Game:
         self.boss = Boss(self, TILETOTALSIZE * MAP_LENGHT, TILERESOLUTION * 10)
 
         self.tornado = Animator(
-            idle=Animation(400_000_000, *load_all_images("Resources/Animation/Tornado/", (int(472 * TILETOTALSIZE / 281), TILETOTALSIZE)))
+            idle=Animation(400_000_000, *load_all_images("Resources/Animation/Tornado/", (TILETOTALSIZE, int(TILETOTALSIZE * 1.5))))
         )
 
         self.ground = []
@@ -830,7 +830,7 @@ class Game:
                     self.ParaX.offsetY = HEIGHT / 3
                     self.loadBoss()
                     self.TrevorIsMoving = False
-                    self.interactible[0].transform.position.x(-Trevor.get_width() - 100)
+                    self.interactible[0].transform.position.x(-self.tornado.get_current_image().get_width() - 100)
 
             if self.tabPressed:
                 self.PauseMenu.update()
@@ -967,10 +967,8 @@ class Game:
                             self.player.wall_jump()
                             self.player.double_jump()
                             self.player.jump()
-                            self.sounds.Jump()
                     if event.key == py.K_LSHIFT:
                         self.player.dash()
-                        self.sounds.dash()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
                             self.tabPressed = False

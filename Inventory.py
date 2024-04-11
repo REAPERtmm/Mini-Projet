@@ -35,7 +35,7 @@ class Inventory:
 
     def AddCard(self, type):
         # self.sounds.Cardcollect()
-        if len(self.InvContents) < 3:
+        if len(self.InvContents) < 3 and type not in self.InvContents:
             try:
                 self.game.player.ability_enable[type] = True
             except KeyError:
