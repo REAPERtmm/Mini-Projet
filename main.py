@@ -26,10 +26,126 @@ class Game:
         self.show_dash_card_description = False
         self.show_doublejump_card_description = False
         self.show_walljump_card_description = False
+        self.start_playing = False
+        self.updating_menu = True
 
         self.mouse_down = False
 
         self.MainMenu = Menu(
+            self,
+            Vector2(0, 0),
+            MenuImg["MainMenu"],
+            Frame(
+                self,
+                Vector2(WIDTH//2 - 120, HEIGHT//2 + 13),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(240, 90),
+                    "Jouer",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "centaur",
+                    self.start_game
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(240, 90),
+                    "Paramètres",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "centaur",
+                    self.menu_screen_param
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(240, 90),
+                    "Quitter",
+                    IMAGE_VIDE,
+                    BLACK,
+                    "centaur",
+                    self.menu_screen_leave_game
+                ),
+                wrap=1,
+                gap_y=27
+            )
+        )
+        self.ParamMainMenu = Menu(
+            self,
+            Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 500 // 2),
+            MenuImg["ParamMenu"],
+            Label(
+                self,
+                Vector2(WIDTH // 2 - 300 // 2, HEIGHT // 2 - 400 // 2),
+                Vector2(300, 50),
+                "PARAMETRES",
+                IMAGE_VIDE,
+                BLACK,
+                "centaur"
+            ),
+            Label(
+                self,
+                Vector2(WIDTH // 2 - 250 // 2, HEIGHT // 2 - 100 // 2),
+                Vector2(250, 50),
+                "Coming Soon !",
+                IMAGE_VIDE,
+                BLACK,
+                "centaur"
+            ),
+            Button(
+                self,
+                Vector2(WIDTH // 2 - 370 // 2, HEIGHT // 2 + 350 // 2),
+                Vector2(125, 50),
+                "Retour",
+                MenuImg["LittleButton"],
+                BLACK,
+                "centaur",
+                self.menu_screen_param
+            )
+        )
+        self.QuitMainMenu = Menu(
+            self,
+            Vector2(WIDTH // 2 - 750 // 2, HEIGHT // 2 - 250 // 2),
+            MenuImg["QuitMenu"],
+            Label(
+                self,
+                Vector2(WIDTH // 2 - 500 // 2, HEIGHT // 2 - 150 // 2),
+                Vector2(500, 50),
+                "Voulez-vous vraiment quitter le jeu ?",
+                IMAGE_VIDE,
+                BLACK,
+                "centaur"
+            ),
+            Frame(
+                self,
+                Vector2(WIDTH // 2 - 290 // 2, HEIGHT // 2 - 10 // 2),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(125, 50),
+                    "OUI",
+                    MenuImg["LittleButton"],
+                    BLACK,
+                    "centaur",
+                    self.leaving_game
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(125, 50),
+                    "NON",
+                    MenuImg["LittleButton"],
+                    BLACK,
+                    "centaur",
+                    self.menu_screen_leave_game
+                ),
+                gap_x=80
+            )
+        )
+
+        self.PauseMenu = Menu(
             self,
             Vector2(WIDTH//2 - 500//2, HEIGHT//2 - 500//2),
             MenuImg["PauseMenu"],
@@ -40,7 +156,7 @@ class Game:
                 "PAUSE",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial"
+                "centaur"
             ),
             Frame(
                 self,
@@ -52,7 +168,7 @@ class Game:
                     "Jouer",
                     MenuImg["BigButton"],
                     BLACK,
-                    "Grand arial",
+                    "centaur",
                     self.btn_play
                 ),
                 Button(
@@ -62,7 +178,7 @@ class Game:
                     "Paramètres",
                     MenuImg["BigButton"],
                     BLACK,
-                    "Grand arial",
+                    "centaur",
                     self.screen_param
                 ),
                 Button(
@@ -72,7 +188,7 @@ class Game:
                     "Quitter",
                     MenuImg["BigButton"],
                     BLACK,
-                    "Grand arial",
+                    "centaur",
                     self.screen_leave_game
                 ),
                 wrap=1,
@@ -90,7 +206,7 @@ class Game:
                 "PARAMETRES",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial"
+                "centaur"
             ),
             Label(
                 self,
@@ -99,7 +215,7 @@ class Game:
                 "Coming Soon !",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial"
+                "centaur"
             ),
             Button(
                 self,
@@ -108,13 +224,13 @@ class Game:
                 "Retour",
                 MenuImg["LittleButton"],
                 BLACK,
-                "Grand arial",
+                "centaur",
                 self.screen_param
             )
         )
         self.QuitMenu = Menu(
             self,
-            Vector2(WIDTH // 2 - 1500 // 2, HEIGHT // 2 - 750 // 2),
+            Vector2(WIDTH // 2 - 750 // 2, HEIGHT // 2 - 250 // 2),
             MenuImg["QuitMenu"],
             Label(
                 self,
@@ -123,7 +239,7 @@ class Game:
                 "Voulez-vous vraiment quitter le jeu ?",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial"
+                "centaur"
             ),
             Frame(
                 self,
@@ -131,21 +247,21 @@ class Game:
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(105, 50),
+                    Vector2(125, 50),
                     "OUI",
-                    IMAGE_VIDE,
+                    MenuImg["LittleButton"],
                     BLACK,
-                    "Grand arial",
+                    "centaur",
                     self.leaving_game
                 ),
                 Button(
                     self,
                     Vector2(0, 0),
-                    Vector2(100, 50),
+                    Vector2(125, 50),
                     "NON",
-                    IMAGE_VIDE,
+                    MenuImg["LittleButton"],
                     BLACK,
-                    "Grand arial",
+                    "centaur",
                     self.screen_leave_game
                 ),
                 gap_x=80
@@ -222,6 +338,59 @@ class Game:
                 wrap=4,
                 gap_x=32,
                 gap_y=26
+            ),
+            Frame(
+                self,
+                Vector2(845, 775),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(125, 50),
+                    "Vendre",
+                    MenuImg["LittleButton"],
+                    BLACK,
+                    "centaur",
+                    self.remove_dash_card_to_deck
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(125, 50),
+                    "Vendre",
+                    MenuImg["LittleButton"],
+                    BLACK,
+                    "centaur",
+                    self.remove_jump_card_to_deck
+                ),
+                Button(
+                    self,
+                    Vector2(0, 0),
+                    Vector2(125, 50),
+                    "Vendre",
+                    MenuImg["LittleButton"],
+                    BLACK,
+                    "centaur",
+                    self.remove_walljump_card_to_deck
+                ),
+                gap_x=2
+            ),
+            Rectangle(
+                self,
+                Vector2(860, 605),
+                Vector2(102, 155),
+                IMAGE_VIDE
+            ),
+            Rectangle(
+                self,
+                Vector2(985, 605),
+                Vector2(102, 155),
+                IMAGE_VIDE
+            ),
+            Rectangle(
+                self,
+                Vector2(1110, 605),
+                Vector2(102, 155),
+                IMAGE_VIDE
             )
         )
         self.DashCardDescription = Menu(
@@ -235,7 +404,7 @@ class Game:
                 "Carte",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             ),
             Rectangle(
                 self,
@@ -247,10 +416,10 @@ class Game:
                 self,
                 Vector2(100, 750),
                 Vector2(125, 50),
-                "Buy",
-                MenuImg["FlowerButton"],
+                "Acheter",
+                MenuImg["LittleButton"],
                 BLACK,
-                "Grand arial",
+                "centaur",
                 self.add_dash_card_to_deck
             ),
             Label(
@@ -260,7 +429,7 @@ class Game:
                 "Description",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             ),
             Label(
                 self,
@@ -269,7 +438,7 @@ class Game:
                 "Permet d'effectuer",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             ),
             Label(
                 self,
@@ -278,7 +447,16 @@ class Game:
                 "un dash",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
+            ),
+            Label(
+                self,
+                Vector2(450, 700),
+                Vector2(0, 0),
+                "Shift pour activer",
+                IMAGE_VIDE,
+                BLACK,
+                "centaur",
             ),
             Label(
                 self,
@@ -287,7 +465,7 @@ class Game:
                 "0",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             )
         )
         self.DoubleJumpCardDescription = Menu(
@@ -301,7 +479,7 @@ class Game:
                 "Carte",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             ),
             Rectangle(
                 self,
@@ -313,11 +491,11 @@ class Game:
                 self,
                 Vector2(100, 750),
                 Vector2(125, 50),
-                "Buy",
-                MenuImg["FlowerButton"],
+                "Acheter",
+                MenuImg["LittleButton"],
                 BLACK,
-                "Grand arial",
-                self.add_dash_card_to_deck
+                "centaur",
+                self.add_jump_card_to_deck
             ),
             Label(
                 self,
@@ -326,7 +504,7 @@ class Game:
                 "Description",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             ),
             Label(
                 self,
@@ -335,7 +513,7 @@ class Game:
                 "Permet d'effectuer",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             ),
             Label(
                 self,
@@ -344,7 +522,16 @@ class Game:
                 "un double jump",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
+            ),
+            Label(
+                self,
+                Vector2(450, 700),
+                Vector2(0, 0),
+                "Compétence passive",
+                IMAGE_VIDE,
+                BLACK,
+                "centaur",
             ),
             Label(
                 self,
@@ -353,7 +540,7 @@ class Game:
                 "0",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             )
         )
         self.WallJumpCardDescription = Menu(
@@ -367,7 +554,7 @@ class Game:
                 "Carte",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             ),
             Rectangle(
                 self,
@@ -379,11 +566,11 @@ class Game:
                 self,
                 Vector2(100, 750),
                 Vector2(125, 50),
-                "Buy",
-                MenuImg["FlowerButton"],
+                "Acheter",
+                MenuImg["LittleButton"],
                 BLACK,
-                "Grand arial",
-                self.add_dash_card_to_deck
+                "centaur",
+                self.add_walljump_card_to_deck
             ),
             Label(
                 self,
@@ -392,7 +579,7 @@ class Game:
                 "Description",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             ),
             Label(
                 self,
@@ -401,7 +588,7 @@ class Game:
                 "Permet d'effectuer",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             ),
             Label(
                 self,
@@ -410,7 +597,16 @@ class Game:
                 "un wall jump",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
+            ),
+            Label(
+                self,
+                Vector2(450, 700),
+                Vector2(0, 0),
+                "Compétence passive",
+                IMAGE_VIDE,
+                BLACK,
+                "centaur",
             ),
             Label(
                 self,
@@ -419,14 +615,14 @@ class Game:
                 "0",
                 IMAGE_VIDE,
                 BLACK,
-                "Grand arial",
+                "centaur",
             )
         )
 
         self.TrevorIsMoving = False
         self.player = Player(self, 0, 0)
         self.inv = Inventory(self)
-        fill_inventory(self.inv, "Dash", "Jump+", "WallJump")
+        # fill_inventory(self.inv, "Dash", "Jump+", "WallJump")
 
         self.delay = time.time() + TREVOR_DELAY_BEFORE_START
 
@@ -479,6 +675,9 @@ class Game:
         self.lastPoint = Vector2(MAP_LENGHT * TILETOTALSIZE - 1, firstground)
         self.player.transform.position = self.spawnpoint.copy()
 
+    def start_game(self):
+        self.start_playing = True
+
     def btn_play(self):
         self.tabPressed = False
 
@@ -490,6 +689,14 @@ class Game:
             self.show_quit_screen = True
             self.tabPressed = False
 
+    def menu_screen_leave_game(self):
+        if self.show_quit_screen:
+            self.show_quit_screen = False
+            self.updating_menu = True
+        else:
+            self.show_quit_screen = True
+            self.updating_menu = False
+
     def leaving_game(self):
         self.running = False
 
@@ -500,6 +707,14 @@ class Game:
         else:
             self.show_param_screen = True
             self.tabPressed = False
+
+    def menu_screen_param(self):
+        if self.show_param_screen:
+            self.show_param_screen = False
+            self.updating_menu = True
+        else:
+            self.show_param_screen = True
+            self.updating_menu = False
 
     """3 fonctions pour faire presque la même chose, parce que pas le temps de généraliser avec un dictionnaire"""
     def dash_card_description(self):
@@ -519,12 +734,34 @@ class Game:
 
     def add_dash_card_to_deck(self):
         self.inv.AddCard("Dash")
+        self.update_cards()
 
     def add_jump_card_to_deck(self):
         self.inv.AddCard("Jump+")
+        self.update_cards()
 
     def add_walljump_card_to_deck(self):
         self.inv.AddCard("WallJump")
+        self.update_cards()
+
+    def update_cards(self):
+        for i in range(3):
+            if len(self.inv.InvContents) > i:
+                self.ShopMenu.widget[i + 2].image = CardImg[CardEq[self.inv.InvContents[i]]]
+            else:
+                self.ShopMenu.widget[i + 2].image = IMAGE_VIDE
+
+    def remove_dash_card_to_deck(self):
+        self.inv.RemoveCard(0)
+        self.update_cards()
+
+    def remove_jump_card_to_deck(self):
+        self.inv.RemoveCard(1)
+        self.update_cards()
+
+    def remove_walljump_card_to_deck(self):
+        self.inv.RemoveCard(2)
+        self.update_cards()
 
     def kill(self):
         if not self.game_over.is_game_over:
@@ -532,136 +769,139 @@ class Game:
             self.boss.is_Active = False
 
     def update(self):
-        self.game_over.fade(self.deltatime)
-        if distance(self.player.transform.position, self.shaman.transform.position) > 100:
-            self.shopPressed = False
+        if self.start_playing:
+            self.game_over.fade(self.deltatime)
+            if distance(self.player.transform.position, self.shaman.transform.position) > 100:
+                self.shopPressed = False
 
-        if not self.game_over.is_game_over:
-            if not self.TrevorIsMoving and self.player.transform.position.x() > TILETOTALSIZE:
-                self.TrevorIsMoving = True
+            if not self.game_over.is_game_over:
+                if not self.TrevorIsMoving and self.player.transform.position.x() > TILETOTALSIZE:
+                    self.TrevorIsMoving = True
 
-            if not self.tabPressed and not self.show_quit_screen and not self.show_param_screen:
-                self.ground.clear()
-                if self.boss.is_Active:
-                    self.ground = self.boss.get_physic(self.camera)
-                else:
-                    self.ground = self.map.get_physique_on_screen(self.camera)
-                if not self.TrevorIsMoving:
-                    self.ground.append(self.firstTileLeft.collision[0])
-                if self.TrevorIsMoving and self.interactible[0].transform.position.x() < TILETOTALSIZE * MAP_LENGHT:
-                    self.interactible[0].transform.position.moveX(self.deltatime * TREVOR_SPEED)
-                for elt in self.ground:
-                    elt.update()
-                self.player.update()
-                self.boss.update()
-                if self.player.transform.CollideRect(self.interactible[1].transform):
-                    self.boss.EnterRoom()
-                    self.player.transform.position = Vector2(TILETOTALSIZE * (MAP_LENGHT + len(self.boss.map.map) // 2), 0)
-                    self.boss.is_Active = True
-                    self.ParaX.set_current("Grotte")
-                    self.ParaX.offsetY = HEIGHT / 5
+                if not self.tabPressed and not self.show_quit_screen and not self.show_param_screen:
+                    self.ground.clear()
+                    if self.boss.is_Active:
+                        self.ground = self.boss.get_physic(self.camera)
+                    else:
+                        self.ground = self.map.get_physique_on_screen(self.camera)
+                    if not self.TrevorIsMoving:
+                        self.ground.append(self.firstTileLeft.collision[0])
+                    if self.TrevorIsMoving and self.interactible[0].transform.position.x() < TILETOTALSIZE * MAP_LENGHT:
+                        self.interactible[0].transform.position.moveX(self.deltatime * TREVOR_SPEED)
+                    for elt in self.ground:
+                        elt.update()
+                    self.player.update()
+                    self.boss.update()
+                    if self.player.transform.CollideRect(self.interactible[1].transform):
+                        self.boss.EnterRoom()
+                        self.player.transform.position = Vector2(TILETOTALSIZE * (MAP_LENGHT + len(self.boss.map.map) // 2), 0)
+                        self.boss.is_Active = True
+                        self.ParaX.set_current("Grotte")
+                        self.ParaX.offsetY = HEIGHT / 5
 
-                if self.player.transform.position.y() > TILETOTALSIZE + 50:
+                    if self.player.transform.position.y() > TILETOTALSIZE + 50:
+                        self.player.transform.position = self.spawnpoint.copy()
+                    self.camera.update()
+
+                    if self.player.transform.CollideRect(self.boss.transform) or self.player.transform.CollideRect(self.interactible[0].transform):
+                        self.kill()
+
+            else:
+                if self.game_over.reset:
+                    self.player.animator.set_anim("idle")
                     self.player.transform.position = self.spawnpoint.copy()
-                self.camera.update()
-
-                if self.player.transform.CollideRect(self.boss.transform) or self.player.transform.CollideRect(self.interactible[0].transform):
-                    self.kill()
+                    self.camera.position = self.spawnpoint - Vector2(self.camera.size / 2, self.camera.size / 2)
+                    self.ParaX.set_current("Plaine")
+                    self.ParaX.offsetY = HEIGHT / 3
+                    self.loadBoss()
+                    self.TrevorIsMoving = False
+                    self.interactible[0].transform.position.x(-Trevor.get_width() - 100)
 
             if self.tabPressed:
+                self.PauseMenu.update()
+            if self.show_quit_screen:
+                self.QuitMenu.update()
+            if self.show_param_screen:
+                self.ParamMenu.update()
+
+            if self.shopPressed:
+                self.ShopMenu.update()
+                if self.show_dash_card_description:
+                    self.DashCardDescription.update()
+                if self.show_doublejump_card_description:
+                    self.DoubleJumpCardDescription.update()
+                if self.show_walljump_card_description:
+                    self.WallJumpCardDescription.update()
+        else:
+            if self.updating_menu:
                 self.MainMenu.update()
 
             if self.show_quit_screen:
-                self.QuitMenu.update()
-
+                self.QuitMainMenu.update()
             if self.show_param_screen:
-                self.ParamMenu.update()
-        else:
-            if self.game_over.reset:
-                self.player.animator.set_anim("idle")
-                self.player.transform.position = self.spawnpoint.copy()
-                self.camera.position = self.spawnpoint - Vector2(self.camera.size / 2, self.camera.size / 2)
-                self.ParaX.set_current("Plaine")
-                self.ParaX.offsetY = HEIGHT / 3
-                self.loadBoss()
-                self.TrevorIsMoving = False
-                self.interactible[0].transform.position.x(-Trevor.get_width() - 100)
-
-        if self.tabPressed:
-            self.MainMenu.update()
-        if self.show_quit_screen:
-            self.QuitMenu.update()
-        if self.show_param_screen:
-            self.ParamMenu.update()
-
-        if self.shopPressed:
-            self.ShopMenu.update()
-            if self.show_dash_card_description:
-                self.DashCardDescription.update()
-            if self.show_doublejump_card_description:
-                self.DoubleJumpCardDescription.update()
-            if self.show_walljump_card_description:
-                self.WallJumpCardDescription.update()
+                self.ParamMainMenu.update()
 
 
     def draw(self):
-        # dessine le parallax
-        self.ParaX.draw_bg(SCREEN)
+        if self.start_playing:
+            # dessine le parallax
+            self.ParaX.draw_bg(SCREEN)
 
-        if not self.boss.is_Active:
-            # dessine la map
-            self.map.blit(SCREEN, self.camera)
+            if not self.boss.is_Active:
+                # dessine la map
+                self.map.blit(SCREEN, self.camera)
 
-            # dessine le point de Tp au boss et la Tornade
-            for elt in self.interactible:
-                elt.blit(SCREEN)
+                # dessine le point de Tp au boss et la Tornade
+                for elt in self.interactible:
+                    elt.blit(SCREEN)
 
-            self.firstTileLeft.blit(SCREEN)
+                self.firstTileLeft.blit(SCREEN)
 
-        # Cache le bas de l'écran
-        py.draw.rect(SCREEN, (50, 25, 5) if self.ParaX.current == "Plaine" else BLACK, (0, TILETOTALSIZE - self.camera.position.y(), WIDTH, HEIGHT))
+            # Cache le bas de l'écran
+            py.draw.rect(SCREEN, (50, 25, 5) if self.ParaX.current == "Plaine" else BLACK, (0, TILETOTALSIZE - self.camera.position.y(), WIDTH, HEIGHT))
 
-        if self.boss.is_Active:
-            # dessine le boss et la map du boss
-            self.boss.blit(SCREEN)
+            if self.boss.is_Active:
+                # dessine le boss et la map du boss
+                self.boss.blit(SCREEN)
 
-        # dessine le shaman
-        self.shaman.blit(SCREEN)
+            # dessine le shaman
+            self.shaman.blit(SCREEN)
 
-        # dessine le joueur
-        self.player.blit(SCREEN)
+            # dessine le joueur
+            self.player.blit(SCREEN)
 
-        # dessine l'ATH
-        self.inv.draw()
+            # Dessine l'UI du menu
+            if self.tabPressed:
+                self.PauseMenu.blit(SCREEN)
 
-        # Dessine l'UI du menu
-        if self.tabPressed:
+            # Dessine l'UI du Shop
+            if self.shopPressed and not self.tabPressed:
+                self.ShopMenu.blit(SCREEN)
+                if self.show_dash_card_description:
+                    self.DashCardDescription.blit(SCREEN)
+                if self.show_doublejump_card_description:
+                    self.DoubleJumpCardDescription.blit(SCREEN)
+                if self.show_walljump_card_description:
+                    self.WallJumpCardDescription.blit(SCREEN)
+
+            # dessine les fps et le temps
+            SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
+
+            # Dessine d'autre Menus
+            if self.show_quit_screen:
+                self.QuitMenu.blit(SCREEN)
+            if self.show_param_screen:
+                self.ParamMenu.blit(SCREEN)
+
+            # dessine l'affichage du fade du game over (opacitée variante)
+            self.game_over.Affichage(SCREEN)
+        else:
             self.MainMenu.blit(SCREEN)
-        if self.show_quit_screen:
-            self.QuitMenu.blit(SCREEN)
-        if self.show_param_screen:
-            self.ParamMenu.blit(SCREEN)
 
-        if self.shopPressed and not self.tabPressed:
-            self.ShopMenu.blit(SCREEN)
-            if self.show_dash_card_description:
-                self.DashCardDescription.blit(SCREEN)
-            if self.show_doublejump_card_description:
-                self.DoubleJumpCardDescription.blit(SCREEN)
-            if self.show_walljump_card_description:
-                self.WallJumpCardDescription.blit(SCREEN)
-
-        # dessine les fps et le temps
-        SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
-
-        # Dessine d'autre Menus
-        if self.show_quit_screen:
-            self.QuitMenu.blit(SCREEN)
-        if self.show_param_screen:
-            self.ParamMenu.blit(SCREEN)
-
-        # dessine l'affichage du fade du game over (opacitée variante)
-        self.game_over.Affichage(SCREEN)
+            if self.show_quit_screen:
+                self.QuitMainMenu.blit(SCREEN)
+            if self.show_param_screen:
+                self.ParamMainMenu.blit(SCREEN)
 
         # actualise l'écran
         py.display.flip()

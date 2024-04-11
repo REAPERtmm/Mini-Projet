@@ -399,7 +399,6 @@ class Player(Entity):
         screen.blit(self.animator.get_current_image(), (self.transform.position - self.game.camera.position - Vector2(self._decalX, 0)).tuple())
         if self.animatorVFX.current_anim == "doublejump":
             screen.blit(self.animatorVFX.get_current_image(), (self.transform.position - self.game.camera.position - Vector2(self._decalX + 1.25*PLAYER_HEIGHT, .25 * PLAYER_HEIGHT)).tuple())
-            print("double jump")
             if self.animatorVFX.is_ended():
                 self.animatorVFX.set_anim("idle")
 
@@ -450,7 +449,6 @@ class Player(Entity):
             self.CanDoubleJump = True
     
     def double_jump(self):
-        print("Double Jump :", self.ability_enable["Jump+"])
         if self.CanDoubleJump and self.ability_enable["Jump+"]:
             self.animatorVFX.set_anim("doublejump")
             self.velocity = Vector2(0, -13) * RESMULT
@@ -466,14 +464,12 @@ class Player(Entity):
             self.transform.position.moveX(-10)
             isgrabbing = True
         if self.ability_enable["WallJump"] and isgrabbing and self.wall_jump_count < self.wall_jump_max_count and (self.CanDoubleJump or self.CanJump):
-            print("WallJump")
             jump_direction = Vector2(0, -13)
             self.velocity = jump_direction * RESMULT
             self.wall_jump_count += 1  
 
     def dash(self):
         if self.ability_enable["Dash"] and self.CanDash and self.isGrounded:
-            print("Dash")
             if self.game.rightPressed:
                 movementX = 100
                 leftest = None
