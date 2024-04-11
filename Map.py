@@ -19,6 +19,10 @@ class Map:
 		self.offset = Vector2(0, 0)
 		self.map = [-1 for __ in range(width)]
 
+	def add(self, tile_index: int):
+		self.map.append(tile_index)
+		self.width += 1
+
 	def get_on_Screen(self, camera):
 		camera_box = Box(camera.position, camera.Dimention())
 		valid_tile = []
@@ -116,9 +120,9 @@ def createMapStartingWith(game, width, start_tile_index, excluded=True):
 	# définir la première
 	o_map.map[0] = start_tile_index
 	fillMap(o_map)
+	o_map.add(len(tiles) - 1)
 	replace_with_tiles(o_map)
 	return o_map
-
 
 
 def get_mapping_from_tile_collection(tile_collection: list, exclude: tuple = ()) -> list:

@@ -1,9 +1,5 @@
 import time
 from random import random, choice
-
-import pygame.draw
-import pygame.transform
-
 from Animation import *
 import Events
 from GeoMath import *
@@ -80,6 +76,27 @@ class StaticObject(GameObject):
         super().update()
 
 
+class Projectile(StaticObject):
+    def __init__(self, game, x: float, y: float, direction: Vector2, lifetime: float):
+        super().__init__(game, x, y, 70, 80, "Projectile")
+        self.direction = direction
+        self.animator = Animator(
+            idle=Animation(400_000_000, *load_all_images("Resources/Animation/ame/", (250, 250)))
+        )
+        self.lifetime = lifetime
+        self.time_start = time.time()
+        self.toDestroy = False
+
+    def blit(self, screen: py.Surface):
+        screen.blit(self.animator.get_current_image(), ((self.transform.position - Vector2(90, 75) - self.game.camera.position).tuple()))
+
+    def update(self):
+        self.animator.update()
+        self.transform.position += self.direction * self.game.deltatime
+        if time.time() > self.time_start + self.lifetime:
+            self.toDestroy = True
+
+
 class PhysicalObject(GameObject):
     def __init__(self, game, x: float, y: float, w: float, h: float):
         super().__init__(game, x, y, w, h)
@@ -124,8 +141,6 @@ class PhysicalObject(GameObject):
                 check_left = self.box_left.CollideRect(elt.transform)
                 check_right = self.box_right.CollideRect(elt.transform)
 
-                Box(self.transform.position + Vector2(1, -1),
-                    self.transform.position + Vector2(self.transform.size.x() + 1, -1))
                 if check_under and not check_left and not check_right:
                     self.transform.position.y(elt.transform.position.y() - self.transform.size.y())
                     self.isGrounded = True
@@ -143,7 +158,13 @@ class PhysicalObject(GameObject):
                     self.isGrabbingLeft = True
 
         if not self.isGrounded:
-            self.velocity -= Vector2(0, -GRAVITY * 2.2) * self.game.deltatime
+            if self.isGrabbingRight or self.isGrabbingLeft:
+                if self.velocity.y() > 0:
+                    self.velocity -= Vector2(0, -GRAVITY * .1) * self.game.deltatime
+                else:
+                    self.velocity -= Vector2(0, -GRAVITY * 2.2) * self.game.deltatime
+            else:
+                self.velocity -= Vector2(0, -GRAVITY * 2.2) * self.game.deltatime
         else:
             self.velocity = Vector2(0, 0)
 
@@ -182,18 +203,6 @@ class Entity(PhysicalObject):
 
     def update(self):
         super().update()
-        """
-        print("DEBUG PLAYER =======")
-
-        print("position : ", self.transform.position)
-        print("size : ", self.transform.size)
-        print("Grounded = ", self.isGrounded)
-        print("Velocity = ", self.velocity)
-        print("Ground :")
-        for elt in self.game.ground:
-            print("position : ", elt.transform.position)
-            print("size : ", elt.transform.size)
-            print("Collide : ", self.transform.CollideRect(elt.transform))"""
 
 
 class Boss(Entity):
@@ -209,13 +218,18 @@ class Boss(Entity):
             r_precharge=Animation(800_000_000, *load_all_images("Resources/Animation/Yack/precharge/", (YACK_WIDTH, YACK_HEIGHT), reverseX=True), StopAtEnd=True),
             turn=Animation(800_000_000, *load_all_images("Resources/Animation/Yack/turn/", (YACK_WIDTH, YACK_HEIGHT)), StopAtEnd=True),
             r_turn=Animation(800_000_000, *load_all_images("Resources/Animation/Yack/turn/", (YACK_WIDTH, YACK_HEIGHT), reverseX=True), StopAtEnd=True),
-            death=Animation(800_000_000, *load_all_images("Resources/Animation/Yack/death/", (YACK_WIDTH, YACK_HEIGHT)), StopAtEnd=True),
-            r_death=Animation(800_000_000, *load_all_images("Resources/Animation/Yack/death/", (YACK_WIDTH, YACK_HEIGHT), reverseX=True), StopAtEnd=True),
+            death=Animation(2_000_000_000, *load_all_images("Resources/Animation/Yack/death/", (YACK_WIDTH, YACK_HEIGHT)), StopAtEnd=True),
+            r_death=Animation(2_000_000_000, *load_all_images("Resources/Animation/Yack/death/", (YACK_WIDTH, YACK_HEIGHT), reverseX=True), StopAtEnd=True),
+        )
+
+        self.animatorcloche = Animator(
+            idle=Animation(0, py.transform.scale(py.image.load("Resources/Animation/Cloche/1.png"), (250, 250)).convert_alpha(),  StopAtEnd=True),
+            ding=Animation(1_000_000_000, *load_all_images("Resources/Animation/Cloche/", (250, 250)), StopAtEnd=True),
         )
 
         self.platform = []
 
-        self.cloche = StaticObject(self.game, 0, 0, 0, 0, "Cloche", CLOCHE)
+        self.cloche = StaticObject(self.game, 0, 0, 250, 250, "Cloche")
         self.halo = StaticObject(self.game, 0, 0, 0, 0, "Halo", HALO)
 
         self.offset = Vector2(self.transform.size.x() * .7, self.transform.size.y() * .87)
@@ -228,16 +242,18 @@ class Boss(Entity):
         self.map = None
         self.time_at_phase_start = time.time()
         self.attack_duration_range = {
-            "Wait": [1, 2],
-            "Pre-Charge": [-1],
-            "Charge": [-1],
-            "Projectile": [-1],
-            "turn": [-1]
+            "Wait": (1, 2),
+            "Pre-Charge": (.5, .8),
+            "Charge": (0, 0),
+            "Projectile": (0, 0),
+            "turn": (0, 0)
         }
         self.attack = [
             ["Wait", "Pre-Charge"],
             ["Wait", "Pre-Charge", "Projectile"]
         ]
+
+        self.projectiles = []
         self.status = "Wait"
         self.attack_duration = 5
         self.time_start_attack = time.time()
@@ -245,9 +261,11 @@ class Boss(Entity):
         self.left = Vector2(0, 0)
         self.right = Vector2(0, 0)
         self.speed = 1
+        self.left_and_right_border = []
+        self.ended = False
 
     def get_physic(self, camera):
-        return self.platform[self.phase] + self.map.get_physique_on_screen(camera)
+        return self.platform[self.phase] + self.map.get_physique_on_screen(camera) + self.left_and_right_border
 
     def next_attack(self, status=None, different=False):
         if status is None:
@@ -259,7 +277,7 @@ class Boss(Entity):
                 self.status = choice(self.attack[self.phase])
         else:
             self.status = status
-        self.attack_duration = choice(self.attack_duration_range[self.status])
+        self.attack_duration = randfloat(self.attack_duration_range[self.status][0], self.attack_duration_range[self.status][0])
         self.time_start_attack = time.time()
 
     def EnterRoom(self):
@@ -269,16 +287,21 @@ class Boss(Entity):
     def Start(self, map):
         self.map = map
         self.platform.clear()
+        self.left_and_right_border = [
+            StaticObject(self.game, self.map.offset.x(), -TILETOTALSIZE * 2, TILETOTALSIZE + 3 * RESOLUTION, 3 * TILETOTALSIZE),
+            StaticObject(self.game, self.map.offset.x() + 3 * TILETOTALSIZE - 3 * RESOLUTION, -TILETOTALSIZE * 2, TILETOTALSIZE + 3 * RESOLUTION, 3 * TILETOTALSIZE)
+        ]
         self.left = self.map.offset + Vector2(TILETOTALSIZE + 3 * RESOLUTION, TILETOTALSIZE - self.transform.size.y() - 3 * RESOLUTION)
         self.right = self.map.offset + Vector2((self.map.width - 1) * TILETOTALSIZE - self.transform.size.x() - 3 * RESOLUTION, TILETOTALSIZE - self.transform.size.y() - 3 * RESOLUTION)
         self.goleft = True
 
-        self.cloche.transform.position.x(TILETOTALSIZE + 3 * RESOLUTION + TILETOTALSIZE - 200 + self.map.offset.x())
-        self.cloche.transform.position.y(TILETOTALSIZE - 3 * RESOLUTION - self.cloche.transform.size.y())
+        self.cloche.transform.position.x(TILETOTALSIZE + 3 * RESOLUTION + TILETOTALSIZE + self.map.offset.x() - 250)
+        self.cloche.transform.position.y(TILETOTALSIZE - 3 * RESOLUTION - 230)
 
-        self.halo.transform.position.x(self.cloche.transform.position.x() - self.halo.transform.size.x() / 2 + self.cloche.transform.size.x() / 2)
+        self.halo.transform.position.x(self.cloche.transform.position.x() - self.halo.transform.size.x() / 2 + 250 / 2)
         self.halo.transform.position.y(TILETOTALSIZE - 3 * RESOLUTION - self.halo.transform.size.y())
 
+        self.ended = False
         # Phase 0
         self.platform.append([])
         # Phase 1
@@ -297,19 +320,42 @@ class Boss(Entity):
         self.time_start_attack = time.time()
     
     def next_phase(self):
+        if self.phase == 1:
+            self.die()
         self.phase = (self.phase + 1) % len(self.phase_duration)
         self.time_at_phase_start = time.time()
         self.cloche_enable = False
-    
+        self.animatorcloche.set_anim("ding")
+
+    def die(self):
+        self.status = "Death"
+
     def update(self):
         self.animator.update()
-        if self.is_Active:
-            print(self.animator.current_anim)
+        if self.animatorcloche.is_ended():
+            self.animatorcloche.set_anim("idle")
+        self.animatorcloche.update()
+        for elt in self.projectiles:
+            elt.update()
+            if elt.toDestroy:
+                self.projectiles.remove(elt)
+        if self.is_Active and self.ended:
+            if self.cloche_enable and self.game.is_Interacting and self.cloche.transform.CollideRect(self.game.player.transform):
+                self.game.restart()
+        elif self.status == "Death":
+            if self.goleft:
+                self.animator.set_anim("death")
+            else:
+                self.animator.set_anim("r_death")
+            if self.animator.is_ended():
+                self.ended = True
+                self.cloche_enable = True
+        elif self.is_Active and not self.ended:
             if time.time() > self.time_at_phase_start + self.phase_duration[self.phase]:
                 self.cloche_enable = True
             else:
                 self.cloche_enable = False
-            if self.cloche_enable and self.game.is_Interacting and self.halo.transform.CollideRect(self.game.player.transform):
+            if self.cloche_enable and self.game.is_Interacting and self.cloche.transform.CollideRect(self.game.player.transform):
                 self.next_phase()
 
             if self.status == "Wait":
@@ -326,32 +372,46 @@ class Boss(Entity):
                     self.animator.set_anim("turn")
                 if self.animator.is_ended():
                     self.next_attack()
+            if self.status == "Projectile":
+                if len(self.projectiles) < 5:
+                    Y = randfloat(300, TILETOTALSIZE - 3*RESOLUTION - 300)
+                    if random() > .5:
+                        X = self.map.offset.x() + TILETOTALSIZE + 3*RESOLUTION
+                    else:
+                        X = self.map.offset.x() + TILETOTALSIZE - 3*RESOLUTION + 2 * TILETOTALSIZE
+                    direction: Vector2 = (self.game.player.transform.position - Vector2(X, Y))
+                    direction /= direction.magnitude
+                    direction *= 500
+                    self.projectiles.append(Projectile(self.game, X, Y, direction, 8))
+                self.next_attack()
+
             if self.status == "Pre-Charge":
                 if self.goleft:
                     self.animator.set_anim("precharge")
                 else:
                     self.animator.set_anim("r_precharge")
-                if self.animator.is_ended():
+                if time.time() > self.time_start_attack + self.attack_duration:
                     self.next_attack("Charge")
             if self.status == "Charge":
                 if self.goleft:
                     self.animator.set_anim("charge")
                     self.transform.position = Lerp(self.transform.position, self.left, self.game.deltatime * self.speed)
-                    if distance(self.transform.position, self.left) < 100:
+                    if distance(self.transform.position, self.left) < 20:
                         self.goleft = False
                         self.next_attack("turn")
                 else:
                     self.animator.set_anim("r_charge")
                     self.transform.position = Lerp(self.transform.position, self.right, self.game.deltatime * self.speed)
-                    if distance(self.transform.position, self.right) < 100:
+                    if distance(self.transform.position, self.right) < 20:
                         self.goleft = True
                         self.next_attack("turn")
 
     def blit(self, screen: py.Surface):
-        super().blit(screen)
         for elt in self.platform[self.phase]:
             elt.blit(screen)
-        self.cloche.blit(screen)
+        for elt in self.projectiles:
+            elt.blit(screen)
+        screen.blit(self.animatorcloche.get_current_image(), (self.cloche.transform.position - self.game.camera.position).tuple())
         if self.cloche_enable:
             self.halo.blit(screen)
         self.map.blit(screen, self.game.camera)
@@ -391,7 +451,7 @@ class Player(Entity):
         )
 
         self.animatorVFX = Animator(
-            idle=Animation(0, pygame.transform.scale(py.image.load("Resources/Animation/VFX/doublejump/jump4.png"), (1, 1)).convert_alpha(),  StopAtEnd=True),
+            idle=Animation(0, py.transform.scale(py.image.load("Resources/Animation/no.png"), (1, 1)).convert_alpha(),  StopAtEnd=True),
             doublejump=Animation(400_000_000, *load_all_images("Resources/Animation/VFX/doublejump/", (PLAYER_HEIGHT*3, PLAYER_HEIGHT*3)), StopAtEnd=True),
         )
 
@@ -399,7 +459,6 @@ class Player(Entity):
         screen.blit(self.animator.get_current_image(), (self.transform.position - self.game.camera.position - Vector2(self._decalX, 0)).tuple())
         if self.animatorVFX.current_anim == "doublejump":
             screen.blit(self.animatorVFX.get_current_image(), (self.transform.position - self.game.camera.position - Vector2(self._decalX + 1.25*PLAYER_HEIGHT, .25 * PLAYER_HEIGHT)).tuple())
-            print("double jump")
             if self.animatorVFX.is_ended():
                 self.animatorVFX.set_anim("idle")
 
@@ -411,6 +470,7 @@ class Player(Entity):
             self.right = False
 
         self.animator.update()
+        self.animatorVFX.update()
         if self.isGrounded:
             if self.game.leftPressed or self.game.rightPressed:
                 if self.right:
@@ -444,38 +504,29 @@ class Player(Entity):
 
     def jump(self):
         if self.CanJump:
-            self.velocity = Vector2(0, -13) * RESMULT
+            print("jump")
+            self.velocity = Vector2(self.velocity.x(), -13) * RESMULT
             self.CanJump = False
-            self.wall_jump_count = 0
             self.CanDoubleJump = True
     
     def double_jump(self):
-        print("Double Jump :", self.ability_enable["Jump+"])
         if self.CanDoubleJump and self.ability_enable["Jump+"]:
+            print("double jump")
             self.animatorVFX.set_anim("doublejump")
-            self.velocity = Vector2(0, -13) * RESMULT
-            self.wall_jump_count = 0
+            self.velocity = Vector2(self.velocity.x(), -13) * RESMULT
             self.CanDoubleJump = False
 
     def wall_jump(self):
-        isgrabbing = False
-        if self.isGrabbingLeft:
-            self.transform.position.moveX(10)
-            isgrabbing = True
-        elif self.isGrabbingRight:
-            self.transform.position.moveX(-10)
-            isgrabbing = True
-        if self.ability_enable["WallJump"] and isgrabbing and self.wall_jump_count < self.wall_jump_max_count and (self.CanDoubleJump or self.CanJump):
-            print("WallJump")
-            jump_direction = Vector2(0, -13)
+        if self.ability_enable["WallJump"] and (self.isGrabbingLeft or self.isGrabbingRight) and self.CanDoubleJump:
+            print("Wall jump")
+            jump_direction = Vector2(self.velocity.x() + (-5 if self.isGrabbingRight else 5), -13)
             self.velocity = jump_direction * RESMULT
-            self.wall_jump_count += 1  
+            self.CanDoubleJump = False
 
     def dash(self):
         if self.ability_enable["Dash"] and self.CanDash and self.isGrounded:
-            print("Dash")
+            movementX = 100  # distance du dash
             if self.game.rightPressed:
-                movementX = 100
                 leftest = None
                 mouvementbox = Box(self.transform.position + Vector2(self.transform.size.x(), 1), Vector2(movementX, self.transform.size.y() - 2))
                 for elt in self.game.ground:
@@ -489,17 +540,16 @@ class Player(Entity):
                 else:
                     self.transform.position = Vector2(leftest - self.transform.size.x(), self.transform.position.y())
             elif self.game.leftPressed:
-                movementX = -100
                 rightest = None
-                mouvementbox = Box(self.transform.position - Vector2(movementX, 1), Vector2(-movementX, self.transform.size.y() - 2))
+                mouvementbox = Box(self.transform.position - Vector2(movementX, 1), Vector2(movementX, self.transform.size.y() - 2))
                 for elt in self.game.ground:
                     if mouvementbox.CollideRect(elt.transform):
                         if rightest is None:
-                            rightest = elt.transform.position.x() - elt.transform.size.x()
-                        elif elt.transform.position.x() - elt.transform.size.x() > rightest:
-                            rightest = elt.transform.position.x() - elt.transform.size.x()
+                            rightest = elt.transform.position.x() + elt.transform.size.x()
+                        elif elt.transform.position.x() + elt.transform.size.x() > rightest:
+                            rightest = elt.transform.position.x() + elt.transform.size.x()
                 if rightest is None:
-                    self.transform.position += Vector2(movementX, 0)
+                    self.transform.position += Vector2(-movementX, 0)
                 else:
                     self.transform.position = Vector2(rightest, self.transform.position.y())
             self.CanDash = False

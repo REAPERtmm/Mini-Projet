@@ -7,13 +7,12 @@ ALLOWED_FILES = ("png", "jpg", "jpeg", "webp")
 
 
 def load_all_images(dir_path, size, reverseX=False, reverseY=False):
-    paths = listdir(dir_path)
     all_images = []
-    for path in paths:
-        if path.split(".")[-1] in ALLOWED_FILES:
-            img = py.transform.smoothscale(py.image.load(dir_path + path), size)
-            img = py.transform.flip(img, reverseX, reverseY)
-            all_images.append(img.convert_alpha())
+    files = len(listdir(dir_path))
+    for i in range(1, files+1):
+        img = py.transform.smoothscale(py.image.load(dir_path + str(i) + ".png"), size)
+        img = py.transform.flip(img, reverseX, reverseY)
+        all_images.append(img.convert_alpha())
     return all_images
 
 
@@ -50,7 +49,7 @@ class Animation:
         self.next_frame = time.time_ns() + self.delay
 
     def is_ended(self):
-        return self.current_frame + 1 == len(self.images)
+        return self.current_frame == len(self.images) - 1
 
     def get_current_frame(self):
         return self.images[self.current_frame]
@@ -64,7 +63,7 @@ class Animation:
             self.current_frame += 1
             if self.current_frame == len(self.images):
                 if self.StopAtEnd:
-                    self.current_frame -= 1
+                    self.current_frame = len(self.images) - 1
                 else:
                     self.current_frame = 0
             self.next_frame = self.next_frame + self.delay

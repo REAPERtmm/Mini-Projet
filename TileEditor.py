@@ -59,7 +59,6 @@ frame2.grid(row=1)
 label2.grid(row=0, column=0)
 entry2.grid(row=0, column=1)
 browse_but2.grid(row=0, column=2)
-
 button.grid(row=2, column=0)
 
 All = False
@@ -71,7 +70,7 @@ from GeoMath import *
 
 running = not All
 
-TILESIZE = int(600 / TILERESOLUTION)
+TILESIZE = int(600 * RESMULT / TILERESOLUTION)
 
 for i in range(1, len(Textures)):
 	Textures[i] = py.transform.smoothscale(Textures[i], (TILESIZE, TILESIZE))
@@ -101,29 +100,29 @@ while running:
 		SCREEN,
 		GREY,
 		(
-			600, 0, 200, 600
+			600 * RESMULT, 0, 200 * RESMULT, 600 * RESMULT
 		)
 	)
 
-	LARGE = int(100 / TILESIZE)
+	LARGE = int(100 * RESMULT / TILESIZE)
 	for i in range(1, len(Textures)):
 		if selected == i:
 			py.draw.rect(
 				SCREEN,
 				RED,
 				(
-					605 + ((i - 1) % LARGE) * (TILESIZE + 10),
-					5 + (int((i - 1) / LARGE)) * (TILESIZE + 10),
-					TILESIZE + 10,
-					TILESIZE + 10
+					605 * RESMULT + ((i - 1) % LARGE) * (TILESIZE + 10 * RESMULT),
+					5 * RESMULT + (int((i - 1) / LARGE)) * (TILESIZE + 10 * RESMULT),
+					TILESIZE + 10 * RESMULT,
+					TILESIZE + 10 * RESMULT
 				)
 			)
 
 		SCREEN.blit(
 			Textures[i],
 			(
-				610 + ((i - 1) % LARGE) * (TILESIZE + 10),
-				10 + (int((i - 1) / LARGE)) * (TILESIZE + 10)
+				610 * RESMULT + ((i - 1) % LARGE) * (TILESIZE + 10 * RESMULT),
+				10 * RESMULT + (int((i - 1) / LARGE)) * (TILESIZE + 10 * RESMULT)
 			)
 		)
 
@@ -145,7 +144,7 @@ while running:
 			pass
 		elif x > TILESIZE * TILERESOLUTION - 1:
 			for i in range(1, len(Textures)):
-				if Box(Vector2(610 + ((i - 1) % LARGE) * (TILESIZE + 10), 10 + (int((i - 1) / LARGE)) * (TILESIZE + 10)), Vector2(TILESIZE, TILESIZE)).CollidePoint(Vector2(x, y)):
+				if Box(Vector2(610 * RESMULT + ((i - 1) % LARGE) * (TILESIZE + 10 * RESMULT), 10 * RESMULT + (int((i - 1) / LARGE)) * (TILESIZE + 10)), Vector2(TILESIZE, TILESIZE)).CollidePoint(Vector2(x, y)):
 					selected = i
 					break
 		else:
@@ -163,6 +162,9 @@ while running:
 	for event in py.event.get():
 		if event.type == py.QUIT:
 			running = False
+
+
+# Fin Boucle ===========================================================================================================
 
 
 if All:
