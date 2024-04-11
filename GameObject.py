@@ -2,6 +2,7 @@ import time
 from random import random, choice
 
 import pygame.draw
+import pygame.transform
 
 from Animation import *
 import Events
@@ -196,7 +197,7 @@ class Entity(PhysicalObject):
 
 
 class Boss(Entity):
-    def __init__(self, game, x: float, y: float, percent=.5):
+    def __init__(self, game, x: float, y: float, percent=.4):
         super().__init__(game, x, y, int(YACK_WIDTH * percent), int(YACK_HEIGHT * percent))
         self.spawn = Vector2(x, y)
         self.animator = Animator(
@@ -217,7 +218,7 @@ class Boss(Entity):
         self.cloche = StaticObject(self.game, 0, 0, 0, 0, "Cloche", CLOCHE)
         self.halo = StaticObject(self.game, 0, 0, 0, 0, "Halo", HALO)
 
-        self.offset = self.transform.size / 2 - Vector2(0, 10)
+        self.offset = Vector2(self.transform.size.x() * .7, self.transform.size.y() * .87)
         self.is_Active = False
         self.cloche_enable = False
         self.phase = 0
@@ -347,6 +348,7 @@ class Boss(Entity):
                         self.next_attack("turn")
 
     def blit(self, screen: py.Surface):
+        super().blit(screen)
         for elt in self.platform[self.phase]:
             elt.blit(screen)
         self.cloche.blit(screen)
@@ -388,8 +390,18 @@ class Player(Entity):
             r_wallfall=Animation(1_000_000_000, *load_all_images("Resources/Animation/Player/wallfall/", (PLAYER_HEIGHT, PLAYER_HEIGHT))),
         )
 
+        self.animatorVFX = Animator(
+            idle=Animation(0, pygame.transform.scale(py.image.load("Resources/Animation/VFX/doublejump/jump4.png"), (1, 1)).convert_alpha(),  StopAtEnd=True),
+            doublejump=Animation(400_000_000, *load_all_images("Resources/Animation/VFX/doublejump/", (PLAYER_HEIGHT*3, PLAYER_HEIGHT*3)), StopAtEnd=True),
+        )
+
     def blit(self, screen: py.Surface):
         screen.blit(self.animator.get_current_image(), (self.transform.position - self.game.camera.position - Vector2(self._decalX, 0)).tuple())
+        if self.animatorVFX.current_anim == "doublejump":
+            screen.blit(self.animatorVFX.get_current_image(), (self.transform.position - self.game.camera.position - Vector2(self._decalX + 1.25*PLAYER_HEIGHT, .25 * PLAYER_HEIGHT)).tuple())
+            print("double jump")
+            if self.animatorVFX.is_ended():
+                self.animatorVFX.set_anim("idle")
 
     def update(self):
         super().update()
@@ -438,7 +450,9 @@ class Player(Entity):
             self.CanDoubleJump = True
     
     def double_jump(self):
+        print("Double Jump :", self.ability_enable["Jump+"])
         if self.CanDoubleJump and self.ability_enable["Jump+"]:
+            self.animatorVFX.set_anim("doublejump")
             self.velocity = Vector2(0, -13) * RESMULT
             self.wall_jump_count = 0
             self.CanDoubleJump = False
@@ -452,12 +466,14 @@ class Player(Entity):
             self.transform.position.moveX(-10)
             isgrabbing = True
         if self.ability_enable["WallJump"] and isgrabbing and self.wall_jump_count < self.wall_jump_max_count and (self.CanDoubleJump or self.CanJump):
+            print("WallJump")
             jump_direction = Vector2(0, -13)
             self.velocity = jump_direction * RESMULT
             self.wall_jump_count += 1  
 
     def dash(self):
         if self.ability_enable["Dash"] and self.CanDash and self.isGrounded:
+            print("Dash")
             if self.game.rightPressed:
                 movementX = 100
                 leftest = None

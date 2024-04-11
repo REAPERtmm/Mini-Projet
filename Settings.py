@@ -42,6 +42,7 @@ Fonts = {
 
 CLOCHE = py.transform.scale(py.image.load("Resources/cloche purificatrice.png").convert_alpha(), (235, 333))
 HALO = py.transform.scale(py.image.load("Resources/Halo.png").convert_alpha(), (TILETOTALSIZE//2, TILETOTALSIZE))
+HALO.set_alpha(100)
 
 SHAMAN_WIDTH = 100
 SHAMAN_HEIGHT = 200

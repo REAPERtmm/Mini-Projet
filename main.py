@@ -2,6 +2,7 @@ from Inventory import *
 from Game_over_test import *
 from Sound import *
 
+
 class Game:
     def __init__(self):
         self.running = True
@@ -428,7 +429,6 @@ class Game:
         fill_inventory(self.inv, "Dash", "Jump+", "WallJump")
 
         self.delay = time.time() + TREVOR_DELAY_BEFORE_START
-        self.player = Player(self, 0, 0)
 
         self.loadMap()
         self.interactible[1].transform.position = self.lastPoint - self.interactible[1].transform.size
@@ -653,7 +653,6 @@ class Game:
 
         # dessine les fps et le temps
         SCREEN.blit(Fonts["arial"].render(f"fps : {self.clock.get_fps()}", True, GREEN, BLACK), (10, 10))
-        SCREEN.blit(Fonts["arial"].render(f"time : {time.time_ns()}", True, GREEN, BLACK), (10, 30))
 
         # Dessine d'autre Menus
         if self.show_quit_screen:
