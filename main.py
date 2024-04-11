@@ -458,7 +458,7 @@ class Game:
 
 
     def load_shop_image(self):
-        shop_image = py.image.load("Resources/magasin.png").convert_alpha()
+        shop_image = py.image.load("image/MenuImg/magasin.png").convert_alpha()
         self.shop_image = py.transform.scale(shop_image, (WIDTH, HEIGHT))
 
     def loadBoss(self):
