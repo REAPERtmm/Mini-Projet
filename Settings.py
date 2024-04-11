@@ -28,7 +28,7 @@ MAP_LENGHT = 4
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
 py.display.set_caption(TITLE)
 
-# py.display.toggle_fullscreen()
+py.display.toggle_fullscreen()
 
 # Yack
 YACK_WIDTH = int(300 * RESMULT)
@@ -38,6 +38,7 @@ YACK_HEIGHT = int(225 * RESMULT)
 Fonts = {
 	"arial": py.font.Font("./Resources/arial.ttf", 12),
 	"Grand arial": py.font.Font("./Resources/arial.ttf", 25),
+	"centaur": py.font.SysFont("Centaur", 35),
 }
 
 HALO = py.transform.scale(py.image.load("Resources/Halo.png").convert_alpha(), (TILETOTALSIZE//2, TILETOTALSIZE))
@@ -63,14 +64,12 @@ MenuImg = {
 	"HomeMenu": py.transform.scale(py.image.load("image/MenuImg/home_menu.png").convert_alpha(), (500, 500)),
 	"PauseMenu": py.transform.scale(py.image.load("image/MenuImg/pause_menu.png").convert_alpha(), (500, 500)),
 	"ParamMenu": py.transform.scale(py.image.load("image/MenuImg/pause_menu.png").convert_alpha(), (500, 500)),
-	"QuitMenu": py.transform.scale(py.image.load("image/MenuImg/banner_menu.png").convert_alpha(), (1500, 750)),
+	"QuitMenu": py.transform.scale(py.image.load("image/MenuImg/banner_menu.png").convert_alpha(), (750, 250)),
 	"ShopMenu": py.transform.scale(py.image.load("image/MenuImg/shop_menu.png").convert_alpha(), (1750, 1000)),
 	"BigButton": py.transform.scale(py.image.load("image/MenuImg/big_button.png").convert_alpha(), (300, 50)),
-	"BigButtonClicked": py.transform.scale(py.image.load("image/MenuImg/big_button_clicked.png").convert_alpha(), (300, 50)),
 	"FlowerButton": py.transform.scale(py.image.load("image/MenuImg/flower_button.png").convert_alpha(), (125, 50)),
-	"FlowerButtonClicked": py.transform.scale(py.image.load("image/MenuImg/flower_button_clicked.png").convert_alpha(), (125, 50)),
 	"LittleButton": py.transform.scale(py.image.load("image/MenuImg/little_button.png").convert_alpha(), (125, 50)),
-	"LittleButtonClicked": py.transform.scale(py.image.load("image/MenuImg/litlle_button_clicked.png").convert_alpha(), (125, 50)),
+	"MainMenu": py.transform.scale(py.image.load("image/MenuImg/UI menu principal.png").convert_alpha(), (WIDTH, HEIGHT)),
 }
 
 ENTREE_GROTTE = py.transform.scale(py.image.load("Resources/entree grotte.png").convert_alpha(), (500, 500))

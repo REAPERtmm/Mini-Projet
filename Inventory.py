@@ -35,11 +35,21 @@ class Inventory:
 
     def AddCard(self, type):
         # self.sounds.Cardcollect()
-        try:
-            self.game.player.ability_enable[type] = True
-        except KeyError:
-            pass
-        self.InvContents.append(type)
+        if len(self.InvContents) < 3:
+            try:
+                self.game.player.ability_enable[type] = True
+            except KeyError:
+                pass
+
+            self.InvContents.append(type)
+
+    def RemoveCard(self, index):
+        if index < len(self.InvContents):
+            try:
+                self.game.player.ability_enable[self.InvContents[index]] = False
+            except KeyError:
+                pass
+            self.InvContents.pop(index)
 
     def select(self, card):
         # self.sounds.CardSwap()
@@ -59,22 +69,3 @@ class Inventory:
         """update the inventory"""
         if not self.hide_ui and time.time() - self.ui_hide_timer >= 3:
             self.hide_ui = True
-
-    def draw(self):
-        """Draw the inventory"""
-        for i in range(len(self.InvContents)):
-            if self.InvContents[i] not in CardEq:
-                img = CardImg[0]  # Image par défault
-            else:
-                img = CardImg[CardEq[self.InvContents[i]]]  # Image equivalant au text
-
-            SCREEN.blit(img, (SCREEN.get_width() - (i + 1) * CARD_WIDTH, SCREEN.get_height() - (100 * RESMULT if self.selected_card == i else 10 * RESMULT)))
-
-        tracks = self.RedFlow
-        colors = (173, 56, 45)
-        if not self.hide_ui:
-            track_text = self.my_font.render(str(tracks), True, colors)
-            SCREEN.blit(Flower, (24, 64))
-            SCREEN.blit(track_text, (24, 24))
-        
-
