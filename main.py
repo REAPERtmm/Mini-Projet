@@ -9,14 +9,20 @@ class Game:
         self.spawnpoint: Vector2 = None
         self.lastPoint: Vector2 = None
         self.map: Map = None
-        # self.sounds = Sound(self)
+        self.sounds = Sound(self)
 
+        self.player = Player(self, 0, 0)
+        self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.boss = Boss(self, TILETOTALSIZE * MAP_LENGHT, TILERESOLUTION * 10)
+
+        self.tornado = Animator(
+            idle=Animation(400_000_000, *load_all_images("Resources/Animation/Tornado/", (int(472 * TILETOTALSIZE / 281), TILETOTALSIZE)))
+        )
 
         self.ground = []
         self.interactible = [
-            StaticObject(self, -Trevor.get_width() - 100, 0, 1000 * RESMULT, 1000 * RESMULT, "Trevor", Trevor),
-            StaticObject(self, MAP_LENGHT * TILETOTALSIZE - TILERESOLUTION * 2, 0, TILERESOLUTION * 2, TILERESOLUTION * 4, "Portail")
+            StaticObject(self, -self.tornado.get_current_image().get_width() - 100, 0, 1000 * RESMULT, 1000 * RESMULT, "Trevor", self.tornado.get_current_image()),
+            StaticObject(self, MAP_LENGHT * TILETOTALSIZE - TILERESOLUTION * 2, 0, 0, 0, "Entee Grotte", ENTREE_GROTTE)
         ]
 
         self.game_over = GameOver(500)
@@ -620,7 +626,6 @@ class Game:
         )
 
         self.TrevorIsMoving = False
-        self.player = Player(self, 0, 0)
         self.inv = Inventory(self)
         # fill_inventory(self.inv, "Dash", "Jump+", "WallJump")
 
@@ -637,12 +642,12 @@ class Game:
         self.shopPressed = False
         self.is_Interacting = False
 
+        self.camera.position = self.spawnpoint - Vector2(self.camera.size / 2, self.camera.size / 2)
         self.shaman = StaticObject(self, TILETOTALSIZE/2, TILETOTALSIZE - RESOLUTION * 7 - SHAMAN_HEIGHT, 0, 0, "Shaman", SHAMAN)
-        self.camera = Camera(self, Vector2(0, 0), 5, self.player)
         self.clock = py.time.Clock()
         self.deltatime = 0
         self.ParaX = Parallax(self, HEIGHT / 3)
-        self.firstTileLeft = createfulltile(self, Vector2(-TILETOTALSIZE, 0))
+        self.firstTileLeft = [createfulltile(self, Vector2(-TILETOTALSIZE, -y * TILETOTALSIZE)) for y in range(2)]
 
     def loadBoss(self):
         self.boss.Start(creatingMapStrict(
@@ -657,7 +662,7 @@ class Game:
         )
 
     def loadMap(self):
-        self.map = createMapStartingWith(self, MAP_LENGHT, 0)
+        self.map = createMapStartingWith(self, MAP_LENGHT-1, 0)
         self.loadBoss()
 
         firstground = 0
@@ -768,6 +773,11 @@ class Game:
             self.game_over.game_over()
             self.boss.is_Active = False
 
+    def restart(self):
+        SCREEN.blit(Restart, (0, 0))
+        py.display.flip()
+        self.__init__()
+
     def update(self):
         if self.start_playing:
             self.game_over.fade(self.deltatime)
@@ -775,37 +785,42 @@ class Game:
                 self.shopPressed = False
 
             if not self.game_over.is_game_over:
-                if not self.TrevorIsMoving and self.player.transform.position.x() > TILETOTALSIZE:
-                    self.TrevorIsMoving = True
+              self.tornado.update()
+              if not self.TrevorIsMoving and self.player.transform.position.x() > TILETOTALSIZE:
+                  self.TrevorIsMoving = True
 
-                if not self.tabPressed and not self.show_quit_screen and not self.show_param_screen:
-                    self.ground.clear()
-                    if self.boss.is_Active:
-                        self.ground = self.boss.get_physic(self.camera)
-                    else:
-                        self.ground = self.map.get_physique_on_screen(self.camera)
-                    if not self.TrevorIsMoving:
-                        self.ground.append(self.firstTileLeft.collision[0])
-                    if self.TrevorIsMoving and self.interactible[0].transform.position.x() < TILETOTALSIZE * MAP_LENGHT:
-                        self.interactible[0].transform.position.moveX(self.deltatime * TREVOR_SPEED)
-                    for elt in self.ground:
-                        elt.update()
-                    self.player.update()
-                    self.boss.update()
-                    if self.player.transform.CollideRect(self.interactible[1].transform):
-                        self.boss.EnterRoom()
-                        self.player.transform.position = Vector2(TILETOTALSIZE * (MAP_LENGHT + len(self.boss.map.map) // 2), 0)
-                        self.boss.is_Active = True
-                        self.ParaX.set_current("Grotte")
-                        self.ParaX.offsetY = HEIGHT / 5
+              if not self.tabPressed and not self.show_quit_screen and not self.show_param_screen:
+                  self.ground.clear()
+                  if self.boss.is_Active:
+                      self.ground = self.boss.get_physic(self.camera)
+                  else:
+                      self.ground = self.map.get_physique_on_screen(self.camera)
+                  if not self.TrevorIsMoving:
+                      for elt in self.firstTileLeft:
+                          self.ground.append(elt.collision[0])
+                  if self.TrevorIsMoving and self.interactible[0].transform.position.x() < TILETOTALSIZE * MAP_LENGHT:
+                      self.interactible[0].transform.position.moveX(self.deltatime * TREVOR_SPEED)
+                  for elt in self.ground:
+                      elt.update()
+                  self.player.update()
+                  self.boss.update()
+                  if self.player.transform.CollideRect(self.interactible[1].transform):
+                      self.boss.EnterRoom()
+                      self.player.transform.position = Vector2(TILETOTALSIZE * (MAP_LENGHT + len(self.boss.map.map) // 2), 0)
+                      self.boss.is_Active = True
+                      self.ParaX.set_current("Grotte")
+                      self.ParaX.offsetY = HEIGHT / 5
 
-                    if self.player.transform.position.y() > TILETOTALSIZE + 50:
-                        self.player.transform.position = self.spawnpoint.copy()
-                    self.camera.update()
+                  if self.player.transform.position.y() > TILETOTALSIZE + 50:
+                      self.player.transform.position = self.spawnpoint.copy()
+                  self.camera.update()
 
-                    if self.player.transform.CollideRect(self.boss.transform) or self.player.transform.CollideRect(self.interactible[0].transform):
-                        self.kill()
-
+                  if not self.boss.ended or self.boss.status != "Death":
+                      if self.player.transform.CollideRect(self.boss.transform) or self.player.transform.CollideRect(self.interactible[0].transform):
+                          self.kill()
+                      for elt in self.boss.projectiles:
+                          if self.player.transform.CollideRect(elt.transform):
+                              self.kill()
             else:
                 if self.game_over.reset:
                     self.player.animator.set_anim("idle")
@@ -836,11 +851,11 @@ class Game:
             if self.updating_menu:
                 self.MainMenu.update()
 
+
             if self.show_quit_screen:
                 self.QuitMainMenu.update()
             if self.show_param_screen:
                 self.ParamMainMenu.update()
-
 
     def draw(self):
         if self.start_playing:
@@ -851,11 +866,14 @@ class Game:
                 # dessine la map
                 self.map.blit(SCREEN, self.camera)
 
-                # dessine le point de Tp au boss et la Tornade
-                for elt in self.interactible:
-                    elt.blit(SCREEN)
 
-                self.firstTileLeft.blit(SCREEN)
+            # dessine le point de Tp au boss et la Tornade
+            self.interactible[1].blit(SCREEN)
+
+            SCREEN.blit(self.tornado.get_current_image(), (self.interactible[0].transform.position - self.camera.position).tuple())
+
+            for elt in self.firstTileLeft:
+                elt.blit(SCREEN)
 
             # Cache le bas de l'écran
             py.draw.rect(SCREEN, (50, 25, 5) if self.ParaX.current == "Plaine" else BLACK, (0, TILETOTALSIZE - self.camera.position.y(), WIDTH, HEIGHT))
@@ -907,7 +925,7 @@ class Game:
         py.display.flip()
 
     def run(self):
-        # self.sounds.ThemeMusic()
+        self.sounds.ThemeMusic()
         while self.running:
             SCREEN.fill(SKY)
             self.deltatime = self.clock.get_time() / 1000
@@ -915,15 +933,13 @@ class Game:
             self.update()
             self.inv.update()
             self.draw()
-            # self.sounds.ShamanStart()
-            # self.sounds.soundTimer += self.deltatime
+            self.sounds.ShamanStart()
+            self.sounds.soundTimer += self.deltatime
 
             if self.leftPressed:
-                self.player.velocity.x(-500 * self.deltatime * RESMULT)
+                self.player.transform.position.moveX(-500 * self.deltatime * RESMULT)
             elif self.rightPressed:
-                self.player.velocity.x(500 * self.deltatime * RESMULT)
-            else:
-                self.player.velocity.x(0)
+                self.player.transform.position.moveX(500 * self.deltatime * RESMULT)
 
             for event in py.event.get():
                 if event.type == py.QUIT:
@@ -935,53 +951,35 @@ class Game:
                 if event.type == py.KEYUP:
                     if event.key == py.K_q:
                         self.leftPressed = False
-                        # self.sounds.AmbientStop()
                     if event.key == py.K_d:
                         self.rightPressed = False
-                        # self.sounds.AmbientStop()
-                    if event.key == py.K_r:
-                        self.inv.increaseRed()
-                    if event.key == py.K_1:
-                        self.inv.select("WallJump")
-                        # self.sounds.FlagOn()
-                    if event.key == py.K_2:
-                        self.inv.select("Jump+")
-                        # self.sounds.FlagOff()
-                    if event.key == py.K_3:
-                        self.inv.select("Dash")
-                        # self.sounds.FlagOff()
-                    if event.key == py.K_a:
+                        self.sounds.FlagOff()
+                    if event.key == py.K_e:
                         self.is_Interacting = False
 
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_q:
                         self.leftPressed = True
-                        # self.sounds.Walking()
                     if event.key == py.K_d:
                         self.rightPressed = True
-                        # self.sounds.Walking()
                     if event.key == py.K_SPACE:
                         if not self.tabPressed and not self.shopPressed:
+                            self.player.wall_jump()
                             self.player.double_jump()
                             self.player.jump()
-                            self.player.wall_jump()
-                            # self.sounds.Jump()
+                            self.sounds.Jump()
                     if event.key == py.K_LSHIFT:
                         self.player.dash()
-                        # self.sounds.dash()
+                        self.sounds.dash()
                     if event.key == py.K_TAB:
                         if self.tabPressed:
                             self.tabPressed = False
                         else:
                             self.tabPressed = True
-                    if event.key == py.K_o:
-                        self.game_over.game_over()
-
-                    if event.key == py.K_a:
-                        self.is_Interacting = True
 
                     # Ici pour gérer les event du shop
                     if event.key == py.K_e:
+                        self.is_Interacting = True
                         if not self.tabPressed and distance(self.player.transform.position, self.shaman.transform.position) < 100:
                             self.shopPressed = not self.shopPressed
 

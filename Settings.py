@@ -22,7 +22,7 @@ TREVOR_DELAY_BEFORE_START = 3# en seconde
 TREVOR_SPEED = int(400 * RESMULT)  # pixels / sec
 
 # Map:
-MAP_LENGHT = 3
+MAP_LENGHT = 4
 
 # SET THE VALUES
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
@@ -41,7 +41,6 @@ Fonts = {
 	"centaur": py.font.SysFont("Centaur", 35),
 }
 
-CLOCHE = py.transform.scale(py.image.load("Resources/cloche purificatrice.png").convert_alpha(), (235, 333))
 HALO = py.transform.scale(py.image.load("Resources/Halo.png").convert_alpha(), (TILETOTALSIZE//2, TILETOTALSIZE))
 HALO.set_alpha(100)
 
@@ -73,6 +72,8 @@ MenuImg = {
 	"MainMenu": py.transform.scale(py.image.load("image/MenuImg/UI menu principal.png").convert_alpha(), (WIDTH, HEIGHT)),
 }
 
+ENTREE_GROTTE = py.transform.scale(py.image.load("Resources/entree grotte.png").convert_alpha(), (500, 500))
+
 IMAGE_VIDE = py.surface.Surface((1, 1))
 IMAGE_VIDE.set_alpha(0)
 
@@ -88,19 +89,21 @@ Bg = {
 		]
 }
 
-Trevor = py.transform.scale(py.image.load("Resources/Trevor.png").convert_alpha(), (int(472 * TILETOTALSIZE / 281), TILETOTALSIZE))
-
+Restart = py.transform.smoothscale(py.image.load("Resources/Restart.png").convert_alpha(), (WIDTH, HEIGHT))
 
 Textures = [
 	None,
-	py.transform.smoothscale(py.image.load("Resources/Tiles/box.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/Tiles/castle.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/Tiles/groundNS_central.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/Tiles/groundNS_topmid.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/Tiles/groundS1_central.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/Tiles/groundS1_topmid.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/Tiles/groundS2_central.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
-	py.transform.smoothscale(py.image.load("Resources/Tiles/groundS2_topmid.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	# Herbe
+	py.transform.smoothscale(py.image.load("Resources/Tiles/haut gauche.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/haut centre.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/haut droite.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/gauche.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/centre.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/droite.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/bas gauche.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/bas.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	py.transform.smoothscale(py.image.load("Resources/Tiles/bas droite.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
+	# Pierre
 	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc1.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
 	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc2.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
 	py.transform.smoothscale(py.image.load("Resources/Tiles/Tile_Roc3.png").convert_alpha(), (RESOLUTION, RESOLUTION)),
