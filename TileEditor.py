@@ -44,7 +44,7 @@ entry = tk.Entry(frame, textvariable=input_field)
 browse_but = tk.Button(frame, text="Load", command=loadtemplate_input)
 
 frame2 = tk.Frame(window)
-label2 = tk.Label(frame2, text="OutPut (Vide pour créer un nouveau)")
+label2 = tk.Label(frame2, text="OutPut (Vide pour crée un nouveau)")
 entry2 = tk.Entry(frame2, textvariable=output_field)
 browse_but2 = tk.Button(frame2, text="Load", command=loadtemplate_output)
 

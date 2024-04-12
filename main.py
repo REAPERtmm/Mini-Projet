@@ -1,5 +1,9 @@
 from Inventory import *
+from GameObject import *
+from Menus import *
 from Game_over_test import *
+from Map import *
+from parallax import *
 from Sound import *
 
 
@@ -776,7 +780,45 @@ class Game:
     def restart(self):
         SCREEN.blit(Restart, (0, 0))
         py.display.flip()
-        self.__init__()
+        self.running = True
+        self.spawnpoint: Vector2 = None
+        self.lastPoint: Vector2 = None
+        self.map: Map = None
+        self.sounds = Sound(self)
+
+        self.camera = Camera(self, Vector2(0, 0), 5, self.player)
+        self.boss = Boss(self, TILETOTALSIZE * MAP_LENGHT, TILERESOLUTION * 10)
+
+        self.interactible = [
+            StaticObject(self, -self.tornado.get_current_image().get_width() - 100, 0, 1000 * RESMULT, 1000 * RESMULT, "Trevor", self.tornado.get_current_image()),
+            StaticObject(self, MAP_LENGHT * TILETOTALSIZE - TILERESOLUTION * 2, 0, 0, 0, "Entee Grotte", ENTREE_GROTTE)
+        ]
+        self.show_quit_screen = False
+        self.show_param_screen = False
+        self.show_dash_card_description = False
+        self.show_doublejump_card_description = False
+        self.show_walljump_card_description = False
+        self.start_playing = True
+        self.updating_menu = False
+        self.mouse_down = False
+        self.TrevorIsMoving = False
+
+        self.delay = time.time() + TREVOR_DELAY_BEFORE_START
+
+        self.loadMap()
+        self.interactible[1].transform.position = self.lastPoint - self.interactible[1].transform.size
+
+        self.leftPressed = False
+        self.rightPressed = False
+        self.up = False
+        self.down = False
+        self.tabPressed = False
+        self.shopPressed = False
+        self.is_Interacting = False
+
+        self.camera.position = self.spawnpoint - Vector2(self.camera.size / 2, self.camera.size / 2)
+        self.ParaX = Parallax(self, HEIGHT / 3)
+        self.firstTileLeft = [createfulltile(self, Vector2(-TILETOTALSIZE, -y * TILETOTALSIZE)) for y in range(2)]
 
     def update(self):
         if self.start_playing:
@@ -851,7 +893,6 @@ class Game:
             if self.updating_menu:
                 self.MainMenu.update()
 
-
             if self.show_quit_screen:
                 self.QuitMainMenu.update()
             if self.show_param_screen:
@@ -865,7 +906,6 @@ class Game:
             if not self.boss.is_Active:
                 # dessine la map
                 self.map.blit(SCREEN, self.camera)
-
 
             # dessine le point de Tp au boss et la Tornade
             self.interactible[1].blit(SCREEN)
@@ -934,8 +974,6 @@ class Game:
             self.inv.update()
             self.draw()
             self.sounds.ShamanStart()
-            self.sounds.soundTimer += self.deltatime
-
             if self.leftPressed:
                 self.player.transform.position.moveX(-500 * self.deltatime * RESMULT)
             elif self.rightPressed:

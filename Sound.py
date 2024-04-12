@@ -1,8 +1,3 @@
-from Settings import *
-from GameObject import *
-from Map import *
-from Menus import *
-from parallax import *
 from random import randint
 
 

@@ -237,7 +237,7 @@ class Boss(Entity):
         self.cloche_enable = False
         self.phase = 0
         self.phase_duration = [
-            5, 10
+            1, 1
         ]
         self.map = None
         self.time_at_phase_start = time.time()
@@ -375,14 +375,17 @@ class Boss(Entity):
             if self.status == "Projectile":
                 if len(self.projectiles) < 5:
                     Y = randfloat(300, TILETOTALSIZE - 3*RESOLUTION - 300)
-                    if random() > .5:
-                        X = self.map.offset.x() + TILETOTALSIZE + 3*RESOLUTION
-                    else:
-                        X = self.map.offset.x() + TILETOTALSIZE - 3*RESOLUTION + 2 * TILETOTALSIZE
+                    Y2 = randfloat(300, TILETOTALSIZE - 3*RESOLUTION - 300)
+                    X = self.map.offset.x() + TILETOTALSIZE + 3*RESOLUTION
+                    X2 = self.map.offset.x() + TILETOTALSIZE - 3*RESOLUTION + 2 * TILETOTALSIZE
                     direction: Vector2 = (self.game.player.transform.position - Vector2(X, Y))
+                    direction2: Vector2 = (self.game.player.transform.position - Vector2(X2, Y2))
                     direction /= direction.magnitude
                     direction *= 500
+                    direction2 /= direction2.magnitude
+                    direction2 *= 500
                     self.projectiles.append(Projectile(self.game, X, Y, direction, 8))
+                    self.projectiles.append(Projectile(self.game, X2, Y2, direction2, 8))
                 self.next_attack()
 
             if self.status == "Pre-Charge":
@@ -510,7 +513,7 @@ class Player(Entity):
             self.CanDoubleJump = True
     
     def double_jump(self):
-        if self.CanDoubleJump and self.ability_enable["Jump+"]:
+        if self.CanDoubleJump and self.ability_enable["Jump+"] and not (self.isGrabbingLeft or self.isGrabbingRight):
             self.game.sounds.Jump()
             self.animatorVFX.set_anim("doublejump")
             self.velocity = Vector2(self.velocity.x(), -13) * RESMULT

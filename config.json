@@ -1,0 +1,149 @@
+{
+ "version": "auto-py-to-exe-configuration_v1",
+ "pyinstallerOptions": [
+  {
+   "optionDest": "noconfirm",
+   "value": true
+  },
+  {
+   "optionDest": "filenames",
+   "value": "D:/!_PyCharmProject/Mini-Projet/main.py"
+  },
+  {
+   "optionDest": "onefile",
+   "value": false
+  },
+  {
+   "optionDest": "console",
+   "value": false
+  },
+  {
+   "optionDest": "icon_file",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Resources/logo-appli.ico"
+  },
+  {
+   "optionDest": "name",
+   "value": "Echoes Of Harmony"
+  },
+  {
+   "optionDest": "ascii",
+   "value": false
+  },
+  {
+   "optionDest": "clean_build",
+   "value": false
+  },
+  {
+   "optionDest": "strip",
+   "value": false
+  },
+  {
+   "optionDest": "noupx",
+   "value": false
+  },
+  {
+   "optionDest": "disable_windowed_traceback",
+   "value": false
+  },
+  {
+   "optionDest": "embed_manifest",
+   "value": true
+  },
+  {
+   "optionDest": "uac_admin",
+   "value": false
+  },
+  {
+   "optionDest": "uac_uiaccess",
+   "value": false
+  },
+  {
+   "optionDest": "win_private_assemblies",
+   "value": false
+  },
+  {
+   "optionDest": "win_no_prefer_redirects",
+   "value": false
+  },
+  {
+   "optionDest": "bootloader_ignore_signals",
+   "value": false
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/BossTile;BossTile/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/image;image/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Resources;Resources/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/SoundFiles;SoundFiles/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Tile;Tile/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Animation.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Events.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Game_over_test.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/GameObject.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/GeoMath.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Inventory.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Map.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Menus.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/parallax.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Settings.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/Sound.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/test.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/!_PyCharmProject/Mini-Projet/TileEditor.py;."
+  }
+ ],
+ "nonPyinstallerOptions": {
+  "increaseRecursionLimit": true,
+  "manualArguments": ""
+ }
+}
