@@ -237,7 +237,7 @@ class Boss(Entity):
         self.cloche_enable = False
         self.phase = 0
         self.phase_duration = [
-            1, 1
+            15, 15
         ]
         self.map = None
         self.time_at_phase_start = time.time()

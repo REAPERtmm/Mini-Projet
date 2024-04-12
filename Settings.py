@@ -22,7 +22,7 @@ TREVOR_DELAY_BEFORE_START = 3# en seconde
 TREVOR_SPEED = int(400 * RESMULT)  # pixels / sec
 
 # Map:
-MAP_LENGHT = 4
+MAP_LENGHT = 21
 
 # SET THE VALUES
 SCREEN = py.display.set_mode((WIDTH, HEIGHT))
