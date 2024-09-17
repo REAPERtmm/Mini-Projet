@@ -9,6 +9,7 @@ from Sound import *
 
 class Game:
     def __init__(self):
+        self.niveau = 0
         self.running = True
         self.spawnpoint: Vector2 = None
         self.lastPoint: Vector2 = None
@@ -911,7 +912,8 @@ class Game:
             self.interactible[1].blit(SCREEN)
 
             SCREEN.blit(self.tornado.get_current_image(), (self.interactible[0].transform.position - self.camera.position).tuple())
-
+            SCREEN.blit(Fonts["arial"].render(f"Niveau : {self.niveau}", True, RED, BLACK), (10, 30))
+            
             for elt in self.firstTileLeft:
                 elt.blit(SCREEN)
 
