@@ -9,6 +9,7 @@
 
 <=====================================>
 
+Touches :
 - Q/D : Move
 - E : Interact (Shaman, Cloche)
 - Space :
@@ -18,3 +19,36 @@
 - Shift : Dash (si Débloqué)
 
 <=====================================>
+
+Libraries néccéssaire au lancement :
+- pygame
+- pip
+-   os
+-   time
+-   random
+-   math
+- (tkinter pour lancer l'éditeur de niveau)
+  
+<=====================================>
+
+Editeur de Niveau :
+
+étape 1:
+  Input : 
+  Si laissé vide : Créer une nouvelle Tile
+  Sinon : Modifie la tile sélecter
+  
+  Output : 
+  Si laissé vide : Met dans le Dossier Tile (Doit Exister)
+  Sinon : écrase la tile sélecter
+
+étape 2 :
+  Fermer la fenêtre pour ouvrir l'éditeur
+  Faire les modification néccessaires
+  
+étape 3 :
+  Fermer la fenêtre enregistre les modifications
+
+
+
+
