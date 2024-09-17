@@ -11,7 +11,7 @@
 Touches :
 - Q/D : Move
 - E : Interact (Shaman, Cloche)
-- Space :
+- Espace :
   - Sol : Saute
   - Air : Double Saut (si Débloqué)
   - Mur : Sauter du mur (si Débloqué)
