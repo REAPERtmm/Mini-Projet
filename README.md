@@ -34,20 +34,20 @@ Libraries néccéssaire au lancement :
 Editeur de Niveau :
 
 étape 1:
-  Input : 
-  Si laissé vide : Créer une nouvelle Tile
-  Sinon : Modifie la tile sélecter
+- Input :
+-   Si laissé vide : Créer une nouvelle Tile
+-   Sinon : Modifie la tile sélecter
   
-  Output : 
-  Si laissé vide : Met dans le Dossier Tile (Doit Exister)
-  Sinon : écrase la tile sélecter
+- Output :
+-    Si laissé vide : Modifie la tile sélecter
+-   Sinon : écrase la tile sélecter
 
 étape 2 :
-  Fermer la fenêtre pour ouvrir l'éditeur
-  Faire les modification néccessaires
+- Fermer la fenêtre pour ouvrir l'éditeur
+- Faire les modification néccessaires
   
 étape 3 :
-  Fermer la fenêtre enregistre les modifications
+- Fermer la fenêtre enregistre les modifications
 
 
 
