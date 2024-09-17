@@ -866,6 +866,7 @@ class Game:
                               self.kill()
             else:
                 if self.game_over.reset:
+                    self.niveau = 0
                     self.player.animator.set_anim("idle")
                     self.player.transform.position = self.spawnpoint.copy()
                     self.camera.position = self.spawnpoint - Vector2(self.camera.size / 2, self.camera.size / 2)
