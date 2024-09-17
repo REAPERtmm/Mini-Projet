@@ -341,6 +341,7 @@ class Boss(Entity):
                 self.projectiles.remove(elt)
         if self.is_Active and self.ended:
             if self.cloche_enable and self.game.is_Interacting and self.cloche.transform.CollideRect(self.game.player.transform):
+                self.game.niveau += 1
                 self.game.restart()
         elif self.status == "Death":
             if self.goleft:
