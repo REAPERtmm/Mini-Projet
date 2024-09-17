@@ -23,10 +23,10 @@ Touches :
 Libraries néccéssaire au lancement :
 - pygame
 - pip
--   os
--   time
--   random
--   math
+  - os
+  - time
+  - random
+  - math
 - (tkinter pour lancer l'éditeur de niveau)
   
 <=====================================>
@@ -35,12 +35,12 @@ Editeur de Niveau :
 
 étape 1:
 - Input :
-   Si laissé vide : Créer une nouvelle Tile
-   Sinon : Modifie la tile sélecter
+  - Si laissé vide : Créer une nouvelle Tile
+  - Sinon : Modifie la tile sélecter
   
 - Output :
-   Si laissé vide : Modifie la tile sélecter
-   Sinon : écrase la tile sélecter
+  - Si laissé vide : Modifie la tile sélecter
+  - Sinon : écrase la tile sélecter
 
 étape 2 :
 - Fermer la fenêtre pour ouvrir l'éditeur
