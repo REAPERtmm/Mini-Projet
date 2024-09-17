@@ -39,7 +39,7 @@ Editeur de Niveau :
 -   Sinon : Modifie la tile sélecter
   
 - Output :
--    Si laissé vide : Modifie la tile sélecter
+-   Si laissé vide : Modifie la tile sélecter
 -   Sinon : écrase la tile sélecter
 
 étape 2 :
